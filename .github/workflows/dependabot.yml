@@ -1,0 +1,23 @@
+version: 2
+
+updates:
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_timeline"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_timeline_firebase"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_timeline_interface"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/packages/flutter_timeline_view"
+    schedule:
+      interval: "weekly"
+

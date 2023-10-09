@@ -1,0 +1,39 @@
+name: flutter_timeline
+
+packages:
+  - packages/**
+
+command:
+  version:
+    branch: master
+
+scripts:
+  lint:all:
+    run: melos run analyze && melos run format
+    description: Run all static analysis checks.
+
+  get:
+    run: |
+      melos exec -c 1 -- "flutter pub get"
+      melos exec --scope="*example*" -c 1 -- "flutter pub get"
+
+  upgrade:
+    run: melos exec -c 1 -- "flutter pub upgrade"
+
+  create:
+    # run create in the example folder of flutter_timeline_view
+    run: melos exec --scope="*example*" -c 1 -- "flutter create ."
+
+  analyze:
+    run: |
+      melos exec -c 1 -- \
+        flutter analyze --fatal-infos
+    description: Run `flutter analyze` for all packages.
+
+  format:
+    run: melos exec flutter format . --fix
+    description: Run `flutter format` for all packages.
+
+  format-check:
+    run: melos exec flutter format . --set-exit-if-changed
+    description: Run `flutter format` checks for all packages.
