@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: 2023 Iconica
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: flutter_timeline_view
+description: Visual elements of the Flutter Timeline Component
+version: 0.0.1
+
+publish_to: none
+
+environment:
+  sdk: '>=3.1.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_timeline_interface:
+    git: 
+       url: https://github.com/Iconica-Development/flutter_timeline.git
+       path: packages/flutter_timeline_interface
+       ref: 0.0.1
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_iconica_analysis:
+    git:
+      url: https://github.com/Iconica-Development/flutter_iconica_analysis
+      ref: 6.0.0
+
+flutter:
+

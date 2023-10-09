@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: 2023 Iconica
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: flutter_timeline_interface
+description: Interface for the service of the Flutter Timeline component
+version: 0.0.1
+
+publish_to: none
+
+environment:
+  sdk: '>=3.1.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_data_interface:
+    git:
+      url: https://github.com/Iconica-Development/flutter_data_interface.git
+      ref: 1.0.0
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_iconica_analysis:
+    git:
+      url: https://github.com/Iconica-Development/flutter_iconica_analysis
+      ref: 6.0.0
+
+flutter:
+
