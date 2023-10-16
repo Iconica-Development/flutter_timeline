@@ -43,3 +43,11 @@ packages/flutter_timeline_interface/pubspec.lock
 packages/flutter_timeline_view/pubspec.lock
 
 pubspec_overrides.yaml
+
+**/example/android
+**/example/ios
+**/example/linux
+**/example/macos
+**/example/windows
+**/example/web
+**/example/README.md
