@@ -14,11 +14,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: any
+  cached_network_image: ^3.2.2
+
   flutter_timeline_interface:
     git: 
        url: https://github.com/Iconica-Development/flutter_timeline.git
        path: packages/flutter_timeline_interface
        ref: 0.0.1
+  flutter_image_picker:
+    git:
+      url: https://github.com/Iconica-Development/flutter_image_picker
+      ref: 1.0.4
 
 dev_dependencies:
   flutter_lints: ^2.0.0

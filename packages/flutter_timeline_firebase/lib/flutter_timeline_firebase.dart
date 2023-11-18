@@ -2,4 +2,5 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+///
 library flutter_timeline_firebase;
