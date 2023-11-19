@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
+import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 import 'package:intl/intl.dart';
 
@@ -15,6 +16,7 @@ class TimelineOptions {
     this.dateformat,
     this.buttonBuilder,
     this.textInputBuilder,
+    this.userAvatarBuilder,
   });
 
   /// The format to display the post time in
@@ -25,6 +27,8 @@ class TimelineOptions {
   final ButtonBuilder? buttonBuilder;
 
   final TextInputBuilder? textInputBuilder;
+
+  final UserAvatarBuilder? userAvatarBuilder;
 
   /// ImagePickerTheme can be used to change the UI of the
   /// Image Picker Widget to change the text/icons to your liking.
@@ -42,9 +46,13 @@ typedef ButtonBuilder = Widget Function(
   bool enabled,
 });
 
-
 typedef TextInputBuilder = Widget Function(
   TextEditingController controller,
   Widget? suffixIcon,
   String hintText,
+);
+
+typedef UserAvatarBuilder = Widget Function(
+  TimelinePosterUserModel user,
+  double size,
 );

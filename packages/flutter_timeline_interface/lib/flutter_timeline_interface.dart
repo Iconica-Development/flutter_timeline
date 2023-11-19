@@ -5,4 +5,5 @@
 library flutter_timeline_interface;
 
 export 'src/model/timeline_post.dart';
+export 'src/model/timeline_poster.dart';
 export 'src/model/timeline_reaction.dart';

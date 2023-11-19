@@ -11,7 +11,6 @@ class TimelinePostScreen extends StatelessWidget {
     super.key,
   });
 
-  
   final TimelinePost post;
 
   @override

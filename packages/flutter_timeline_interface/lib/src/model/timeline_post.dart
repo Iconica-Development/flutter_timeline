@@ -1,4 +1,9 @@
+// SPDX-FileCopyrightText: 2023 Iconica
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 import 'package:flutter/material.dart';
+import 'package:flutter_timeline_interface/src/model/timeline_poster.dart';
 import 'package:flutter_timeline_interface/src/model/timeline_reaction.dart';
 
 /// A post of the timeline.
@@ -14,6 +19,7 @@ class TimelinePost {
     required this.reaction,
     required this.createdAt,
     required this.reactionEnabled,
+    this.creator,
     this.likedBy,
     this.reactions,
     this.imageUrl,
@@ -24,6 +30,9 @@ class TimelinePost {
 
   /// The unique identifier of the creator of the post.
   final String creatorId;
+
+  /// The creator of the post. If null it isn't loaded yet.
+  final TimelinePosterUserModel? creator;
 
   /// The title of the post.
   final String title;
