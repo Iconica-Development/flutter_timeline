@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import 'package:flutter/material.dart';
+import 'package:flutter_timeline_interface/src/model/timeline_poster.dart';
 
 @immutable
 class TimelinePostReaction {
@@ -12,6 +13,7 @@ class TimelinePostReaction {
     required this.creatorId,
     required this.reaction,
     required this.createdAt,
+    this.creator,
   });
 
   /// The unique identifier of the reaction.
@@ -22,6 +24,9 @@ class TimelinePostReaction {
 
   /// The unique identifier of the creator of the reaction.
   final String creatorId;
+
+  /// The creator of the post. If null it isn't loaded yet.
+  final TimelinePosterUserModel? creator;
 
   /// The reactiontext
   final String reaction;

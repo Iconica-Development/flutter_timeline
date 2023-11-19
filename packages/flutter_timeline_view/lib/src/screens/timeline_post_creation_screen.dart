@@ -4,10 +4,10 @@
 
 import 'dart:typed_data';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
-import 'package:flutter_timeline_view/src/widgets/dotted_container.dart';
 
 class TimelinePostCreationScreen extends StatefulWidget {
   const TimelinePostCreationScreen({
@@ -147,14 +147,10 @@ class _TimelinePostCreationScreenState
                           // give it a rounded border
                         ),
                       )
-                    : CustomPaint(
-                        painter: DashedBorderPainter(
-                          color: theme.textTheme.displayMedium?.color ??
-                              Colors.white,
-                          dashLength: 4.0,
-                          dashWidth: 1.5,
-                          space: 4,
-                        ),
+                    : DottedBorder(
+                        radius: const Radius.circular(8.0),
+                        color: theme.textTheme.displayMedium?.color ??
+                            Colors.white,
                         child: const SizedBox(
                           width: double.infinity,
                           height: 150.0,

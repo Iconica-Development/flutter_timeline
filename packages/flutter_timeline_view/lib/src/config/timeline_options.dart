@@ -4,23 +4,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
+import 'package:flutter_timeline_view/src/config/timeline_theme.dart';
 import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 import 'package:intl/intl.dart';
 
 @immutable
 class TimelineOptions {
   const TimelineOptions({
+    this.theme = const TimelineTheme(),
     this.translations = const TimelineTranslations(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.dateformat,
+    this.timeFormat,
     this.buttonBuilder,
     this.textInputBuilder,
     this.userAvatarBuilder,
   });
 
-  /// The format to display the post time in
+  /// Theming options for the timeline
+  final TimelineTheme theme;
+
+  /// The format to display the post date in
   final DateFormat? dateformat;
+
+  /// The format to display the post time in
+  final DateFormat? timeFormat;
 
   final TimelineTranslations translations;
 

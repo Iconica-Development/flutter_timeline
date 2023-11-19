@@ -21,6 +21,7 @@ class TimelineTranslations {
     this.likesTitle = 'Likes',
     this.commentsTitle = 'Comments',
     this.writeComment = 'Write your comment here...',
+    this.postAt = 'at',
   });
 
   final String title;
@@ -31,6 +32,7 @@ class TimelineTranslations {
   final String allowComments;
   final String allowCommentsDescription;
   final String checkPost;
+  final String postAt;
 
   final String deletePost;
   final String viewPost;

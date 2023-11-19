@@ -98,7 +98,7 @@ class TimelinePostWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  post.content,
+                  post.title,
                   style: theme.textTheme.bodyMedium,
                   overflow: TextOverflow.fade,
                 ),
