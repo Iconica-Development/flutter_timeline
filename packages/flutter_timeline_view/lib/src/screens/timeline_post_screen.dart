@@ -155,9 +155,10 @@ class TimelinePostScreen extends StatelessWidget {
                         ),
                       ],
                       const SizedBox(width: 10),
+                      // TODO(anyone): show image if the user send one
                       Expanded(
                         child: Text(
-                          reaction.reaction,
+                          reaction.reaction ?? '',
                           style: theme.textTheme.bodyMedium,
                           // text should go to new line
                           softWrap: true,

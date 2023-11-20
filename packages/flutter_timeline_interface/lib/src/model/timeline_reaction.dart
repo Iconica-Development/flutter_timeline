@@ -11,8 +11,9 @@ class TimelinePostReaction {
     required this.id,
     required this.postId,
     required this.creatorId,
-    required this.reaction,
     required this.createdAt,
+    this.reaction,
+    this.imageUrl,
     this.creator,
   });
 
@@ -28,8 +29,11 @@ class TimelinePostReaction {
   /// The creator of the post. If null it isn't loaded yet.
   final TimelinePosterUserModel? creator;
 
-  /// The reactiontext
-  final String reaction;
+  /// The reaction text if the creator sent one
+  final String? reaction;
+
+  /// The url of the image if the creator sent one
+  final String? imageUrl;
 
   /// Reaction creation date.
   final DateTime createdAt;
