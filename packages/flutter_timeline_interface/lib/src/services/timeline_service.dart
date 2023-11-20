@@ -13,7 +13,7 @@ abstract class TimelineService {
   Future<List<TimelinePost>> fetchPosts(String? category);
   List<TimelinePost> getPosts(String? category);
   Future<TimelinePost> fetchPostDetails(TimelinePost post);
-  Future<void> reactToPost(
+  Future<TimelinePost> reactToPost(
     TimelinePost post,
     TimelinePostReaction reaction, {
     Uint8List image,

@@ -7,7 +7,6 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_timeline_firebase/src/config/firebase_timeline_options.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:uuid/uuid.dart';
@@ -35,7 +34,8 @@ class FirebaseTimelineService implements TimelineService {
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
     var postId = const Uuid().v4();
-    var imageRef = _storage.ref().child('timeline/$postId');
+    var imageRef =
+        _storage.ref().child('${_options.timelineCollectionName}/$postId');
     var result = await imageRef.putData(post.image!);
     var imageUrl = await result.ref.getDownloadURL();
     var updatedPost = post.copyWith(imageUrl: imageUrl, id: postId);
@@ -54,8 +54,17 @@ class FirebaseTimelineService implements TimelineService {
 
   @override
   Future<TimelinePost> fetchPostDetails(TimelinePost post) async {
-    debugPrint('fetchPostDetails');
-    return post;
+    var reactions = post.reactions ?? [];
+    var updatedReactions = <TimelinePostReaction>[];
+    for (var reaction in reactions) {
+      var user = await _userService.getUser(reaction.creatorId);
+      if (user != null) {
+        updatedReactions.add(reaction.copyWith(creator: user));
+      }
+    }
+    var updatedPost = post.copyWith(reactions: updatedReactions);
+    _posts = _posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
+    return updatedPost;
   }
 
   @override
@@ -124,26 +133,36 @@ class FirebaseTimelineService implements TimelineService {
   }
 
   @override
-  Future<void> reactToPost(
+  Future<TimelinePost> reactToPost(
     TimelinePost post,
     TimelinePostReaction reaction, {
     Uint8List? image,
-  }) {
-    // update the post with the new reaction
-    _posts = _posts
-        .map(
-          (p) => (p.id == post.id)
-              ? p.copyWith(
-                  reaction: p.reaction + 1,
-                  reactions: p.reactions?..add(reaction),
-                )
-              : p,
-        )
-        .toList();
+  }) async {
+    var reactionId = const Uuid().v4();
+    // also fetch the user information and add it to the reaction
+    var user = await _userService.getUser(reaction.creatorId);
+    var updatedReaction = reaction.copyWith(id: reactionId, creator: user);
+    if (image != null) {
+      var imageRef = _storage
+          .ref()
+          .child('${_options.timelineCollectionName}/${post.id}/$reactionId}');
+      var result = await imageRef.putData(image);
+      var imageUrl = await result.ref.getDownloadURL();
+      updatedReaction = updatedReaction.copyWith(imageUrl: imageUrl);
+    }
+
+    var updatedPost = post.copyWith(
+      reaction: post.reaction + 1,
+      reactions: post.reactions?..add(updatedReaction),
+    );
+
     var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
-    return postRef.update({
+    await postRef.update({
       'reaction': FieldValue.increment(1),
-      'reactions': FieldValue.arrayUnion([reaction.toJson()]),
+      // 'reactions' is a map of reactions, so we need to add the new reaction
+      // to the map
+      'reactions': FieldValue.arrayUnion([updatedReaction.toJson()]),
     });
+    return updatedPost;
   }
 }

@@ -39,18 +39,14 @@ class TimelinePost {
         likes: json['likes'] as int,
         likedBy: (json['liked_by'] as List<dynamic>?)?.cast<String>(),
         reaction: json['reaction'] as int,
-        reactions: (json['reactions'] as Map<String, dynamic>?)
+        reactions: (json['reactions'] as List<dynamic>?)
             ?.map(
-              (key, value) => MapEntry(
-                key,
-                TimelinePostReaction.fromJson(
-                  key,
-                  id,
-                  value as Map<String, dynamic>,
-                ),
+              (e) => TimelinePostReaction.fromJson(
+                (e as Map).keys.first,
+                id,
+                e.values.first as Map<String, dynamic>,
               ),
             )
-            .values
             .toList(),
         createdAt: DateTime.parse(json['created_at'] as String),
         reactionEnabled: json['reaction_enabled'] as bool,
@@ -140,7 +136,8 @@ class TimelinePost {
         'likes': likes,
         'liked_by': likedBy,
         'reaction': reaction,
-        'reactions': reactions?.map((e) => e.toJson()).toList(),
+        // reactions is a list of maps so we need to convert it to a map
+        'reactions': reactions?.map((e) => e.toJson()).toList() ?? {},
         'created_at': createdAt.toIso8601String(),
         'reaction_enabled': reactionEnabled,
       };

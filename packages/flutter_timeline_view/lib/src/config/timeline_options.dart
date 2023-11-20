@@ -15,6 +15,7 @@ class TimelineOptions {
     this.translations = const TimelineTranslations(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
+    this.sortCommentsAscending = false,
     this.dateformat,
     this.timeFormat,
     this.buttonBuilder,
@@ -30,6 +31,9 @@ class TimelineOptions {
 
   /// The format to display the post time in
   final DateFormat? timeFormat;
+
+  /// Whether to sort comments ascending or descending
+  final bool sortCommentsAscending;
 
   final TimelineTranslations translations;
 

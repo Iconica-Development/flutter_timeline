@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 @immutable
 class TimelineTranslations {
   const TimelineTranslations({
+    this.anonymousUser = 'Anonymous user',
+    this.noPosts = 'No posts yet',
+    this.noPostsWithFilter = 'No posts with this filter',
     this.title = 'Title',
     this.content = 'Content',
     this.contentDescription = 'What do you want to share?',
@@ -20,9 +23,15 @@ class TimelineTranslations {
     this.viewPost = 'View post',
     this.likesTitle = 'Likes',
     this.commentsTitle = 'Comments',
+    this.firstComment = 'Be the first to comment',
     this.writeComment = 'Write your comment here...',
     this.postAt = 'at',
+    this.postLoadingError = 'Something went wrong while loading the post',
   });
+
+  final String noPosts;
+  final String noPostsWithFilter;
+  final String anonymousUser;
 
   final String title;
   final String content;
@@ -39,4 +48,6 @@ class TimelineTranslations {
   final String likesTitle;
   final String commentsTitle;
   final String writeComment;
+  final String firstComment;
+  final String postLoadingError;
 }

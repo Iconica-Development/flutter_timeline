@@ -52,6 +52,25 @@ class TimelinePostReaction {
   /// Reaction creation date.
   final DateTime createdAt;
 
+  TimelinePostReaction copyWith({
+    String? id,
+    String? postId,
+    String? creatorId,
+    TimelinePosterUserModel? creator,
+    String? reaction,
+    String? imageUrl,
+    DateTime? createdAt,
+  }) =>
+      TimelinePostReaction(
+        id: id ?? this.id,
+        postId: postId ?? this.postId,
+        creatorId: creatorId ?? this.creatorId,
+        creator: creator ?? this.creator,
+        reaction: reaction ?? this.reaction,
+        imageUrl: imageUrl ?? this.imageUrl,
+        createdAt: createdAt ?? this.createdAt,
+      );
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         id: {
           'creator_id': creatorId,
