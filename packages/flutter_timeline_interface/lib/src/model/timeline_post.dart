@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/src/model/timeline_poster.dart';
 import 'package:flutter_timeline_interface/src/model/timeline_reaction.dart';
@@ -23,7 +25,36 @@ class TimelinePost {
     this.likedBy,
     this.reactions,
     this.imageUrl,
+    this.image,
   });
+
+  factory TimelinePost.fromJson(String id, Map<String, dynamic> json) =>
+      TimelinePost(
+        id: id,
+        creatorId: json['creator_id'] as String,
+        title: json['title'] as String,
+        category: json['category'] as String,
+        imageUrl: json['image_url'] as String?,
+        content: json['content'] as String,
+        likes: json['likes'] as int,
+        likedBy: (json['liked_by'] as List<dynamic>?)?.cast<String>(),
+        reaction: json['reaction'] as int,
+        reactions: (json['reactions'] as Map<String, dynamic>?)
+            ?.map(
+              (key, value) => MapEntry(
+                key,
+                TimelinePostReaction.fromJson(
+                  key,
+                  id,
+                  value as Map<String, dynamic>,
+                ),
+              ),
+            )
+            .values
+            .toList(),
+        createdAt: DateTime.parse(json['created_at'] as String),
+        reactionEnabled: json['reaction_enabled'] as bool,
+      );
 
   /// The unique identifier of the post.
   final String id;
@@ -42,6 +73,9 @@ class TimelinePost {
 
   /// The url of the image of the post.
   final String? imageUrl;
+
+  /// The image of the post used for uploading.
+  final Uint8List? image;
 
   /// The content of the post.
   final String content;
@@ -63,4 +97,51 @@ class TimelinePost {
 
   /// If reacting is enabled on the post.
   final bool reactionEnabled;
+
+  TimelinePost copyWith({
+    String? id,
+    String? creatorId,
+    TimelinePosterUserModel? creator,
+    String? title,
+    String? category,
+    String? imageUrl,
+    Uint8List? image,
+    String? content,
+    int? likes,
+    List<String>? likedBy,
+    int? reaction,
+    List<TimelinePostReaction>? reactions,
+    DateTime? createdAt,
+    bool? reactionEnabled,
+  }) =>
+      TimelinePost(
+        id: id ?? this.id,
+        creatorId: creatorId ?? this.creatorId,
+        creator: creator ?? this.creator,
+        title: title ?? this.title,
+        category: category ?? this.category,
+        imageUrl: imageUrl ?? this.imageUrl,
+        image: image ?? this.image,
+        content: content ?? this.content,
+        likes: likes ?? this.likes,
+        likedBy: likedBy ?? this.likedBy,
+        reaction: reaction ?? this.reaction,
+        reactions: reactions ?? this.reactions,
+        createdAt: createdAt ?? this.createdAt,
+        reactionEnabled: reactionEnabled ?? this.reactionEnabled,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'creator_id': creatorId,
+        'title': title,
+        'category': category,
+        'image_url': imageUrl,
+        'content': content,
+        'likes': likes,
+        'liked_by': likedBy,
+        'reaction': reaction,
+        'reactions': reactions?.map((e) => e.toJson()).toList(),
+        'created_at': createdAt.toIso8601String(),
+        'reaction_enabled': reactionEnabled,
+      };
 }

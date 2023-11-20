@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 @immutable
 class TimelinePosterUserModel {
   const TimelinePosterUserModel({
-    required this.id,
+    required this.userId,
     this.firstName,
     this.lastName,
     this.imageUrl,
   });
 
-  final String id;
+  final String userId;
   final String? firstName;
   final String? lastName;
   final String? imageUrl;

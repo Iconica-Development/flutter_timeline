@@ -17,6 +17,20 @@ class TimelinePostReaction {
     this.creator,
   });
 
+  factory TimelinePostReaction.fromJson(
+    String id,
+    String postId,
+    Map<String, dynamic> json,
+  ) =>
+      TimelinePostReaction(
+        id: id,
+        postId: postId,
+        creatorId: json['creator_id'] as String,
+        reaction: json['reaction'] as String?,
+        imageUrl: json['image_url'] as String?,
+        createdAt: DateTime.parse(json['created_at'] as String),
+      );
+
   /// The unique identifier of the reaction.
   final String id;
 
@@ -37,4 +51,13 @@ class TimelinePostReaction {
 
   /// Reaction creation date.
   final DateTime createdAt;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        id: {
+          'creator_id': creatorId,
+          'reaction': reaction,
+          'image_url': imageUrl,
+          'created_at': createdAt.toIso8601String(),
+        },
+      };
 }

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 Iconica
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 import 'dart:typed_data';
 
 import 'package:flutter_timeline_interface/src/model/timeline_post.dart';
@@ -13,5 +17,6 @@ abstract class TimelineService {
     TimelinePostReaction reaction, {
     Uint8List image,
   });
-  Future<void> likePost(TimelinePost post);
+  Future<void> likePost(String userId, TimelinePost post);
+  Future<void> unlikePost(String userId, TimelinePost post);
 }
