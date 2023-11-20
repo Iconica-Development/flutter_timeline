@@ -4,8 +4,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_timeline_firebase/config/firebase_timeline_options.dart';
-import 'package:flutter_timeline_firebase/models/firebase_user_document.dart';
+import 'package:flutter_timeline_firebase/src/config/firebase_timeline_options.dart';
+import 'package:flutter_timeline_firebase/src/models/firebase_user_document.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 
 class FirebaseUserService implements TimelineUserService {

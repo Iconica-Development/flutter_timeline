@@ -8,8 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_timeline_firebase/config/firebase_timeline_options.dart';
+import 'package:flutter_timeline_firebase/src/config/firebase_timeline_options.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
+import 'package:uuid/uuid.dart';
 
 class FirebaseTimelineService implements TimelineService {
   FirebaseTimelineService({
@@ -32,14 +33,17 @@ class FirebaseTimelineService implements TimelineService {
   List<TimelinePost> _posts = [];
 
   @override
-  Future<void> createPost(TimelinePost post) async {
-    var imageRef = _storage.ref().child('timeline/${post.id}');
+  Future<TimelinePost> createPost(TimelinePost post) async {
+    var postId = const Uuid().v4();
+    var imageRef = _storage.ref().child('timeline/$postId');
     var result = await imageRef.putData(post.image!);
     var imageUrl = await result.ref.getDownloadURL();
-    var updatedPost = post.copyWith(imageUrl: imageUrl);
-    var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
+    var updatedPost = post.copyWith(imageUrl: imageUrl, id: postId);
+    var postRef =
+        _db.collection(_options.timelineCollectionName).doc(updatedPost.id);
     _posts.add(updatedPost);
-    return postRef.set(updatedPost.toJson());
+    await postRef.set(updatedPost.toJson());
+    return updatedPost;
   }
 
   @override
@@ -56,21 +60,28 @@ class FirebaseTimelineService implements TimelineService {
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    var snapshot = await _db
-        .collection(_options.timelineCollectionName)
-        .where('category', isEqualTo: category)
-        .get();
+    var snapshot = (category != null)
+        ? await _db
+            .collection(_options.timelineCollectionName)
+            .where('category', isEqualTo: category)
+            .get()
+        : await _db.collection(_options.timelineCollectionName).get();
 
     var posts = <TimelinePost>[];
     for (var doc in snapshot.docs) {
       var data = doc.data();
-      var user = await _userService.getUser(data['user_id']);
+      var user = await _userService.getUser(data['creator_id']);
       var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
       posts.add(post);
     }
     _posts = posts;
     return posts;
   }
+
+  @override
+  List<TimelinePost> getPosts(String? category) => _posts
+      .where((element) => category == null || element.category == category)
+      .toList();
 
   @override
   Future<void> likePost(String userId, TimelinePost post) {

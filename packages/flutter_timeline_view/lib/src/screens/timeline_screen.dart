@@ -9,14 +9,20 @@ import 'package:flutter_timeline_view/src/widgets/timeline_post_widget.dart';
 
 class TimelineScreen extends StatefulWidget {
   const TimelineScreen({
+    required this.userId,
     required this.options,
     required this.posts,
     required this.onPostTap,
+    required this.service,
     this.controller,
     this.timelineCategoryFilter,
     this.timelinePostHeight = 100.0,
     super.key,
   });
+
+  final String userId;
+
+  final TimelineService service;
 
   final TimelineOptions options;
 
@@ -44,22 +50,32 @@ class _TimelineScreenState extends State<TimelineScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-        child: Column(
-          children: [
-            for (var post in widget.posts)
-              if (widget.timelineCategoryFilter == null ||
-                  post.category == widget.timelineCategoryFilter)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TimelinePostWidget(
-                    options: widget.options,
-                    post: post,
-                    height: widget.timelinePostHeight,
-                    onTap: () => widget.onPostTap.call(post),
-                  ),
-                ),
-          ],
-        ),
+  Widget build(BuildContext context) => FutureBuilder(
+        // ignore: discarded_futures
+        future: widget.service.fetchPosts(widget.timelineCategoryFilter),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var post in snapshot.data!)
+                    if (widget.timelineCategoryFilter == null ||
+                        post.category == widget.timelineCategoryFilter)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: TimelinePostWidget(
+                          options: widget.options,
+                          post: post,
+                          height: widget.timelinePostHeight,
+                          onTap: () => widget.onPostTap.call(post),
+                        ),
+                      ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       );
 }

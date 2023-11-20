@@ -7,14 +7,29 @@ import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
+import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 
 class TimelinePostCreationScreen extends StatefulWidget {
   const TimelinePostCreationScreen({
+    required this.userId,
+    required this.postCategory,
+    required this.onPostCreated,
+    required this.service,
     required this.options,
     this.padding = const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
     super.key,
   });
+
+  final String userId;
+
+  final String postCategory;
+
+  /// called when the post is created
+  final Function(TimelinePost) onPostCreated;
+
+  /// The service to use for creating the post
+  final TimelineService service;
 
   /// The options for the timeline
   final TimelineOptions options;
@@ -59,6 +74,23 @@ class _TimelinePostCreationScreenState
 
   @override
   Widget build(BuildContext context) {
+    Future<void> onPostCreated() async {
+      var post = TimelinePost(
+        id: '',
+        creatorId: widget.userId,
+        title: titleController.text,
+        category: widget.postCategory,
+        content: contentController.text,
+        likes: 0,
+        reaction: 0,
+        createdAt: DateTime.now(),
+        reactionEnabled: allowComments,
+        image: image,
+      );
+      var newPost = await widget.service.createPost(post);
+      widget.onPostCreated.call(newPost);
+    }
+
     var theme = Theme.of(context);
     return Padding(
       padding: widget.padding,
@@ -214,12 +246,12 @@ class _TimelinePostCreationScreenState
             child: (widget.options.buttonBuilder != null)
                 ? widget.options.buttonBuilder!(
                     context,
-                    () {},
+                    onPostCreated,
                     widget.options.translations.checkPost,
                     enabled: editingDone,
                   )
                 : ElevatedButton(
-                    onPressed: editingDone ? () {} : null,
+                    onPressed: editingDone ? onPostCreated : null,
                     child: Text(
                       widget.options.translations.checkPost,
                       style: theme.textTheme.bodyMedium,
