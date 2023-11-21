@@ -35,11 +35,14 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
     var postId = const Uuid().v4();
-    var imageRef =
-        _storage.ref().child('${_options.timelineCollectionName}/$postId');
-    var result = await imageRef.putData(post.image!);
-    var imageUrl = await result.ref.getDownloadURL();
-    var updatedPost = post.copyWith(imageUrl: imageUrl, id: postId);
+    var updatedPost = post.copyWith(id: postId);
+    if (post.image != null) {
+      var imageRef =
+          _storage.ref().child('${_options.timelineCollectionName}/$postId');
+      var result = await imageRef.putData(post.image!);
+      var imageUrl = await result.ref.getDownloadURL();
+      updatedPost = updatedPost.copyWith(imageUrl: imageUrl);
+    }
     var postRef =
         _db.collection(_options.timelineCollectionName).doc(updatedPost.id);
     await postRef.set(updatedPost.toJson());
@@ -74,7 +77,7 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    debugPrint('fetching posts from firebase $category!!!');
+    debugPrint('fetching posts from firebase with category: $category');
     var snapshot = (category != null)
         ? await _db
             .collection(_options.timelineCollectionName)

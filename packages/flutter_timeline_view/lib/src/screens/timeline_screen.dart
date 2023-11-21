@@ -19,7 +19,7 @@ class TimelineScreen extends StatefulWidget {
     this.posts,
     this.controller,
     this.timelineCategoryFilter,
-    this.timelinePostHeight = 100.0,
+    this.timelinePostHeight,
     this.padding = const EdgeInsets.symmetric(vertical: 12.0),
     super.key,
   });
@@ -39,7 +39,7 @@ class TimelineScreen extends StatefulWidget {
   final String? timelineCategoryFilter;
 
   /// The height of a post in the timeline
-  final double timelinePostHeight;
+  final double? timelinePostHeight;
 
   /// This is used if you want to pass in a list of posts instead
   /// of fetching them from the service

@@ -26,7 +26,9 @@ class TimelinePostWidget extends StatelessWidget {
   final TimelineOptions options;
 
   final TimelinePost post;
-  final double height;
+
+  /// Optional max height of the post
+  final double? height;
   final VoidCallback onTap;
   final VoidCallback onTapLike;
   final VoidCallback onTapUnlike;
@@ -41,7 +43,8 @@ class TimelinePostWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: SizedBox(
-        height: height,
+        // TODO(anyone): should posts with text have a max height?
+        height: post.imageUrl != null ? height : null,
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,6 +117,7 @@ class TimelinePostWidget extends StatelessWidget {
             // image of the post
             if (post.imageUrl != null) ...[
               Flexible(
+                flex: height != null ? 1 : 0,
                 child: CachedNetworkImage(
                   imageUrl: post.imageUrl!,
                   width: double.infinity,

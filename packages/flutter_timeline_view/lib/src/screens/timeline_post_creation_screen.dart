@@ -66,9 +66,8 @@ class _TimelinePostCreationScreenState
 
   void checkIfEditingDone() {
     setState(() {
-      editingDone = titleController.text.isNotEmpty &&
-          contentController.text.isNotEmpty &&
-          image != null;
+      editingDone =
+          titleController.text.isNotEmpty && contentController.text.isNotEmpty;
     });
   }
 

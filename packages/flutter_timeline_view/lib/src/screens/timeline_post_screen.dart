@@ -355,6 +355,12 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                         ],
                       ),
                     ],
+                    if (post.reactions?.isEmpty ?? true) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.options.translations.firstComment,
+                      ),
+                    ],
                     const SizedBox(height: 120),
                   ],
                 ],
