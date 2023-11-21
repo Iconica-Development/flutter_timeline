@@ -20,6 +20,7 @@ class TimelinePostScreen extends StatefulWidget {
     required this.userService,
     required this.options,
     required this.post,
+    this.onUserTap,
     this.padding = const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
     super.key,
   });
@@ -41,6 +42,9 @@ class TimelinePostScreen extends StatefulWidget {
 
   /// The padding around the screen
   final EdgeInsets padding;
+
+  /// If this is not null, the user can tap on the user avatar or name
+  final Function(String userId)? onUserTap;
 
   @override
   State<TimelinePostScreen> createState() => _TimelinePostScreenState();
@@ -110,34 +114,44 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (post.creator != null)
-                  Row(
-                    children: [
-                      if (post.creator!.imageUrl != null) ...[
-                        widget.options.userAvatarBuilder?.call(
-                              post.creator!,
-                              40,
-                            ) ??
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundImage: CachedNetworkImageProvider(
-                                post.creator!.imageUrl!,
+                Row(
+                  children: [
+                    if (post.creator != null)
+                      InkWell(
+                        onTap: widget.onUserTap != null
+                            ? () => widget.onUserTap?.call(post.creator!.userId)
+                            : null,
+                        child: Row(
+                          children: [
+                            if (post.creator!.imageUrl != null) ...[
+                              widget.options.userAvatarBuilder?.call(
+                                    post.creator!,
+                                    40,
+                                  ) ??
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      post.creator!.imageUrl!,
+                                    ),
+                                  ),
+                            ],
+                            const SizedBox(width: 10),
+                            if (post.creator!.fullName != null) ...[
+                              Text(
+                                post.creator!.fullName!,
+                                style: theme.textTheme.titleMedium,
                               ),
-                            ),
-                      ],
-                      const SizedBox(width: 10),
-                      if (post.creator!.fullName != null) ...[
-                        Text(
-                          post.creator!.fullName!,
-                          style: theme.textTheme.titleMedium,
+                            ],
+                          ],
                         ),
-                      ],
-
-                      // three small dots at the end
-                      const Spacer(),
-                      const Icon(Icons.more_horiz),
-                    ],
-                  ),
+                      ),
+                    const Spacer(),
+                    widget.options.theme.moreIcon ??
+                        const Icon(
+                          Icons.more_horiz_rounded,
+                        ),
+                  ],
+                ),
                 const SizedBox(height: 8),
                 // image of the post
                 if (post.imageUrl != null) ...[

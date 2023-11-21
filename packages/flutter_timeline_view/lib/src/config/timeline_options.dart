@@ -16,6 +16,7 @@ class TimelineOptions {
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.sortCommentsAscending = false,
+    this.sortPostsAscending = false,
     this.dateformat,
     this.timeFormat,
     this.buttonBuilder,
@@ -34,6 +35,9 @@ class TimelineOptions {
 
   /// Whether to sort comments ascending or descending
   final bool sortCommentsAscending;
+
+  /// Whether to sort posts ascending or descending
+  final bool sortPostsAscending;
 
   final TimelineTranslations translations;
 

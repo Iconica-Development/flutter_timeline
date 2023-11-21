@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 Iconica
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
@@ -12,6 +16,7 @@ class TimelinePostWidget extends StatelessWidget {
     required this.onTapLike,
     required this.onTapUnlike,
     required this.onTap,
+    this.onUserTap,
     super.key,
   });
 
@@ -25,6 +30,9 @@ class TimelinePostWidget extends StatelessWidget {
   final VoidCallback onTapLike;
   final VoidCallback onTapUnlike;
 
+  /// If this is not null, the user can tap on the user avatar or name
+  final Function(String userId)? onUserTap;
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -36,34 +44,44 @@ class TimelinePostWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (post.creator != null)
-              Row(
-                children: [
-                  if (post.creator!.imageUrl != null) ...[
-                    options.userAvatarBuilder?.call(
-                          post.creator!,
-                          40,
-                        ) ??
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundImage: CachedNetworkImageProvider(
-                            post.creator!.imageUrl!,
+            Row(
+              children: [
+                if (post.creator != null)
+                  InkWell(
+                    onTap: onUserTap != null
+                        ? () => onUserTap?.call(post.creator!.userId)
+                        : null,
+                    child: Row(
+                      children: [
+                        if (post.creator!.imageUrl != null) ...[
+                          options.userAvatarBuilder?.call(
+                                post.creator!,
+                                40,
+                              ) ??
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage: CachedNetworkImageProvider(
+                                  post.creator!.imageUrl!,
+                                ),
+                              ),
+                        ],
+                        const SizedBox(width: 10),
+                        if (post.creator!.fullName != null) ...[
+                          Text(
+                            post.creator!.fullName!,
+                            style: theme.textTheme.titleMedium,
                           ),
-                        ),
-                  ],
-                  const SizedBox(width: 10),
-                  if (post.creator!.fullName != null) ...[
-                    Text(
-                      post.creator!.fullName!,
-                      style: theme.textTheme.titleMedium,
+                        ],
+                      ],
                     ),
-                  ],
-
-                  // three small dots at the end
-                  const Spacer(),
-                  const Icon(Icons.more_horiz),
-                ],
-              ),
+                  ),
+                const Spacer(),
+                options.theme.moreIcon ??
+                    const Icon(
+                      Icons.more_horiz_rounded,
+                    ),
+              ],
+            ),
             const SizedBox(height: 8),
             // image of the post
             if (post.imageUrl != null) ...[

@@ -12,6 +12,8 @@ class TimelineTheme {
     this.commentIcon,
     this.likedIcon,
     this.sendIcon,
+    this.moreIcon,
+    this.deleteIcon,
   });
 
   final Color? iconColor;
@@ -27,4 +29,10 @@ class TimelineTheme {
 
   /// The icon to display to submit a comment
   final Widget? sendIcon;
+
+  /// The icon for more actions (open delete menu)
+  final Widget? moreIcon;
+
+  /// The icon for delete action (delete post)
+  final Widget? deleteIcon;
 }
