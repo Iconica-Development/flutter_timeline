@@ -12,6 +12,7 @@ abstract class TimelineService with ChangeNotifier {
   Future<void> deletePost(TimelinePost post);
   Future<TimelinePost> createPost(TimelinePost post);
   Future<List<TimelinePost>> fetchPosts(String? category);
+  Future<TimelinePost> fetchPost(TimelinePost post);
   List<TimelinePost> getPosts(String? category);
   Future<TimelinePost> fetchPostDetails(TimelinePost post);
   Future<TimelinePost> reactToPost(

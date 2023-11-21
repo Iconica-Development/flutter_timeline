@@ -95,6 +95,23 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
   }
 
   @override
+  Future<TimelinePost> fetchPost(TimelinePost post) async {
+    var doc = await _db
+        .collection(_options.timelineCollectionName)
+        .doc(post.id)
+        .get();
+    var data = doc.data();
+    if (data == null) return post;
+    var user = await _userService.getUser(data['creator_id']);
+    var updatedPost = TimelinePost.fromJson(doc.id, data).copyWith(
+      creator: user,
+    );
+    _posts = _posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
+    notifyListeners();
+    return updatedPost;
+  }
+
+  @override
   List<TimelinePost> getPosts(String? category) => _posts
       .where((element) => category == null || element.category == category)
       .toList();

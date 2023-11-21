@@ -111,240 +111,254 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
 
     return Stack(
       children: [
-        SingleChildScrollView(
-          child: Padding(
-            padding: widget.padding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    if (post.creator != null)
-                      InkWell(
-                        onTap: widget.onUserTap != null
-                            ? () => widget.onUserTap?.call(post.creator!.userId)
-                            : null,
-                        child: Row(
-                          children: [
-                            if (post.creator!.imageUrl != null) ...[
-                              widget.options.userAvatarBuilder?.call(
-                                    post.creator!,
-                                    40,
-                                  ) ??
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage: CachedNetworkImageProvider(
-                                      post.creator!.imageUrl!,
-                                    ),
-                                  ),
-                            ],
-                            const SizedBox(width: 10),
-                            if (post.creator!.fullName != null) ...[
-                              Text(
-                                post.creator!.fullName!,
-                                style: theme.textTheme.titleMedium,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    const Spacer(),
-                    if (widget.options.allowAllDeletion ||
-                        post.creator?.userId == widget.userId)
-                      PopupMenuButton(
-                        onSelected: (value) async {
-                          if (value == 'delete') {
-                            await widget.service.deletePost(post);
-                            widget.onPostDelete();
-                          }
-                        },
-                        itemBuilder: (BuildContext context) =>
-                            <PopupMenuEntry<String>>[
-                          PopupMenuItem<String>(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Text(widget.options.translations.deletePost),
-                                const SizedBox(width: 8),
-                                widget.options.theme.deleteIcon ??
-                                    Icon(
-                                      Icons.delete,
-                                      color: widget.options.theme.iconColor,
+        RefreshIndicator(
+          onRefresh: () async {
+            updatePost(
+              await widget.service.fetchPostDetails(
+                await widget.service.fetchPost(
+                  post,
+                ),
+              ),
+            );
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: widget.padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (post.creator != null)
+                        InkWell(
+                          onTap: widget.onUserTap != null
+                              ? () =>
+                                  widget.onUserTap?.call(post.creator!.userId)
+                              : null,
+                          child: Row(
+                            children: [
+                              if (post.creator!.imageUrl != null) ...[
+                                widget.options.userAvatarBuilder?.call(
+                                      post.creator!,
+                                      40,
+                                    ) ??
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                        post.creator!.imageUrl!,
+                                      ),
                                     ),
                               ],
-                            ),
-                          ),
-                        ],
-                        child: widget.options.theme.moreIcon ??
-                            Icon(
-                              Icons.more_horiz_rounded,
-                              color: widget.options.theme.iconColor,
-                            ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                // image of the post
-                if (post.imageUrl != null) ...[
-                  CachedNetworkImage(
-                    imageUrl: post.imageUrl!,
-                    width: double.infinity,
-                    fit: BoxFit.fitHeight,
-                  ),
-                ],
-                // post information
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      if (post.likedBy?.contains(widget.userId) ?? false) ...[
-                        InkWell(
-                          onTap: () async {
-                            updatePost(
-                              await widget.service.unlikePost(
-                                widget.userId,
-                                post,
-                              ),
-                            );
-                          },
-                          child: widget.options.theme.likedIcon ??
-                              Icon(
-                                Icons.thumb_up_rounded,
-                                color: widget.options.theme.iconColor,
-                              ),
-                        ),
-                      ] else ...[
-                        InkWell(
-                          onTap: () async {
-                            updatePost(
-                              await widget.service.likePost(
-                                widget.userId,
-                                post,
-                              ),
-                            );
-                          },
-                          child: widget.options.theme.likeIcon ??
-                              Icon(
-                                Icons.thumb_up_alt_outlined,
-                                color: widget.options.theme.iconColor,
-                              ),
-                        ),
-                      ],
-                      const SizedBox(width: 8),
-                      if (post.reactionEnabled)
-                        widget.options.theme.commentIcon ??
-                            Icon(
-                              Icons.chat_bubble_outline_rounded,
-                              color: widget.options.theme.iconColor,
-                            ),
-                    ],
-                  ),
-                ),
-                Text(
-                  '${post.likes} ${widget.options.translations.likesTitle}',
-                  style: theme.textTheme.titleSmall,
-                ),
-                const SizedBox(height: 4),
-                Text.rich(
-                  TextSpan(
-                    text: post.creator?.fullName ??
-                        widget.options.translations.anonymousUser,
-                    style: theme.textTheme.titleSmall,
-                    children: [
-                      const TextSpan(text: ' '),
-                      TextSpan(
-                        text: post.title,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  post.content,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${dateFormat.format(post.createdAt)} '
-                  '${widget.options.translations.postAt} '
-                  '${timeFormat.format(post.createdAt)}',
-                  style: theme.textTheme.bodySmall,
-                ),
-                const SizedBox(height: 12),
-                if (post.reactionEnabled) ...[
-                  Text(
-                    widget.options.translations.commentsTitle,
-                    style: theme.textTheme.displaySmall,
-                  ),
-                  for (var reaction
-                      in post.reactions ?? <TimelinePostReaction>[]) ...[
-                    const SizedBox(height: 16),
-                    Row(
-                      crossAxisAlignment: reaction.imageUrl != null
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.center,
-                      children: [
-                        if (reaction.creator?.imageUrl != null &&
-                            reaction.creator!.imageUrl!.isNotEmpty) ...[
-                          widget.options.userAvatarBuilder?.call(
-                                reaction.creator!,
-                                25,
-                              ) ??
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: CachedNetworkImageProvider(
-                                  reaction.creator!.imageUrl!,
-                                ),
-                              ),
-                        ],
-                        const SizedBox(width: 10),
-                        if (reaction.imageUrl != null) ...[
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              const SizedBox(width: 10),
+                              if (post.creator!.fullName != null) ...[
                                 Text(
-                                  reaction.creator?.fullName ??
-                                      widget.options.translations.anonymousUser,
-                                  style: theme.textTheme.titleSmall,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: reaction.imageUrl!,
-                                    fit: BoxFit.fitWidth,
-                                  ),
+                                  post.creator!.fullName!,
+                                  style: theme.textTheme.titleMedium,
                                 ),
                               ],
-                            ),
+                            ],
                           ),
-                        ] else ...[
-                          Expanded(
-                            child: Text.rich(
-                              TextSpan(
-                                text: reaction.creator?.fullName ??
-                                    widget.options.translations.anonymousUser,
-                                style: theme.textTheme.titleSmall,
+                        ),
+                      const Spacer(),
+                      if (widget.options.allowAllDeletion ||
+                          post.creator?.userId == widget.userId)
+                        PopupMenuButton(
+                          onSelected: (value) async {
+                            if (value == 'delete') {
+                              await widget.service.deletePost(post);
+                              widget.onPostDelete();
+                            }
+                          },
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<String>>[
+                            PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Row(
                                 children: [
-                                  const TextSpan(text: '  '),
-                                  TextSpan(
-                                    text: reaction.reaction ?? '',
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  // text should go to new line
+                                  Text(widget.options.translations.deletePost),
+                                  const SizedBox(width: 8),
+                                  widget.options.theme.deleteIcon ??
+                                      Icon(
+                                        Icons.delete,
+                                        color: widget.options.theme.iconColor,
+                                      ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ],
+                          ],
+                          child: widget.options.theme.moreIcon ??
+                              Icon(
+                                Icons.more_horiz_rounded,
+                                color: widget.options.theme.iconColor,
+                              ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // image of the post
+                  if (post.imageUrl != null) ...[
+                    CachedNetworkImage(
+                      imageUrl: post.imageUrl!,
+                      width: double.infinity,
+                      fit: BoxFit.fitHeight,
                     ),
                   ],
-                  const SizedBox(height: 120),
+                  // post information
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      children: [
+                        if (post.likedBy?.contains(widget.userId) ?? false) ...[
+                          InkWell(
+                            onTap: () async {
+                              updatePost(
+                                await widget.service.unlikePost(
+                                  widget.userId,
+                                  post,
+                                ),
+                              );
+                            },
+                            child: widget.options.theme.likedIcon ??
+                                Icon(
+                                  Icons.thumb_up_rounded,
+                                  color: widget.options.theme.iconColor,
+                                ),
+                          ),
+                        ] else ...[
+                          InkWell(
+                            onTap: () async {
+                              updatePost(
+                                await widget.service.likePost(
+                                  widget.userId,
+                                  post,
+                                ),
+                              );
+                            },
+                            child: widget.options.theme.likeIcon ??
+                                Icon(
+                                  Icons.thumb_up_alt_outlined,
+                                  color: widget.options.theme.iconColor,
+                                ),
+                          ),
+                        ],
+                        const SizedBox(width: 8),
+                        if (post.reactionEnabled)
+                          widget.options.theme.commentIcon ??
+                              Icon(
+                                Icons.chat_bubble_outline_rounded,
+                                color: widget.options.theme.iconColor,
+                              ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '${post.likes} ${widget.options.translations.likesTitle}',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 4),
+                  Text.rich(
+                    TextSpan(
+                      text: post.creator?.fullName ??
+                          widget.options.translations.anonymousUser,
+                      style: theme.textTheme.titleSmall,
+                      children: [
+                        const TextSpan(text: ' '),
+                        TextSpan(
+                          text: post.title,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    post.content,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${dateFormat.format(post.createdAt)} '
+                    '${widget.options.translations.postAt} '
+                    '${timeFormat.format(post.createdAt)}',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 12),
+                  if (post.reactionEnabled) ...[
+                    Text(
+                      widget.options.translations.commentsTitle,
+                      style: theme.textTheme.displaySmall,
+                    ),
+                    for (var reaction
+                        in post.reactions ?? <TimelinePostReaction>[]) ...[
+                      const SizedBox(height: 16),
+                      Row(
+                        crossAxisAlignment: reaction.imageUrl != null
+                            ? CrossAxisAlignment.start
+                            : CrossAxisAlignment.center,
+                        children: [
+                          if (reaction.creator?.imageUrl != null &&
+                              reaction.creator!.imageUrl!.isNotEmpty) ...[
+                            widget.options.userAvatarBuilder?.call(
+                                  reaction.creator!,
+                                  25,
+                                ) ??
+                                CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                    reaction.creator!.imageUrl!,
+                                  ),
+                                ),
+                          ],
+                          const SizedBox(width: 10),
+                          if (reaction.imageUrl != null) ...[
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    reaction.creator?.fullName ??
+                                        widget
+                                            .options.translations.anonymousUser,
+                                    style: theme.textTheme.titleSmall,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: reaction.imageUrl!,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ] else ...[
+                            Expanded(
+                              child: Text.rich(
+                                TextSpan(
+                                  text: reaction.creator?.fullName ??
+                                      widget.options.translations.anonymousUser,
+                                  style: theme.textTheme.titleSmall,
+                                  children: [
+                                    const TextSpan(text: '  '),
+                                    TextSpan(
+                                      text: reaction.reaction ?? '',
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    // text should go to new line
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
+                    const SizedBox(height: 120),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
