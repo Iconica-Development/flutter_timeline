@@ -137,7 +137,7 @@ class TimelinePost {
         'liked_by': likedBy,
         'reaction': reaction,
         // reactions is a list of maps so we need to convert it to a map
-        'reactions': reactions?.map((e) => e.toJson()).toList() ?? {},
+        'reactions': reactions?.map((e) => e.toJson()).toList() ?? [],
         'created_at': createdAt.toIso8601String(),
         'reaction_enabled': reactionEnabled,
       };

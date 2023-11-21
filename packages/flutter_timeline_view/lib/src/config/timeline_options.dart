@@ -15,7 +15,8 @@ class TimelineOptions {
     this.translations = const TimelineTranslations(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
-    this.sortCommentsAscending = false,
+    this.allowAllDeletion = false,
+    this.sortCommentsAscending = true,
     this.sortPostsAscending = false,
     this.dateformat,
     this.timeFormat,
@@ -38,6 +39,10 @@ class TimelineOptions {
 
   /// Whether to sort posts ascending or descending
   final bool sortPostsAscending;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
 
   final TimelineTranslations translations;
 

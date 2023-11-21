@@ -20,6 +20,7 @@ class TimelinePostScreen extends StatefulWidget {
     required this.userService,
     required this.options,
     required this.post,
+    required this.onPostDelete,
     this.onUserTap,
     this.padding = const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
     super.key,
@@ -46,6 +47,8 @@ class TimelinePostScreen extends StatefulWidget {
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
 
+  final VoidCallback onPostDelete;
+
   @override
   State<TimelinePostScreen> createState() => _TimelinePostScreenState();
 }
@@ -57,19 +60,19 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
   @override
   void initState() {
     super.initState();
-    unawaited(loadPostDetails());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await loadPostDetails();
+    });
   }
 
   Future<void> loadPostDetails() async {
     try {
-      // Assuming fetchPostDetails is an async function returning a TimelinePost
       var loadedPost = await widget.service.fetchPostDetails(widget.post);
       setState(() {
         post = loadedPost;
         isLoading = false;
       });
     } on Exception catch (e) {
-      // Handle any errors here
       debugPrint('Error loading post: $e');
       setState(() {
         isLoading = false;
@@ -102,8 +105,8 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
     var post = this.post!;
     post.reactions?.sort(
       (a, b) => widget.options.sortCommentsAscending
-          ? b.createdAt.compareTo(a.createdAt)
-          : a.createdAt.compareTo(b.createdAt),
+          ? a.createdAt.compareTo(b.createdAt)
+          : b.createdAt.compareTo(a.createdAt),
     );
 
     return Stack(
@@ -146,10 +149,38 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                         ),
                       ),
                     const Spacer(),
-                    widget.options.theme.moreIcon ??
-                        const Icon(
-                          Icons.more_horiz_rounded,
-                        ),
+                    if (widget.options.allowAllDeletion ||
+                        post.creator?.userId == widget.userId)
+                      PopupMenuButton(
+                        onSelected: (value) async {
+                          if (value == 'delete') {
+                            await widget.service.deletePost(post);
+                            widget.onPostDelete();
+                          }
+                        },
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          PopupMenuItem<String>(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Text(widget.options.translations.deletePost),
+                                const SizedBox(width: 8),
+                                widget.options.theme.deleteIcon ??
+                                    Icon(
+                                      Icons.delete,
+                                      color: widget.options.theme.iconColor,
+                                    ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        child: widget.options.theme.moreIcon ??
+                            Icon(
+                              Icons.more_horiz_rounded,
+                              color: widget.options.theme.iconColor,
+                            ),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -202,8 +233,9 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       const SizedBox(width: 8),
                       if (post.reactionEnabled)
                         widget.options.theme.commentIcon ??
-                            const Icon(
+                            Icon(
                               Icons.chat_bubble_outline_rounded,
+                              color: widget.options.theme.iconColor,
                             ),
                     ],
                   ),

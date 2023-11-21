@@ -60,7 +60,6 @@ class TimelineScreen extends StatefulWidget {
 
 class _TimelineScreenState extends State<TimelineScreen> {
   late ScrollController controller;
-  late List<TimelinePost> posts;
   bool isLoading = true;
 
   @override
@@ -73,74 +72,74 @@ class _TimelineScreenState extends State<TimelineScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading && widget.posts == null) {
-      // Show loading indicator while data is being fetched
       return const Center(child: CircularProgressIndicator());
     }
 
-    var posts = widget.posts ?? this.posts;
-    posts = posts
-        .where(
-          (p) =>
-              widget.timelineCategoryFilter == null ||
-              p.category == widget.timelineCategoryFilter,
-        )
-        .toList();
-
-    // sort posts by date
-    posts.sort(
-      (a, b) => widget.options.sortPostsAscending
-          ? b.createdAt.compareTo(a.createdAt)
-          : a.createdAt.compareTo(b.createdAt),
-    );
-
     // Build the list of posts
-    return SingleChildScrollView(
-      controller: controller,
-      child: Column(
-        children: [
-          ...posts.map(
-            (post) => Padding(
-              padding: widget.padding,
-              child: TimelinePostWidget(
-                userId: widget.userId,
-                options: widget.options,
-                post: post,
-                height: widget.timelinePostHeight,
-                onTap: () => widget.onPostTap.call(post),
-                onTapLike: () async => updatePostInList(
-                  await widget.service.likePost(widget.userId, post),
+    return ListenableBuilder(
+      listenable: widget.service,
+      builder: (context, _) {
+        var posts = widget.posts ??
+            widget.service.getPosts(widget.timelineCategoryFilter);
+        posts = posts
+            .where(
+              (p) =>
+                  widget.timelineCategoryFilter == null ||
+                  p.category == widget.timelineCategoryFilter,
+            )
+            .toList();
+
+        // sort posts by date
+        posts.sort(
+          (a, b) => widget.options.sortPostsAscending
+              ? a.createdAt.compareTo(b.createdAt)
+              : b.createdAt.compareTo(a.createdAt),
+        );
+        return SingleChildScrollView(
+          controller: controller,
+          child: Column(
+            children: [
+              ...posts.map(
+                (post) => Padding(
+                  padding: widget.padding,
+                  child: TimelinePostWidget(
+                    userId: widget.userId,
+                    options: widget.options,
+                    post: post,
+                    height: widget.timelinePostHeight,
+                    onTap: () => widget.onPostTap.call(post),
+                    onTapLike: () async =>
+                        widget.service.likePost(widget.userId, post),
+                    onTapUnlike: () async =>
+                        widget.service.unlikePost(widget.userId, post),
+                    onPostDelete: () async => widget.service.deletePost(post),
+                    onUserTap: widget.onUserTap,
+                  ),
                 ),
-                onTapUnlike: () async => updatePostInList(
-                  await widget.service.unlikePost(widget.userId, post),
-                ),
-                onUserTap: widget.onUserTap,
               ),
-            ),
+              if (posts.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.timelineCategoryFilter == null
+                          ? widget.options.translations.noPosts
+                          : widget.options.translations.noPostsWithFilter,
+                    ),
+                  ),
+                ),
+            ],
           ),
-          if (posts.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  widget.timelineCategoryFilter == null
-                      ? widget.options.translations.noPosts
-                      : widget.options.translations.noPostsWithFilter,
-                ),
-              ),
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Future<void> loadPosts() async {
     if (widget.posts != null) return;
     try {
-      // Fetching posts from the service
-      var fetchedPosts =
-          await widget.service.fetchPosts(widget.timelineCategoryFilter);
+      await widget.service.fetchPosts(widget.timelineCategoryFilter);
       setState(() {
-        posts = fetchedPosts;
         isLoading = false;
       });
     } on Exception catch (e) {
@@ -148,20 +147,6 @@ class _TimelineScreenState extends State<TimelineScreen> {
       debugPrint('Error loading posts: $e');
       setState(() {
         isLoading = false;
-      });
-    }
-  }
-
-  void updatePostInList(TimelinePost updatedPost) {
-    if (posts.any((p) => p.id == updatedPost.id))
-      setState(() {
-        posts = posts
-            .map((p) => (p.id == updatedPost.id) ? updatedPost : p)
-            .toList();
-      });
-    else {
-      setState(() {
-        posts = [updatedPost, ...posts];
       });
     }
   }

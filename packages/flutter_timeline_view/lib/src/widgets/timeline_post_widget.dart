@@ -13,9 +13,10 @@ class TimelinePostWidget extends StatelessWidget {
     required this.options,
     required this.post,
     required this.height,
+    required this.onTap,
     required this.onTapLike,
     required this.onTapUnlike,
-    required this.onTap,
+    required this.onPostDelete,
     this.onUserTap,
     super.key,
   });
@@ -29,6 +30,7 @@ class TimelinePostWidget extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onTapLike;
   final VoidCallback onTapUnlike;
+  final VoidCallback onPostDelete;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
@@ -76,10 +78,36 @@ class TimelinePostWidget extends StatelessWidget {
                     ),
                   ),
                 const Spacer(),
-                options.theme.moreIcon ??
-                    const Icon(
-                      Icons.more_horiz_rounded,
-                    ),
+                if (options.allowAllDeletion || post.creator?.userId == userId)
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      if (value == 'delete') {
+                        onPostDelete();
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
+                      PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Text(options.translations.deletePost),
+                            const SizedBox(width: 8),
+                            options.theme.deleteIcon ??
+                                Icon(
+                                  Icons.delete,
+                                  color: options.theme.iconColor,
+                                ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    child: options.theme.moreIcon ??
+                        Icon(
+                          Icons.more_horiz_rounded,
+                          color: options.theme.iconColor,
+                        ),
+                  ),
               ],
             ),
             const SizedBox(height: 8),

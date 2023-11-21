@@ -7,11 +7,12 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_timeline_firebase/src/config/firebase_timeline_options.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:uuid/uuid.dart';
 
-class FirebaseTimelineService implements TimelineService {
+class FirebaseTimelineService with ChangeNotifier implements TimelineService {
   FirebaseTimelineService({
     required TimelineUserService userService,
     FirebaseApp? app,
@@ -41,15 +42,18 @@ class FirebaseTimelineService implements TimelineService {
     var updatedPost = post.copyWith(imageUrl: imageUrl, id: postId);
     var postRef =
         _db.collection(_options.timelineCollectionName).doc(updatedPost.id);
-    _posts.add(updatedPost);
     await postRef.set(updatedPost.toJson());
+    _posts.add(updatedPost);
+    notifyListeners();
     return updatedPost;
   }
 
   @override
   Future<void> deletePost(TimelinePost post) async {
+    _posts = _posts.where((element) => element.id != post.id).toList();
     var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
-    return postRef.delete();
+    await postRef.delete();
+    notifyListeners();
   }
 
   @override
@@ -64,11 +68,13 @@ class FirebaseTimelineService implements TimelineService {
     }
     var updatedPost = post.copyWith(reactions: updatedReactions);
     _posts = _posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
+    notifyListeners();
     return updatedPost;
   }
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
+    debugPrint('fetching posts from firebase $category!!!');
     var snapshot = (category != null)
         ? await _db
             .collection(_options.timelineCollectionName)
@@ -84,6 +90,7 @@ class FirebaseTimelineService implements TimelineService {
       posts.add(post);
     }
     _posts = posts;
+    notifyListeners();
     return posts;
   }
 
@@ -109,6 +116,7 @@ class FirebaseTimelineService implements TimelineService {
       'likes': FieldValue.increment(1),
       'liked_by': FieldValue.arrayUnion([userId]),
     });
+    notifyListeners();
     return updatedPost;
   }
 
@@ -129,6 +137,7 @@ class FirebaseTimelineService implements TimelineService {
       'likes': FieldValue.increment(-1),
       'liked_by': FieldValue.arrayRemove([userId]),
     });
+    notifyListeners();
     return updatedPost;
   }
 
@@ -161,6 +170,12 @@ class FirebaseTimelineService implements TimelineService {
       'reaction': FieldValue.increment(1),
       'reactions': FieldValue.arrayUnion([updatedReaction.toJson()]),
     });
+    _posts = _posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+    notifyListeners();
     return updatedPost;
   }
 }

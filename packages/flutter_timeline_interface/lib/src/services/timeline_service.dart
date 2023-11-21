@@ -4,10 +4,11 @@
 
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/src/model/timeline_post.dart';
 import 'package:flutter_timeline_interface/src/model/timeline_reaction.dart';
 
-abstract class TimelineService {
+abstract class TimelineService with ChangeNotifier {
   Future<void> deletePost(TimelinePost post);
   Future<TimelinePost> createPost(TimelinePost post);
   Future<List<TimelinePost>> fetchPosts(String? category);
