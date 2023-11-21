@@ -93,43 +93,43 @@ class FirebaseTimelineService implements TimelineService {
       .toList();
 
   @override
-  Future<void> likePost(String userId, TimelinePost post) {
+  Future<TimelinePost> likePost(String userId, TimelinePost post) async {
     // update the post with the new like
+    var updatedPost = post.copyWith(
+      likes: post.likes + 1,
+      likedBy: post.likedBy?..add(userId),
+    );
     _posts = _posts
         .map(
-          (p) => (p.id == post.id)
-              ? p.copyWith(
-                  likes: p.likes + 1,
-                  likedBy: p.likedBy?..add(userId),
-                )
-              : p,
+          (p) => p.id == post.id ? updatedPost : p,
         )
         .toList();
     var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
-    return postRef.update({
+    await postRef.update({
       'likes': FieldValue.increment(1),
       'liked_by': FieldValue.arrayUnion([userId]),
     });
+    return updatedPost;
   }
 
   @override
-  Future<void> unlikePost(String userId, TimelinePost post) {
+  Future<TimelinePost> unlikePost(String userId, TimelinePost post) async {
     // update the post with the new like
+    var updatedPost = post.copyWith(
+      likes: post.likes - 1,
+      likedBy: post.likedBy?..remove(userId),
+    );
     _posts = _posts
         .map(
-          (p) => (p.id == post.id)
-              ? p.copyWith(
-                  likes: p.likes - 1,
-                  likedBy: p.likedBy?..remove(userId),
-                )
-              : p,
+          (p) => p.id == post.id ? updatedPost : p,
         )
         .toList();
     var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
-    return postRef.update({
+    await postRef.update({
       'likes': FieldValue.increment(-1),
       'liked_by': FieldValue.arrayRemove([userId]),
     });
+    return updatedPost;
   }
 
   @override
@@ -159,8 +159,6 @@ class FirebaseTimelineService implements TimelineService {
     var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
     await postRef.update({
       'reaction': FieldValue.increment(1),
-      // 'reactions' is a map of reactions, so we need to add the new reaction
-      // to the map
       'reactions': FieldValue.arrayUnion([updatedReaction.toJson()]),
     });
     return updatedPost;

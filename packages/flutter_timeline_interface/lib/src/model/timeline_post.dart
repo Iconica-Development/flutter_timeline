@@ -37,7 +37,7 @@ class TimelinePost {
         imageUrl: json['image_url'] as String?,
         content: json['content'] as String,
         likes: json['likes'] as int,
-        likedBy: (json['liked_by'] as List<dynamic>?)?.cast<String>(),
+        likedBy: (json['liked_by'] as List<dynamic>?)?.cast<String>() ?? [],
         reaction: json['reaction'] as int,
         reactions: (json['reactions'] as List<dynamic>?)
             ?.map(

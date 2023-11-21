@@ -18,6 +18,6 @@ abstract class TimelineService {
     TimelinePostReaction reaction, {
     Uint8List image,
   });
-  Future<void> likePost(String userId, TimelinePost post);
-  Future<void> unlikePost(String userId, TimelinePost post);
+  Future<TimelinePost> likePost(String userId, TimelinePost post);
+  Future<TimelinePost> unlikePost(String userId, TimelinePost post);
 }

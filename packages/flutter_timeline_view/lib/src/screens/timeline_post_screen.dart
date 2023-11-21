@@ -148,41 +148,73 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   ),
                 ],
                 // post information
-                Row(
-                  children: [
-                    // like icon
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.thumb_up_rounded),
-                    ),
-                    // comment icon
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.chat_bubble_outline_rounded,
-                      ),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    children: [
+                      if (post.likedBy?.contains(widget.userId) ?? false) ...[
+                        InkWell(
+                          onTap: () async {
+                            updatePost(
+                              await widget.service.unlikePost(
+                                widget.userId,
+                                post,
+                              ),
+                            );
+                          },
+                          child: widget.options.theme.likedIcon ??
+                              Icon(
+                                Icons.thumb_up_rounded,
+                                color: widget.options.theme.iconColor,
+                              ),
+                        ),
+                      ] else ...[
+                        InkWell(
+                          onTap: () async {
+                            updatePost(
+                              await widget.service.likePost(
+                                widget.userId,
+                                post,
+                              ),
+                            );
+                          },
+                          child: widget.options.theme.likeIcon ??
+                              Icon(
+                                Icons.thumb_up_alt_outlined,
+                                color: widget.options.theme.iconColor,
+                              ),
+                        ),
+                      ],
+                      const SizedBox(width: 8),
+                      if (post.reactionEnabled)
+                        widget.options.theme.commentIcon ??
+                            const Icon(
+                              Icons.chat_bubble_outline_rounded,
+                            ),
+                    ],
+                  ),
                 ),
                 Text(
                   '${post.likes} ${widget.options.translations.likesTitle}',
                   style: theme.textTheme.titleSmall,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      post.creator?.fullName ?? '',
-                      style: theme.textTheme.titleSmall,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      post.title,
-                      style: theme.textTheme.bodyMedium,
-                      overflow: TextOverflow.fade,
-                    ),
-                  ],
+                const SizedBox(height: 4),
+                Text.rich(
+                  TextSpan(
+                    text: post.creator?.fullName ??
+                        widget.options.translations.anonymousUser,
+                    style: theme.textTheme.titleSmall,
+                    children: [
+                      const TextSpan(text: ' '),
+                      TextSpan(
+                        text: post.title,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 4),
                 Text(
                   post.content,
                   style: theme.textTheme.bodyMedium,

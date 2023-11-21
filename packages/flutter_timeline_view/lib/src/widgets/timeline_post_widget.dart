@@ -5,18 +5,25 @@ import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 
 class TimelinePostWidget extends StatelessWidget {
   const TimelinePostWidget({
+    required this.userId,
     required this.options,
     required this.post,
     required this.height,
-    this.onTap,
+    required this.onTapLike,
+    required this.onTapUnlike,
+    required this.onTap,
     super.key,
   });
 
+  /// The user id of the current user
+  final String userId;
   final TimelineOptions options;
 
   final TimelinePost post;
   final double height;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
+  final VoidCallback onTapLike;
+  final VoidCallback onTapUnlike;
 
   @override
   Widget build(BuildContext context) {
@@ -69,40 +76,57 @@ class TimelinePostWidget extends StatelessWidget {
               ),
             ],
             // post information
-            Row(
-              children: [
-                // like icon
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.thumb_up_rounded),
-                ),
-                // comment icon
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.chat_bubble_outline_rounded,
-                  ),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                children: [
+                  if (post.likedBy?.contains(userId) ?? false) ...[
+                    InkWell(
+                      onTap: onTapUnlike,
+                      child: options.theme.likedIcon ??
+                          Icon(
+                            Icons.thumb_up_rounded,
+                            color: options.theme.iconColor,
+                          ),
+                    ),
+                  ] else ...[
+                    InkWell(
+                      onTap: onTapLike,
+                      child: options.theme.likeIcon ??
+                          Icon(
+                            Icons.thumb_up_alt_outlined,
+                            color: options.theme.iconColor,
+                          ),
+                    ),
+                  ],
+                  const SizedBox(width: 8),
+                  if (post.reactionEnabled)
+                    options.theme.commentIcon ??
+                        const Icon(
+                          Icons.chat_bubble_outline_rounded,
+                        ),
+                ],
+              ),
             ),
             Text(
               '${post.likes} ${options.translations.likesTitle}',
               style: theme.textTheme.titleSmall,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  post.creator?.fullName ?? '',
-                  style: theme.textTheme.titleSmall,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  post.title,
-                  style: theme.textTheme.bodyMedium,
-                  overflow: TextOverflow.fade,
-                ),
-              ],
+            const SizedBox(height: 4),
+            Text.rich(
+              TextSpan(
+                text: post.creator?.fullName ??
+                    options.translations.anonymousUser,
+                style: theme.textTheme.titleSmall,
+                children: [
+                  const TextSpan(text: ' '),
+                  TextSpan(
+                    text: post.title,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
             Text(
               options.translations.viewPost,

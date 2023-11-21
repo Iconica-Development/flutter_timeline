@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
@@ -20,6 +22,7 @@ class TimelineScreen extends StatefulWidget {
     super.key,
   });
 
+  /// The user id of the current user
   final String userId;
 
   final TimelineService service;
@@ -42,40 +45,80 @@ class TimelineScreen extends StatefulWidget {
 
 class _TimelineScreenState extends State<TimelineScreen> {
   late ScrollController controller;
+  late List<TimelinePost> posts;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     controller = widget.controller ?? ScrollController();
+    unawaited(loadPosts());
+  }
+
+  Future<void> loadPosts() async {
+    try {
+      // Fetching posts from the service
+      var fetchedPosts =
+          await widget.service.fetchPosts(widget.timelineCategoryFilter);
+      setState(() {
+        posts = fetchedPosts;
+        isLoading = false;
+      });
+    } on Exception catch (e) {
+      // Handle errors here
+      debugPrint('Error loading posts: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void updatePostInList(TimelinePost updatedPost) {
+    if (posts.any((p) => p.id == updatedPost.id))
+      setState(() {
+        posts = posts
+            .map((p) => (p.id == updatedPost.id) ? updatedPost : p)
+            .toList();
+      });
+    else {
+      setState(() {
+        posts = [updatedPost, ...posts];
+      });
+    }
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder(
-        // ignore: discarded_futures
-        future: widget.service.fetchPosts(widget.timelineCategoryFilter),
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  for (var post in snapshot.data!)
-                    if (widget.timelineCategoryFilter == null ||
-                        post.category == widget.timelineCategoryFilter)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: TimelinePostWidget(
-                          options: widget.options,
-                          post: post,
-                          height: widget.timelinePostHeight,
-                          onTap: () => widget.onPostTap.call(post),
-                        ),
-                      ),
-                ],
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      // Show loading indicator while data is being fetched
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Build the list of posts
+    return SingleChildScrollView(
+      controller: controller,
+      child: Column(
+        children: posts
+            .map(
+              (post) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: TimelinePostWidget(
+                  userId: widget.userId,
+                  options: widget.options,
+                  post: post,
+                  height: widget.timelinePostHeight,
+                  onTap: () => widget.onPostTap.call(post),
+                  onTapLike: () async => updatePostInList(
+                    await widget.service.likePost(widget.userId, post),
+                  ),
+                  onTapUnlike: () async => updatePostInList(
+                    await widget.service.unlikePost(widget.userId, post),
+                  ),
+                ),
               ),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      );
+            )
+            .toList(),
+      ),
+    );
+  }
 }
