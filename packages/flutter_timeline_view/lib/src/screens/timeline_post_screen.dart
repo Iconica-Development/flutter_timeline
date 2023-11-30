@@ -7,6 +7,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
@@ -273,9 +274,27 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    post.content,
-                    style: theme.textTheme.bodyMedium,
+                  Html(
+                    data: post.content,
+                    style: {
+                      'body': Style(
+                        padding: HtmlPaddings.zero,
+                        margin: Margins.zero,
+                      ),
+                      '#': Style(
+                        maxLines: 3,
+                        textOverflow: TextOverflow.ellipsis,
+                      ),
+                      'H1': Style(
+                        margin: Margins.all(0),
+                      ),
+                      'H2': Style(
+                        margin: Margins.all(0),
+                      ),
+                      'H3': Style(
+                        margin: Margins.all(0),
+                      ),
+                    },
                   ),
                   const SizedBox(height: 4),
                   Text(
