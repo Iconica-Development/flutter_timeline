@@ -15,6 +15,7 @@ class TimelineOptions {
     this.translations = const TimelineTranslations(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
+    this.timelinePostHeight,
     this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
     this.sortPostsAscending = false,
@@ -43,6 +44,9 @@ class TimelineOptions {
   /// Allow all posts to be deleted instead of
   ///  only the posts of the current user
   final bool allowAllDeletion;
+
+  /// The height of a post in the timeline
+  final double? timelinePostHeight;
 
   final TimelineTranslations translations;
 

@@ -116,6 +116,12 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
   }
 
   @override
+  TimelinePost? getPost(String postId) =>
+      (_posts.any((element) => element.id == postId))
+          ? _posts.firstWhere((element) => element.id == postId)
+          : null;
+
+  @override
   List<TimelinePost> getPosts(String? category) => _posts
       .where((element) => category == null || element.category == category)
       .toList();
