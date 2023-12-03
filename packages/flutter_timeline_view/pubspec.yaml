@@ -21,7 +21,7 @@ dependencies:
   
   flutter_timeline_interface:
     git: 
-       url: https://github.com/Iconica-Development/flutter_timeline.git
+       url: https://github.com/Iconica-Development/flutter_timeline
        path: packages/flutter_timeline_interface
        ref: 1.0.0
   flutter_image_picker:

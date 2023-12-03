@@ -1,49 +1,13 @@
+// SPDX-FileCopyrightText: 2023 Iconica
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 import 'package:flutter/material.dart';
-import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/src/go_router.dart';
+import 'package:flutter_timeline/src/models/timeline_configuration.dart';
+import 'package:flutter_timeline/src/routes.dart';
+import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 import 'package:go_router/go_router.dart';
-
-mixin TimelineUserStoryRoutes {
-  static const String timelineHome = '/timeline';
-  static const String timelineCreate = '/timeline-create/:category';
-  static String timelineCreatePath(String category) =>
-      '/timeline-create/$category';
-  static const String timelineSelect = '/timeline-select';
-  static const String timelineView = '/timeline-view/:post';
-  static String timelineViewPath(String postId) => '/timeline-view/$postId';
-}
-
-class TimelineUserStoryConfiguration {
-  const TimelineUserStoryConfiguration({
-    required this.optionsBuilder,
-    required this.userId,
-    required this.service,
-    required this.userService,
-    this.mainPageBuilder,
-    this.postScreenBuilder,
-    this.postCreationScreenBuilder,
-    this.postSelectionScreenBuilder,
-    this.onUserTap,
-  });
-
-  final String userId;
-
-  final Function(String userId)? onUserTap;
-
-  final Widget Function(Widget filterBar, Widget child)? mainPageBuilder;
-
-  final Widget Function(Widget child)? postScreenBuilder;
-
-  final Widget Function(Widget child)? postCreationScreenBuilder;
-
-  final Widget Function(Widget child)? postSelectionScreenBuilder;
-
-  final TimelineService service;
-
-  final TimelineUserService userService;
-
-  final TimelineOptions Function(BuildContext context) optionsBuilder;
-}
 
 List<GoRoute> getTimelineStoryRoutes(
   TimelineUserStoryConfiguration configuration,
@@ -52,20 +16,23 @@ List<GoRoute> getTimelineStoryRoutes(
       GoRoute(
         path: TimelineUserStoryRoutes.timelineHome,
         pageBuilder: (context, state) {
+          var timelineFilter =
+              Container(); // TODO(anyone): create a filter widget
           var timelineScreen = TimelineScreen(
             userId: configuration.userId,
-            onUserTap: configuration.onUserTap,
+            onUserTap: (user) => configuration.onUserTap?.call(context, user),
             service: configuration.service,
             options: configuration.optionsBuilder(context),
             onPostTap: (post) async =>
                 TimelineUserStoryRoutes.timelineViewPath(post.id),
-            timelineCategoryFilter: 'news',
+            timelineCategoryFilter: null,
           );
           return buildScreenWithoutTransition(
             context: context,
             state: state,
             child: configuration.mainPageBuilder?.call(
-                  Container(), // TODO(anyone): create a selection widget
+                  context,
+                  timelineFilter,
                   timelineScreen,
                 ) ??
                 Scaffold(
@@ -77,12 +44,18 @@ List<GoRoute> getTimelineStoryRoutes(
       GoRoute(
         path: TimelineUserStoryRoutes.timelineSelect,
         pageBuilder: (context, state) {
-          var timelineSelectionWidget =
-              Container(); // TODO(anyone): create timeline selection screen
+          var timelineSelectionWidget = TimelineSelectionScreen(
+            options: configuration.optionsBuilder(context),
+            categories: configuration.categoriesBuilder(context),
+            onCategorySelected: (category) async => context.push(
+              TimelineUserStoryRoutes.timelineCreatePath(category.name),
+            ),
+          );
           return buildScreenWithoutTransition(
             context: context,
             state: state,
             child: configuration.postSelectionScreenBuilder?.call(
+                  context,
                   timelineSelectionWidget,
                 ) ??
                 Scaffold(
@@ -106,8 +79,10 @@ List<GoRoute> getTimelineStoryRoutes(
           return buildScreenWithoutTransition(
             context: context,
             state: state,
-            child: configuration.postCreationScreenBuilder
-                    ?.call(timelineCreateWidget) ??
+            child: configuration.postCreationScreenBuilder?.call(
+                  context,
+                  timelineCreateWidget,
+                ) ??
                 Scaffold(
                   body: timelineCreateWidget,
                 ),
@@ -123,16 +98,17 @@ List<GoRoute> getTimelineStoryRoutes(
             service: configuration.service,
             userService: configuration.userService,
             post: configuration.service.getPost(state.pathParameters['post']!)!,
-            onPostDelete: () => context.go(
-              TimelineUserStoryRoutes.timelineHome,
-            ),
-            onUserTap: configuration.onUserTap,
+            onPostDelete: () => context.pop(),
+            onUserTap: (user) => configuration.onUserTap?.call(context, user),
           );
+          var category = configuration.categoriesBuilder(context).first;
           return buildScreenWithoutTransition(
             context: context,
             state: state,
             child: configuration.postScreenBuilder?.call(
+                  context,
                   timelinePostWidget,
+                  category,
                 ) ??
                 Scaffold(
                   body: timelinePostWidget,

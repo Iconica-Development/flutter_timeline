@@ -27,6 +27,7 @@ class TimelineTranslations {
     this.writeComment = 'Write your comment here...',
     this.postAt = 'at',
     this.postLoadingError = 'Something went wrong while loading the post',
+    this.timelineSelectionDescription = 'Choose a category',
   });
 
   final String noPosts;
@@ -50,4 +51,6 @@ class TimelineTranslations {
   final String writeComment;
   final String firstComment;
   final String postLoadingError;
+
+  final String timelineSelectionDescription;
 }
