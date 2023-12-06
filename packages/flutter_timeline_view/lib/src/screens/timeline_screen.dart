@@ -35,6 +35,7 @@ class TimelineScreen extends StatefulWidget {
   /// The controller for the scroll view
   final ScrollController? controller;
 
+  /// The string to filter the timeline by category
   final String? timelineCategoryFilter;
 
   /// This is used if you want to pass in a list of posts instead
@@ -121,6 +122,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                       widget.timelineCategoryFilter == null
                           ? widget.options.translations.noPosts
                           : widget.options.translations.noPostsWithFilter,
+                      style: widget.options.theme.textStyles.noPostsStyle,
                     ),
                   ),
                 ),

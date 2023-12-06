@@ -7,29 +7,52 @@ import 'package:flutter/material.dart';
 @immutable
 class TimelineTranslations {
   const TimelineTranslations({
-    this.anonymousUser = 'Anonymous user',
-    this.noPosts = 'No posts yet',
-    this.noPostsWithFilter = 'No posts with this filter',
-    this.title = 'Title',
-    this.content = 'Content',
-    this.contentDescription = 'What do you want to share?',
-    this.uploadImage = 'Upload image',
-    this.uploadImageDescription = 'Upload an image to your message (optional)',
-    this.allowComments = 'Are people allowed to comment?',
-    this.allowCommentsDescription =
-        'Indicate whether people are allowed to respond',
-    this.checkPost = 'Check post overview',
-    this.deletePost = 'Delete post',
-    this.deleteReaction = 'Delete Reaction',
-    this.viewPost = 'View post',
-    this.likesTitle = 'Likes',
-    this.commentsTitle = 'Comments',
-    this.firstComment = 'Be the first to comment',
-    this.writeComment = 'Write your comment here...',
-    this.postAt = 'at',
-    this.postLoadingError = 'Something went wrong while loading the post',
-    this.timelineSelectionDescription = 'Choose a category',
+    required this.anonymousUser,
+    required this.noPosts,
+    required this.noPostsWithFilter,
+    required this.title,
+    required this.content,
+    required this.contentDescription,
+    required this.uploadImage,
+    required this.uploadImageDescription,
+    required this.allowComments,
+    required this.allowCommentsDescription,
+    required this.checkPost,
+    required this.deletePost,
+    required this.deleteReaction,
+    required this.viewPost,
+    required this.likesTitle,
+    required this.commentsTitle,
+    required this.firstComment,
+    required this.writeComment,
+    required this.postAt,
+    required this.postLoadingError,
+    required this.timelineSelectionDescription,
   });
+
+  const TimelineTranslations.empty()
+      : anonymousUser = 'Anonymous user',
+        noPosts = 'No posts yet',
+        noPostsWithFilter = 'No posts with this filter',
+        title = 'Title',
+        content = 'Content',
+        contentDescription = 'What do you want to share?',
+        uploadImage = 'Upload image',
+        uploadImageDescription = 'Upload an image to your message (optional)',
+        allowComments = 'Are people allowed to comment?',
+        allowCommentsDescription =
+            'Indicate whether people are allowed to respond',
+        checkPost = 'Check post overview',
+        deletePost = 'Delete post',
+        deleteReaction = 'Delete Reaction',
+        viewPost = 'View post',
+        likesTitle = 'Likes',
+        commentsTitle = 'Comments',
+        firstComment = 'Be the first to comment',
+        writeComment = 'Write your comment here...',
+        postAt = 'at',
+        postLoadingError = 'Something went wrong while loading the post',
+        timelineSelectionDescription = 'Choose a category';
 
   final String noPosts;
   final String noPostsWithFilter;
@@ -55,4 +78,54 @@ class TimelineTranslations {
   final String postLoadingError;
 
   final String timelineSelectionDescription;
+
+  TimelineTranslations copyWith({
+    String? noPosts,
+    String? noPostsWithFilter,
+    String? anonymousUser,
+    String? title,
+    String? content,
+    String? contentDescription,
+    String? uploadImage,
+    String? uploadImageDescription,
+    String? allowComments,
+    String? allowCommentsDescription,
+    String? checkPost,
+    String? postAt,
+    String? deletePost,
+    String? deleteReaction,
+    String? viewPost,
+    String? likesTitle,
+    String? commentsTitle,
+    String? writeComment,
+    String? firstComment,
+    String? postLoadingError,
+    String? timelineSelectionDescription,
+  }) =>
+      TimelineTranslations(
+        noPosts: noPosts ?? this.noPosts,
+        noPostsWithFilter: noPostsWithFilter ?? this.noPostsWithFilter,
+        anonymousUser: anonymousUser ?? this.anonymousUser,
+        title: title ?? this.title,
+        content: content ?? this.content,
+        contentDescription: contentDescription ?? this.contentDescription,
+        uploadImage: uploadImage ?? this.uploadImage,
+        uploadImageDescription:
+            uploadImageDescription ?? this.uploadImageDescription,
+        allowComments: allowComments ?? this.allowComments,
+        allowCommentsDescription:
+            allowCommentsDescription ?? this.allowCommentsDescription,
+        checkPost: checkPost ?? this.checkPost,
+        postAt: postAt ?? this.postAt,
+        deletePost: deletePost ?? this.deletePost,
+        deleteReaction: deleteReaction ?? this.deleteReaction,
+        viewPost: viewPost ?? this.viewPost,
+        likesTitle: likesTitle ?? this.likesTitle,
+        commentsTitle: commentsTitle ?? this.commentsTitle,
+        writeComment: writeComment ?? this.writeComment,
+        firstComment: firstComment ?? this.firstComment,
+        postLoadingError: postLoadingError ?? this.postLoadingError,
+        timelineSelectionDescription:
+            timelineSelectionDescription ?? this.timelineSelectionDescription,
+      );
 }

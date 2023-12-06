@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 class TimelineOptions {
   const TimelineOptions({
     this.theme = const TimelineTheme(),
-    this.translations = const TimelineTranslations(),
+    this.translations = const TimelineTranslations.empty(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.timelinePostHeight,

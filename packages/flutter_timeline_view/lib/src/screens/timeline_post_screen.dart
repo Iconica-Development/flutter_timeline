@@ -100,7 +100,10 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
     }
     if (this.post == null) {
       return Center(
-        child: Text(widget.options.translations.postLoadingError),
+        child: Text(
+          widget.options.translations.postLoadingError,
+          style: widget.options.theme.textStyles.errorTextStyle,
+        ),
       );
     }
     var post = this.post!;
@@ -155,7 +158,9 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               if (post.creator!.fullName != null) ...[
                                 Text(
                                   post.creator!.fullName!,
-                                  style: theme.textTheme.titleMedium,
+                                  style: widget.options.theme.textStyles
+                                          .postCreatorTitleStyle ??
+                                      theme.textTheme.titleMedium,
                                 ),
                               ],
                             ],
@@ -177,7 +182,12 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               value: 'delete',
                               child: Row(
                                 children: [
-                                  Text(widget.options.translations.deletePost),
+                                  Text(
+                                    widget.options.translations.deletePost,
+                                    style: widget.options.theme.textStyles
+                                            .deletePostStyle ??
+                                        theme.textTheme.bodyMedium,
+                                  ),
                                   const SizedBox(width: 8),
                                   widget.options.theme.deleteIcon ??
                                       Icon(
@@ -255,19 +265,25 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   ),
                   Text(
                     '${post.likes} ${widget.options.translations.likesTitle}',
-                    style: theme.textTheme.titleSmall,
+                    style: widget
+                            .options.theme.textStyles.postLikeTitleAndAmount ??
+                        theme.textTheme.titleSmall,
                   ),
                   const SizedBox(height: 4),
                   Text.rich(
                     TextSpan(
                       text: post.creator?.fullName ??
                           widget.options.translations.anonymousUser,
-                      style: theme.textTheme.titleSmall,
+                      style: widget
+                              .options.theme.textStyles.postCreatorNameStyle ??
+                          theme.textTheme.titleSmall,
                       children: [
                         const TextSpan(text: ' '),
                         TextSpan(
                           text: post.title,
-                          style: theme.textTheme.bodyMedium,
+                          style:
+                              widget.options.theme.textStyles.postTitleStyle ??
+                                  theme.textTheme.bodyMedium,
                         ),
                       ],
                     ),

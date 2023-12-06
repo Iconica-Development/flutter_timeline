@@ -43,7 +43,6 @@ class TimelinePostWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: SizedBox(
-        // TODO(anyone): should posts with text have a max height?
         height: post.imageUrl != null ? height : null,
         width: double.infinity,
         child: Column(
@@ -74,7 +73,9 @@ class TimelinePostWidget extends StatelessWidget {
                         if (post.creator!.fullName != null) ...[
                           Text(
                             post.creator!.fullName!,
-                            style: theme.textTheme.titleMedium,
+                            style: options.theme.textStyles
+                                    .listPostCreatorTitleStyle ??
+                                theme.textTheme.titleMedium,
                           ),
                         ],
                       ],
@@ -94,7 +95,11 @@ class TimelinePostWidget extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Text(options.translations.deletePost),
+                            Text(
+                              options.translations.deletePost,
+                              style: options.theme.textStyles.deletePostStyle ??
+                                  theme.textTheme.bodyMedium,
+                            ),
                             const SizedBox(width: 8),
                             options.theme.deleteIcon ??
                                 Icon(
@@ -152,27 +157,31 @@ class TimelinePostWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   if (post.reactionEnabled)
                     options.theme.commentIcon ??
-                        const Icon(
+                        Icon(
                           Icons.chat_bubble_outline_rounded,
+                          color: options.theme.iconColor,
                         ),
                 ],
               ),
             ),
             Text(
               '${post.likes} ${options.translations.likesTitle}',
-              style: theme.textTheme.titleSmall,
+              style: options.theme.textStyles.listPostLikeTitleAndAmount ??
+                  theme.textTheme.titleSmall,
             ),
             const SizedBox(height: 4),
             Text.rich(
               TextSpan(
                 text: post.creator?.fullName ??
                     options.translations.anonymousUser,
-                style: theme.textTheme.titleSmall,
+                style: options.theme.textStyles.listCreatorNameStyle ??
+                    theme.textTheme.titleSmall,
                 children: [
                   const TextSpan(text: ' '),
                   TextSpan(
                     text: post.title,
-                    style: theme.textTheme.bodyMedium,
+                    style: options.theme.textStyles.listPostTitleStyle ??
+                        theme.textTheme.bodyMedium,
                   ),
                 ],
               ),
@@ -180,7 +189,8 @@ class TimelinePostWidget extends StatelessWidget {
             ),
             Text(
               options.translations.viewPost,
-              style: theme.textTheme.bodySmall,
+              style: options.theme.textStyles.viewPostStyle ??
+                  theme.textTheme.bodySmall,
             ),
           ],
         ),

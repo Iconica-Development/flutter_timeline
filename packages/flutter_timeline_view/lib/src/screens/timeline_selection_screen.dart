@@ -31,7 +31,9 @@ class TimelineSelectionScreen extends StatelessWidget {
             padding: EdgeInsets.only(top: size.height * 0.05, bottom: 8),
             child: Text(
               options.translations.timelineSelectionDescription,
-              style: theme.textTheme.displayMedium,
+              style:
+                  options.theme.textStyles.categorySelectionDescriptionStyle ??
+                      theme.textTheme.displayMedium,
             ),
           ),
           const SizedBox(height: 4),
@@ -53,7 +55,8 @@ class TimelineSelectionScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   category.title,
-                  style: theme.textTheme.displaySmall,
+                  style: options.theme.textStyles.categorySelectionTitleStyle ??
+                      theme.textTheme.displaySmall,
                 ),
               ),
             ),
