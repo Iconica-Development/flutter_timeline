@@ -28,7 +28,11 @@ class TimelineUserStoryConfiguration {
   final Widget Function(BuildContext context, Widget filterBar, Widget child)?
       mainPageBuilder;
 
-  final Widget Function(BuildContext context, Widget child, TimelineCategory category)? postScreenBuilder;
+  final Widget Function(
+    BuildContext context,
+    Widget child,
+    TimelineCategory category,
+  )? postScreenBuilder;
 
   final Widget Function(BuildContext context, Widget child)?
       postCreationScreenBuilder;

@@ -312,66 +312,99 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     for (var reaction
                         in post.reactions ?? <TimelinePostReaction>[]) ...[
                       const SizedBox(height: 16),
-                      Row(
-                        crossAxisAlignment: reaction.imageUrl != null
-                            ? CrossAxisAlignment.start
-                            : CrossAxisAlignment.center,
-                        children: [
-                          if (reaction.creator?.imageUrl != null &&
-                              reaction.creator!.imageUrl!.isNotEmpty) ...[
-                            widget.options.userAvatarBuilder?.call(
-                                  reaction.creator!,
-                                  25,
-                                ) ??
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: CachedNetworkImageProvider(
-                                    reaction.creator!.imageUrl!,
+                      GestureDetector(
+                        onLongPress: () async {
+                          if (reaction.creatorId == widget.userId ||
+                              widget.options.allowAllDeletion) {
+                            // Show popup menu for deletion
+                            var value = await showMenu<String>(
+                              context: context,
+                              position: const RelativeRect.fromLTRB(
+                                100.0,
+                                200.0,
+                                100.0,
+                                100.0,
+                              ),
+                              items: [
+                                PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: Text(
+                                    widget.options.translations.deleteReaction,
                                   ),
                                 ),
-                          ],
-                          const SizedBox(width: 10),
-                          if (reaction.imageUrl != null) ...[
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    reaction.creator?.fullName ??
-                                        widget
-                                            .options.translations.anonymousUser,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: reaction.imageUrl!,
-                                      fit: BoxFit.fitWidth,
+                              ],
+                            );
+                            if (value == 'delete') {
+                              // Call service to delete reaction
+                              updatePost(
+                                await widget.service
+                                    .deletePostReaction(post, reaction.id),
+                              );
+                            }
+                          }
+                        },
+                        child: Row(
+                          crossAxisAlignment: reaction.imageUrl != null
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.center,
+                          children: [
+                            if (reaction.creator?.imageUrl != null &&
+                                reaction.creator!.imageUrl!.isNotEmpty) ...[
+                              widget.options.userAvatarBuilder?.call(
+                                    reaction.creator!,
+                                    25,
+                                  ) ??
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      reaction.creator!.imageUrl!,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ] else ...[
-                            Expanded(
-                              child: Text.rich(
-                                TextSpan(
-                                  text: reaction.creator?.fullName ??
-                                      widget.options.translations.anonymousUser,
-                                  style: theme.textTheme.titleSmall,
+                            ],
+                            const SizedBox(width: 10),
+                            if (reaction.imageUrl != null) ...[
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const TextSpan(text: '  '),
-                                    TextSpan(
-                                      text: reaction.reaction ?? '',
-                                      style: theme.textTheme.bodyMedium,
+                                    Text(
+                                      reaction.creator?.fullName ??
+                                          widget.options.translations
+                                              .anonymousUser,
+                                      style: theme.textTheme.titleSmall,
                                     ),
-                                    // text should go to new line
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: reaction.imageUrl!,
+                                        fit: BoxFit.fitWidth,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            ),
+                            ] else ...[
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: reaction.creator?.fullName ??
+                                        widget
+                                            .options.translations.anonymousUser,
+                                    style: theme.textTheme.titleSmall,
+                                    children: [
+                                      const TextSpan(text: '  '),
+                                      TextSpan(
+                                        text: reaction.reaction ?? '',
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                      // text should go to new line
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ],
                     if (post.reactions?.isEmpty ?? true) ...[

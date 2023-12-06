@@ -20,6 +20,7 @@ class TimelineTranslations {
         'Indicate whether people are allowed to respond',
     this.checkPost = 'Check post overview',
     this.deletePost = 'Delete post',
+    this.deleteReaction = 'Delete Reaction',
     this.viewPost = 'View post',
     this.likesTitle = 'Likes',
     this.commentsTitle = 'Comments',
@@ -45,6 +46,7 @@ class TimelineTranslations {
   final String postAt;
 
   final String deletePost;
+  final String deleteReaction;
   final String viewPost;
   final String likesTitle;
   final String commentsTitle;
