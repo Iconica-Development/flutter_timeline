@@ -123,6 +123,50 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
   }
 
   @override
+  Future<List<TimelinePost>> fetchPostsPaginated(
+    String? category,
+    int limit,
+  ) async {
+    // only take posts that are in our category
+    var oldestPost = _posts
+        .where(
+          (element) => category == null || element.category == category,
+        )
+        .fold(
+          _posts.first,
+          (previousValue, element) =>
+              (previousValue.createdAt.isBefore(element.createdAt))
+                  ? previousValue
+                  : element,
+        );
+    var snapshot = (category != null)
+        ? await _db
+            .collection(_options.timelineCollectionName)
+            .where('category', isEqualTo: category)
+            .orderBy('created_at', descending: true)
+            .startAfter([oldestPost])
+            .limit(limit)
+            .get()
+        : await _db
+            .collection(_options.timelineCollectionName)
+            .orderBy('created_at', descending: true)
+            .startAfter([oldestPost.createdAt])
+            .limit(limit)
+            .get();
+    // add the new posts to the list
+    var posts = <TimelinePost>[];
+    for (var doc in snapshot.docs) {
+      var data = doc.data();
+      var user = await _userService.getUser(data['creator_id']);
+      var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
+      posts.add(post);
+    }
+    _posts = [..._posts, ...posts];
+    notifyListeners();
+    return posts;
+  }
+
+  @override
   Future<TimelinePost> fetchPost(TimelinePost post) async {
     var doc = await _db
         .collection(_options.timelineCollectionName)
@@ -137,6 +181,43 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
     _posts = _posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
     notifyListeners();
     return updatedPost;
+  }
+
+  @override
+  Future<List<TimelinePost>> refreshPosts(String? category) async {
+    // fetch all posts between now and the newest posts we have
+    var newestPostWeHave = _posts
+        .where(
+          (element) => category == null || element.category == category,
+        )
+        .fold(
+          _posts.first,
+          (previousValue, element) =>
+              (previousValue.createdAt.isAfter(element.createdAt))
+                  ? previousValue
+                  : element,
+        );
+    var snapshot = (category != null)
+        ? await _db
+            .collection(_options.timelineCollectionName)
+            .where('category', isEqualTo: category)
+            .orderBy('created_at', descending: true)
+            .endBefore([newestPostWeHave.createdAt]).get()
+        : await _db
+            .collection(_options.timelineCollectionName)
+            .orderBy('created_at', descending: true)
+            .endBefore([newestPostWeHave.createdAt]).get();
+    // add the new posts to the list
+    var posts = <TimelinePost>[];
+    for (var doc in snapshot.docs) {
+      var data = doc.data();
+      var user = await _userService.getUser(data['creator_id']);
+      var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
+      posts.add(post);
+    }
+    _posts = [...posts, ..._posts];
+    notifyListeners();
+    return posts;
   }
 
   @override
