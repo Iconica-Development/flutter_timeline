@@ -329,18 +329,23 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                         in post.reactions ?? <TimelinePostReaction>[]) ...[
                       const SizedBox(height: 16),
                       GestureDetector(
-                        onLongPress: () async {
+                        onLongPressStart: (details) async {
                           if (reaction.creatorId == widget.userId ||
                               widget.options.allowAllDeletion) {
+                            var overlay = Overlay.of(context)
+                                .context
+                                .findRenderObject()! as RenderBox;
+                            var position = RelativeRect.fromRect(
+                              Rect.fromPoints(
+                                details.globalPosition,
+                                details.globalPosition,
+                              ),
+                              Offset.zero & overlay.size,
+                            );
                             // Show popup menu for deletion
                             var value = await showMenu<String>(
                               context: context,
-                              position: const RelativeRect.fromLTRB(
-                                100.0,
-                                200.0,
-                                100.0,
-                                100.0,
-                              ),
+                              position: position,
                               items: [
                                 PopupMenuItem<String>(
                                   value: 'delete',
