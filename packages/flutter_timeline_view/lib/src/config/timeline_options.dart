@@ -24,6 +24,8 @@ class TimelineOptions {
     this.buttonBuilder,
     this.textInputBuilder,
     this.userAvatarBuilder,
+    this.anonymousAvatarBuilder,
+    this.nameBuilder,
   });
 
   /// Theming options for the timeline
@@ -56,6 +58,12 @@ class TimelineOptions {
 
   final UserAvatarBuilder? userAvatarBuilder;
 
+  /// When the imageUrl is null this anonymousAvatarBuilder will be used
+  /// You can use it to display a default avatarW
+  final UserAvatarBuilder? anonymousAvatarBuilder;
+
+  final String Function(TimelinePosterUserModel?)? nameBuilder;
+
   /// ImagePickerTheme can be used to change the UI of the
   /// Image Picker Widget to change the text/icons to your liking.
   final ImagePickerTheme imagePickerTheme;
@@ -78,7 +86,7 @@ typedef TextInputBuilder = Widget Function(
   String hintText,
 );
 
-typedef UserAvatarBuilder = Widget Function(
+typedef UserAvatarBuilder = Widget? Function(
   TimelinePosterUserModel user,
   double size,
 );
