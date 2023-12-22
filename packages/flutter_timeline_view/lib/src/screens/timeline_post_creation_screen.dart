@@ -123,6 +123,7 @@ class _TimelinePostCreationScreenState
             height: 100,
             child: TextField(
               controller: contentController,
+              textCapitalization: TextCapitalization.sentences,
               expands: true,
               maxLines: null,
               minLines: null,

@@ -26,6 +26,7 @@ class TimelinePost {
     this.reactions,
     this.imageUrl,
     this.image,
+    this.data = const {},
   });
 
   factory TimelinePost.fromJson(String id, Map<String, dynamic> json) =>
@@ -50,6 +51,7 @@ class TimelinePost {
             .toList(),
         createdAt: DateTime.parse(json['created_at'] as String),
         reactionEnabled: json['reaction_enabled'] as bool,
+        data: json['data'] ?? {},
       );
 
   /// The unique identifier of the post.
@@ -94,6 +96,9 @@ class TimelinePost {
   /// If reacting is enabled on the post.
   final bool reactionEnabled;
 
+  /// Option to add extra data to a timelinepost that won't be shown anywhere
+  final Map<String, dynamic> data;
+
   TimelinePost copyWith({
     String? id,
     String? creatorId,
@@ -109,6 +114,7 @@ class TimelinePost {
     List<TimelinePostReaction>? reactions,
     DateTime? createdAt,
     bool? reactionEnabled,
+    Map<String, dynamic>? data,
   }) =>
       TimelinePost(
         id: id ?? this.id,
@@ -125,6 +131,7 @@ class TimelinePost {
         reactions: reactions ?? this.reactions,
         createdAt: createdAt ?? this.createdAt,
         reactionEnabled: reactionEnabled ?? this.reactionEnabled,
+        data: data ?? this.data,
       );
 
   Map<String, dynamic> toJson() => {
@@ -140,5 +147,6 @@ class TimelinePost {
         'reactions': reactions?.map((e) => e.toJson()).toList() ?? [],
         'created_at': createdAt.toIso8601String(),
         'reaction_enabled': reactionEnabled,
+        'data': data,
       };
 }

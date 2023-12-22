@@ -7,6 +7,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
@@ -99,7 +100,10 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
     }
     if (this.post == null) {
       return Center(
-        child: Text(widget.options.translations.postLoadingError),
+        child: Text(
+          widget.options.translations.postLoadingError,
+          style: widget.options.theme.textStyles.errorTextStyle,
+        ),
       );
     }
     var post = this.post!;
@@ -149,14 +153,28 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                         post.creator!.imageUrl!,
                                       ),
                                     ),
+                              ] else ...[
+                                widget.options.anonymousAvatarBuilder?.call(
+                                      post.creator!,
+                                      40,
+                                    ) ??
+                                    const CircleAvatar(
+                                      radius: 20,
+                                      child: Icon(
+                                        Icons.person,
+                                      ),
+                                    ),
                               ],
                               const SizedBox(width: 10),
-                              if (post.creator!.fullName != null) ...[
-                                Text(
-                                  post.creator!.fullName!,
-                                  style: theme.textTheme.titleMedium,
-                                ),
-                              ],
+                              Text(
+                                widget.options.nameBuilder
+                                        ?.call(post.creator) ??
+                                    post.creator?.fullName ??
+                                    widget.options.translations.anonymousUser,
+                                style: widget.options.theme.textStyles
+                                        .postCreatorTitleStyle ??
+                                    theme.textTheme.titleMedium,
+                              ),
                             ],
                           ),
                         ),
@@ -176,7 +194,12 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               value: 'delete',
                               child: Row(
                                 children: [
-                                  Text(widget.options.translations.deletePost),
+                                  Text(
+                                    widget.options.translations.deletePost,
+                                    style: widget.options.theme.textStyles
+                                            .deletePostStyle ??
+                                        theme.textTheme.bodyMedium,
+                                  ),
                                   const SizedBox(width: 8),
                                   widget.options.theme.deleteIcon ??
                                       Icon(
@@ -195,87 +218,120 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   // image of the post
                   if (post.imageUrl != null) ...[
-                    CachedNetworkImage(
-                      imageUrl: post.imageUrl!,
-                      width: double.infinity,
-                      fit: BoxFit.fitHeight,
+                    const SizedBox(height: 8),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      child: CachedNetworkImage(
+                        width: double.infinity,
+                        imageUrl: post.imageUrl!,
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                   ],
+                  const SizedBox(
+                    height: 8,
+                  ),
                   // post information
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                      children: [
-                        if (post.likedBy?.contains(widget.userId) ?? false) ...[
-                          InkWell(
-                            onTap: () async {
-                              updatePost(
-                                await widget.service.unlikePost(
-                                  widget.userId,
-                                  post,
-                                ),
-                              );
-                            },
-                            child: widget.options.theme.likedIcon ??
-                                Icon(
-                                  Icons.thumb_up_rounded,
-                                  color: widget.options.theme.iconColor,
-                                ),
-                          ),
-                        ] else ...[
-                          InkWell(
-                            onTap: () async {
-                              updatePost(
-                                await widget.service.likePost(
-                                  widget.userId,
-                                  post,
-                                ),
-                              );
-                            },
-                            child: widget.options.theme.likeIcon ??
-                                Icon(
-                                  Icons.thumb_up_alt_outlined,
-                                  color: widget.options.theme.iconColor,
-                                ),
-                          ),
-                        ],
-                        const SizedBox(width: 8),
-                        if (post.reactionEnabled)
-                          widget.options.theme.commentIcon ??
+                  Row(
+                    children: [
+                      if (post.likedBy?.contains(widget.userId) ?? false) ...[
+                        InkWell(
+                          onTap: () async {
+                            updatePost(
+                              await widget.service.unlikePost(
+                                widget.userId,
+                                post,
+                              ),
+                            );
+                          },
+                          child: widget.options.theme.likedIcon ??
                               Icon(
-                                Icons.chat_bubble_outline_rounded,
+                                Icons.thumb_up_rounded,
                                 color: widget.options.theme.iconColor,
                               ),
+                        ),
+                      ] else ...[
+                        InkWell(
+                          onTap: () async {
+                            updatePost(
+                              await widget.service.likePost(
+                                widget.userId,
+                                post,
+                              ),
+                            );
+                          },
+                          child: widget.options.theme.likeIcon ??
+                              Icon(
+                                Icons.thumb_up_alt_outlined,
+                                color: widget.options.theme.iconColor,
+                              ),
+                        ),
                       ],
-                    ),
+                      const SizedBox(width: 8),
+                      if (post.reactionEnabled)
+                        widget.options.theme.commentIcon ??
+                            Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              color: widget.options.theme.iconColor,
+                            ),
+                    ],
                   ),
+                  const SizedBox(height: 8),
                   Text(
                     '${post.likes} ${widget.options.translations.likesTitle}',
-                    style: theme.textTheme.titleSmall,
+                    style: widget
+                            .options.theme.textStyles.postLikeTitleAndAmount ??
+                        theme.textTheme.titleSmall,
                   ),
                   const SizedBox(height: 4),
                   Text.rich(
                     TextSpan(
-                      text: post.creator?.fullName ??
+                      text: widget.options.nameBuilder?.call(post.creator) ??
+                          post.creator?.fullName ??
                           widget.options.translations.anonymousUser,
-                      style: theme.textTheme.titleSmall,
+                      style: widget
+                              .options.theme.textStyles.postCreatorNameStyle ??
+                          theme.textTheme.titleSmall,
                       children: [
                         const TextSpan(text: ' '),
                         TextSpan(
                           text: post.title,
-                          style: theme.textTheme.bodyMedium,
+                          style:
+                              widget.options.theme.textStyles.postTitleStyle ??
+                                  theme.textTheme.bodyMedium,
                         ),
                       ],
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    post.content,
-                    style: theme.textTheme.bodyMedium,
+                  const SizedBox(height: 20),
+                  Html(
+                    data: post.content,
+                    style: {
+                      'body': Style(
+                        padding: HtmlPaddings.zero,
+                        margin: Margins.zero,
+                      ),
+                      '#': Style(
+                        maxLines: 3,
+                        textOverflow: TextOverflow.ellipsis,
+                        padding: HtmlPaddings.zero,
+                        margin: Margins.zero,
+                      ),
+                      'H1': Style(
+                        padding: HtmlPaddings.zero,
+                        margin: Margins.zero,
+                      ),
+                      'H2': Style(
+                        padding: HtmlPaddings.zero,
+                        margin: Margins.zero,
+                      ),
+                      'H3': Style(
+                        padding: HtmlPaddings.zero,
+                        margin: Margins.zero,
+                      ),
+                    },
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -284,7 +340,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     '${timeFormat.format(post.createdAt)}',
                     style: theme.textTheme.bodySmall,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 20),
                   if (post.reactionEnabled) ...[
                     Text(
                       widget.options.translations.commentsTitle,
@@ -293,66 +349,119 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     for (var reaction
                         in post.reactions ?? <TimelinePostReaction>[]) ...[
                       const SizedBox(height: 16),
-                      Row(
-                        crossAxisAlignment: reaction.imageUrl != null
-                            ? CrossAxisAlignment.start
-                            : CrossAxisAlignment.center,
-                        children: [
-                          if (reaction.creator?.imageUrl != null &&
-                              reaction.creator!.imageUrl!.isNotEmpty) ...[
-                            widget.options.userAvatarBuilder?.call(
-                                  reaction.creator!,
-                                  25,
-                                ) ??
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: CachedNetworkImageProvider(
-                                    reaction.creator!.imageUrl!,
+                      GestureDetector(
+                        onLongPressStart: (details) async {
+                          if (reaction.creatorId == widget.userId ||
+                              widget.options.allowAllDeletion) {
+                            var overlay = Overlay.of(context)
+                                .context
+                                .findRenderObject()! as RenderBox;
+                            var position = RelativeRect.fromRect(
+                              Rect.fromPoints(
+                                details.globalPosition,
+                                details.globalPosition,
+                              ),
+                              Offset.zero & overlay.size,
+                            );
+                            // Show popup menu for deletion
+                            var value = await showMenu<String>(
+                              context: context,
+                              position: position,
+                              items: [
+                                PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: Text(
+                                    widget.options.translations.deleteReaction,
                                   ),
                                 ),
-                          ],
-                          const SizedBox(width: 10),
-                          if (reaction.imageUrl != null) ...[
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    reaction.creator?.fullName ??
-                                        widget
-                                            .options.translations.anonymousUser,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: reaction.imageUrl!,
-                                      fit: BoxFit.fitWidth,
+                              ],
+                            );
+                            if (value == 'delete') {
+                              // Call service to delete reaction
+                              updatePost(
+                                await widget.service
+                                    .deletePostReaction(post, reaction.id),
+                              );
+                            }
+                          }
+                        },
+                        child: Row(
+                          crossAxisAlignment: reaction.imageUrl != null
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.center,
+                          children: [
+                            if (reaction.creator?.imageUrl != null &&
+                                reaction.creator!.imageUrl!.isNotEmpty) ...[
+                              widget.options.userAvatarBuilder?.call(
+                                    reaction.creator!,
+                                    25,
+                                  ) ??
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                      reaction.creator!.imageUrl!,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ] else ...[
-                            Expanded(
-                              child: Text.rich(
-                                TextSpan(
-                                  text: reaction.creator?.fullName ??
-                                      widget.options.translations.anonymousUser,
-                                  style: theme.textTheme.titleSmall,
+                            ] else ...[
+                              widget.options.anonymousAvatarBuilder?.call(
+                                    reaction.creator!,
+                                    25,
+                                  ) ??
+                                  const CircleAvatar(
+                                    radius: 20,
+                                    child: Icon(
+                                      Icons.person,
+                                    ),
+                                  ),
+                            ],
+                            const SizedBox(width: 10),
+                            if (reaction.imageUrl != null) ...[
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const TextSpan(text: '  '),
-                                    TextSpan(
-                                      text: reaction.reaction ?? '',
-                                      style: theme.textTheme.bodyMedium,
+                                    Text(
+                                      widget.options.nameBuilder
+                                              ?.call(post.creator) ??
+                                          reaction.creator?.fullName ??
+                                          widget.options.translations
+                                              .anonymousUser,
+                                      style: theme.textTheme.titleSmall,
                                     ),
-                                    // text should go to new line
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: reaction.imageUrl!,
+                                        fit: BoxFit.fitWidth,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                            ),
+                            ] else ...[
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: widget.options.nameBuilder
+                                            ?.call(post.creator) ??
+                                        reaction.creator?.fullName ??
+                                        widget
+                                            .options.translations.anonymousUser,
+                                    style: theme.textTheme.titleSmall,
+                                    children: [
+                                      const TextSpan(text: '  '),
+                                      TextSpan(
+                                        text: reaction.reaction ?? '',
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                      // text should go to new line
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ],
                     if (post.reactions?.isEmpty ?? true) ...[

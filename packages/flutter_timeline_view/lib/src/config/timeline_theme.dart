@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import 'package:flutter/material.dart';
+import 'package:flutter_timeline_view/src/config/timeline_styles.dart';
 
 @immutable
 class TimelineTheme {
@@ -14,6 +15,7 @@ class TimelineTheme {
     this.sendIcon,
     this.moreIcon,
     this.deleteIcon,
+    this.textStyles = const TimelineTextStyles(),
   });
 
   final Color? iconColor;
@@ -35,4 +37,6 @@ class TimelineTheme {
 
   /// The icon for delete action (delete post)
   final Widget? deleteIcon;
+
+  final TimelineTextStyles textStyles;
 }

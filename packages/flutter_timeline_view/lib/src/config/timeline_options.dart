@@ -12,9 +12,10 @@ import 'package:intl/intl.dart';
 class TimelineOptions {
   const TimelineOptions({
     this.theme = const TimelineTheme(),
-    this.translations = const TimelineTranslations(),
+    this.translations = const TimelineTranslations.empty(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
+    this.timelinePostHeight,
     this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
     this.sortPostsAscending = false,
@@ -23,6 +24,8 @@ class TimelineOptions {
     this.buttonBuilder,
     this.textInputBuilder,
     this.userAvatarBuilder,
+    this.anonymousAvatarBuilder,
+    this.nameBuilder,
   });
 
   /// Theming options for the timeline
@@ -44,6 +47,9 @@ class TimelineOptions {
   ///  only the posts of the current user
   final bool allowAllDeletion;
 
+  /// The height of a post in the timeline
+  final double? timelinePostHeight;
+
   final TimelineTranslations translations;
 
   final ButtonBuilder? buttonBuilder;
@@ -51,6 +57,12 @@ class TimelineOptions {
   final TextInputBuilder? textInputBuilder;
 
   final UserAvatarBuilder? userAvatarBuilder;
+
+  /// When the imageUrl is null this anonymousAvatarBuilder will be used
+  /// You can use it to display a default avatarW
+  final UserAvatarBuilder? anonymousAvatarBuilder;
+
+  final String Function(TimelinePosterUserModel?)? nameBuilder;
 
   /// ImagePickerTheme can be used to change the UI of the
   /// Image Picker Widget to change the text/icons to your liking.
@@ -74,7 +86,7 @@ typedef TextInputBuilder = Widget Function(
   String hintText,
 );
 
-typedef UserAvatarBuilder = Widget Function(
+typedef UserAvatarBuilder = Widget? Function(
   TimelinePosterUserModel user,
   double size,
 );
