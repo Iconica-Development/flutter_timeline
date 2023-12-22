@@ -65,23 +65,30 @@ class FirebaseTimelineService with ChangeNotifier implements TimelineService {
     TimelinePost post,
     String reactionId,
   ) async {
-    var updatedPost = post.copyWith(
-      reaction: post.reaction - 1,
-      reactions: (post.reactions ?? [])
-        ..removeWhere((element) => element.id == reactionId),
-    );
-    _posts = _posts
-        .map(
-          (p) => p.id == post.id ? updatedPost : p,
-        )
-        .toList();
-    var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
-    await postRef.update({
-      'reaction': FieldValue.increment(-1),
-      'reactions': FieldValue.arrayRemove([reactionId]),
-    });
-    notifyListeners();
-    return updatedPost;
+    if (post.reactions != null && post.reactions!.isNotEmpty) {
+      var reaction =
+          post.reactions!.firstWhere((element) => element.id == reactionId);
+      var updatedPost = post.copyWith(
+        reaction: post.reaction - 1,
+        reactions: (post.reactions ?? [])..remove(reaction),
+      );
+      _posts = _posts
+          .map(
+            (p) => p.id == post.id ? updatedPost : p,
+          )
+          .toList();
+      var postRef =
+          _db.collection(_options.timelineCollectionName).doc(post.id);
+      await postRef.update({
+        'reaction': FieldValue.increment(-1),
+        'reactions': FieldValue.arrayRemove(
+          [reaction.toJsonWithMicroseconds()],
+        ),
+      });
+      notifyListeners();
+      return updatedPost;
+    }
+    return post;
   }
 
   @override
