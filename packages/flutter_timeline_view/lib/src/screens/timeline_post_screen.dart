@@ -18,12 +18,10 @@ class TimelinePostScreen extends StatefulWidget {
   const TimelinePostScreen({
     required this.userId,
     required this.service,
-    required this.userService,
     required this.options,
     required this.post,
     required this.onPostDelete,
     this.onUserTap,
-    this.padding = const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
     super.key,
   });
 
@@ -33,17 +31,11 @@ class TimelinePostScreen extends StatefulWidget {
   /// The timeline service to fetch the post details
   final TimelineService service;
 
-  /// The user service to fetch the profile picture of the user
-  final TimelineUserService userService;
-
   /// Options to configure the timeline screens
   final TimelineOptions options;
 
   /// The post to show
   final TimelinePost post;
-
-  /// The padding around the screen
-  final EdgeInsets padding;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
@@ -57,6 +49,16 @@ class TimelinePostScreen extends StatefulWidget {
 class _TimelinePostScreenState extends State<TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
+
+  late var textInputBuilder = widget.options.textInputBuilder ??
+      (controller, suffixIcon, hintText) => TextField(
+            textCapitalization: TextCapitalization.sentences,
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: hintText,
+              suffixIcon: suffixIcon,
+            ),
+          );
 
   @override
   void initState() {
@@ -90,7 +92,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var dateFormat = widget.options.dateformat ??
+    var dateFormat = widget.options.dateFormat ??
         DateFormat('dd/MM/yyyy', Localizations.localeOf(context).languageCode);
     var timeFormat = widget.options.timeFormat ?? DateFormat('HH:mm');
     if (isLoading) {
@@ -127,7 +129,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: widget.padding,
+              padding: widget.options.padding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -246,11 +248,14 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               ),
                             );
                           },
-                          child: widget.options.theme.likedIcon ??
-                              Icon(
-                                Icons.thumb_up_rounded,
-                                color: widget.options.theme.iconColor,
-                              ),
+                          child: Container(
+                            color: Colors.transparent,
+                            child: widget.options.theme.likedIcon ??
+                                Icon(
+                                  Icons.thumb_up_rounded,
+                                  color: widget.options.theme.iconColor,
+                                ),
+                          ),
                         ),
                       ] else ...[
                         InkWell(
@@ -262,11 +267,15 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               ),
                             );
                           },
-                          child: widget.options.theme.likeIcon ??
-                              Icon(
-                                Icons.thumb_up_alt_outlined,
-                                color: widget.options.theme.iconColor,
-                              ),
+                          child: Container(
+                            color: Colors.transparent,
+                            child: widget.options.theme.likeIcon ??
+                                Icon(
+                                  Icons.thumb_up_alt_outlined,
+                                  color: widget.options.theme.iconColor,
+                                  size: widget.options.iconSize,
+                                ),
+                          ),
                         ),
                       ],
                       const SizedBox(width: 8),
@@ -275,6 +284,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                             Icon(
                               Icons.chat_bubble_outline_rounded,
                               color: widget.options.theme.iconColor,
+                              size: widget.options.iconSize,
                             ),
                     ],
                   ),
@@ -481,14 +491,14 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: ReactionBottom(
-              messageInputBuilder: widget.options.textInputBuilder!,
+              messageInputBuilder: textInputBuilder,
               onPressSelectImage: () async {
                 // open the image picker
                 var result = await showModalBottomSheet<Uint8List?>(
                   context: context,
                   builder: (context) => Container(
                     padding: const EdgeInsets.all(8.0),
-                    color: Colors.black,
+                    color: theme.colorScheme.background,
                     child: ImagePicker(
                       imagePickerConfig: widget.options.imagePickerConfig,
                       imagePickerTheme: widget.options.imagePickerTheme,

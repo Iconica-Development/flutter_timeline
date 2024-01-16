@@ -19,20 +19,22 @@ class TimelineOptions {
     this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
     this.sortPostsAscending = false,
-    this.dateformat,
+    this.dateFormat,
     this.timeFormat,
     this.buttonBuilder,
     this.textInputBuilder,
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
+    this.padding = const EdgeInsets.symmetric(vertical: 12.0),
+    this.iconSize = 26,
   });
 
   /// Theming options for the timeline
   final TimelineTheme theme;
 
   /// The format to display the post date in
-  final DateFormat? dateformat;
+  final DateFormat? dateFormat;
 
   /// The format to display the post time in
   final DateFormat? timeFormat;
@@ -71,6 +73,12 @@ class TimelineOptions {
   /// ImagePickerConfig can be used to define the
   /// size and quality for the uploaded image.
   final ImagePickerConfig imagePickerConfig;
+
+  /// The padding between posts in the timeline
+  final EdgeInsets padding;
+
+  /// Size of icons like the comment and like icons. Dafualts to 26
+  final double iconSize;
 }
 
 typedef ButtonBuilder = Widget Function(

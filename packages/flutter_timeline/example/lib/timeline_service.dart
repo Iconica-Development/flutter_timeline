@@ -15,7 +15,11 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
 
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
-    _posts.add(post);
+    _posts.add(
+      post.copyWith(
+        creator: const TimelinePosterUserModel(userId: 'test_user'),
+      ),
+    );
     notifyListeners();
     return post;
   }
@@ -67,7 +71,6 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    print('fetch posts');
     var posts = getMockedPosts();
     _posts = posts;
     notifyListeners();
@@ -111,9 +114,10 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
 
   @override
   Future<TimelinePost> likePost(String userId, TimelinePost post) async {
+    print(userId);
     var updatedPost = post.copyWith(
       likes: post.likes + 1,
-      likedBy: post.likedBy?..add(userId),
+      likedBy: (post.likedBy ?? [])..add(userId),
     );
     _posts = _posts
         .map(
@@ -152,13 +156,11 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
         id: reactionId,
         creator: const TimelinePosterUserModel(userId: 'test_user'));
 
-
     var updatedPost = post.copyWith(
       reaction: post.reaction + 1,
       reactions: post.reactions?..add(updatedReaction),
     );
 
- 
     _posts = _posts
         .map(
           (p) => p.id == post.id ? updatedPost : p,

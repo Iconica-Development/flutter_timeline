@@ -153,20 +153,28 @@ class TimelinePostWidget extends StatelessWidget {
                 if (post.likedBy?.contains(userId) ?? false) ...[
                   InkWell(
                     onTap: onTapUnlike,
-                    child: options.theme.likedIcon ??
-                        Icon(
-                          Icons.thumb_up_rounded,
-                          color: options.theme.iconColor,
-                        ),
+                    child: Container(
+                      color: Colors.transparent,
+                      child: options.theme.likedIcon ??
+                          Icon(
+                            Icons.thumb_up_rounded,
+                            color: options.theme.iconColor,
+                            size: options.iconSize,
+                          ),
+                    ),
                   ),
                 ] else ...[
                   InkWell(
                     onTap: onTapLike,
-                    child: options.theme.likeIcon ??
-                        Icon(
-                          Icons.thumb_up_alt_outlined,
-                          color: options.theme.iconColor,
-                        ),
+                    child: Container(
+                      color: Colors.transparent,
+                      child: options.theme.likeIcon ??
+                          Icon(
+                            Icons.thumb_up_alt_outlined,
+                            color: options.theme.iconColor,
+                            size: options.iconSize,
+                          ),
+                    ),
                   ),
                 ],
                 const SizedBox(width: 8),
@@ -175,6 +183,7 @@ class TimelinePostWidget extends StatelessWidget {
                       Icon(
                         Icons.chat_bubble_outline_rounded,
                         color: options.theme.iconColor,
+                        size: options.iconSize,
                       ),
               ],
             ),

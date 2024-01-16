@@ -96,7 +96,6 @@ List<GoRoute> getTimelineStoryRoutes(
             userId: configuration.userId,
             options: configuration.optionsBuilder(context),
             service: configuration.service,
-            userService: configuration.userService,
             post: configuration.service.getPost(state.pathParameters['post']!)!,
             onPostDelete: () => context.pop(),
             onUserTap: (user) => configuration.onUserTap?.call(context, user),
