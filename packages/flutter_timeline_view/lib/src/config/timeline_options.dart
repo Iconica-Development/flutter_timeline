@@ -19,10 +19,21 @@ class TimelineOptions {
     this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
     this.sortPostsAscending = false,
+    this.doubleTapTolike = false,
+    this.iconsWithValues = false,
+    this.likeAndDislikeIconsForDoubleTap = const (
+      Icon(
+        Icons.favorite_rounded,
+        color: Color(0xFFC3007A),
+      ),
+      null,
+    ),
+    this.itemInfoBuilder,
     this.dateFormat,
     this.timeFormat,
     this.buttonBuilder,
     this.textInputBuilder,
+    this.dividerBuilder,
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
@@ -73,6 +84,21 @@ class TimelineOptions {
   /// ImagePickerConfig can be used to define the
   /// size and quality for the uploaded image.
   final ImagePickerConfig imagePickerConfig;
+
+  /// Whether to allow double tap to like
+  final bool doubleTapTolike;
+
+  /// The icons to display when double tap to like is enabled
+  final (Icon?, Icon?) likeAndDislikeIconsForDoubleTap;
+
+  /// Whether to display the icons with values
+  final bool iconsWithValues;
+
+  /// The builder for the item info, all below the like and comment buttons
+  final Widget Function({required TimelinePost post})? itemInfoBuilder;
+
+  /// The builder for the divider
+  final Widget Function()? dividerBuilder;
 
   /// The padding between posts in the timeline
   final EdgeInsets padding;
