@@ -6,20 +6,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
-import 'package:flutter_timeline_view/src/config/timeline_options.dart';
-import 'package:flutter_timeline_view/src/widgets/timeline_post_widget.dart';
+import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 
 class TimelineScreen extends StatefulWidget {
   const TimelineScreen({
     required this.userId,
-    required this.options,
-    required this.onPostTap,
     required this.service,
+    required this.options,
+    this.scrollController,
+    this.onPostTap,
     this.onUserTap,
     this.posts,
-    this.controller,
     this.timelineCategoryFilter,
-    this.padding = const EdgeInsets.symmetric(vertical: 12.0),
     super.key,
   });
 
@@ -32,8 +30,8 @@ class TimelineScreen extends StatefulWidget {
   /// All the configuration options for the timelinescreens and widgets
   final TimelineOptions options;
 
-  /// The controller for the scroll view
-  final ScrollController? controller;
+    /// The controller for the scroll view
+  final ScrollController? scrollController;
 
   /// The string to filter the timeline by category
   final String? timelineCategoryFilter;
@@ -43,13 +41,10 @@ class TimelineScreen extends StatefulWidget {
   final List<TimelinePost>? posts;
 
   /// Called when a post is tapped
-  final Function(TimelinePost) onPostTap;
+  final Function(TimelinePost)? onPostTap;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
-
-  /// The padding between posts in the timeline
-  final EdgeInsets padding;
 
   @override
   State<TimelineScreen> createState() => _TimelineScreenState();
@@ -57,12 +52,14 @@ class TimelineScreen extends StatefulWidget {
 
 class _TimelineScreenState extends State<TimelineScreen> {
   late ScrollController controller;
+  late var service = widget.service;
+
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    controller = widget.controller ?? ScrollController();
+    controller = widget.scrollController ?? ScrollController();
     unawaited(loadPosts());
   }
 
@@ -74,10 +71,10 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
     // Build the list of posts
     return ListenableBuilder(
-      listenable: widget.service,
+      listenable: service,
       builder: (context, _) {
-        var posts = widget.posts ??
-            widget.service.getPosts(widget.timelineCategoryFilter);
+        var posts =
+            widget.posts ?? service.getPosts(widget.timelineCategoryFilter);
         posts = posts
             .where(
               (p) =>
@@ -98,19 +95,41 @@ class _TimelineScreenState extends State<TimelineScreen> {
             children: [
               ...posts.map(
                 (post) => Padding(
-                  padding: widget.padding,
+                  padding: widget.options.padding,
                   child: TimelinePostWidget(
                     service: widget.service,
                     userId: widget.userId,
                     options: widget.options,
                     post: post,
                     height: widget.options.timelinePostHeight,
-                    onTap: () => widget.onPostTap.call(post),
+                    onTap: () async {
+                      if (widget.onPostTap != null) {
+                        widget.onPostTap!.call(post);
+                        return;
+                      }
+
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            body: TimelinePostScreen(
+                              userId: widget.userId,
+                              service: widget.service,
+                              options: widget.options,
+                              post: post,
+                              onPostDelete: () {
+                                widget.service.deletePost(post);
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                     onTapLike: () async =>
-                        widget.service.likePost(widget.userId, post),
+                        service.likePost(widget.userId, post),
                     onTapUnlike: () async =>
-                        widget.service.unlikePost(widget.userId, post),
-                    onPostDelete: () async => widget.service.deletePost(post),
+                        service.unlikePost(widget.userId, post),
+                    onPostDelete: () async => service.deletePost(post),
                     onUserTap: widget.onUserTap,
                   ),
                 ),
@@ -137,7 +156,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null) return;
     try {
-      await widget.service.fetchPosts(widget.timelineCategoryFilter);
+      await service.fetchPosts(widget.timelineCategoryFilter);
       setState(() {
         isLoading = false;
       });

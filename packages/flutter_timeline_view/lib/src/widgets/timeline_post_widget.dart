@@ -234,29 +234,42 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                       false) ...[
                     InkWell(
                       onTap: widget.onTapUnlike,
-                      child: widget.options.theme.likedIcon ??
-                          Icon(
-                            Icons.thumb_up_rounded,
-                            color: widget.options.theme.iconColor,
-                          ),
+                      child: Container(
+                        color: Colors.transparent,
+                        child: widget.options.theme.likedIcon ??
+                            Icon(
+                              Icons.thumb_up_rounded,
+                              color: widget.options.theme.iconColor,
+                              size: widget.options.iconSize,
+                            ),
+                      ),
                     ),
                   ] else ...[
                     InkWell(
                       onTap: widget.onTapLike,
-                      child: widget.options.theme.likeIcon ??
-                          Icon(
-                            Icons.thumb_up_alt_outlined,
-                            color: widget.options.theme.iconColor,
-                          ),
+                      child: Container(
+                        color: Colors.transparent,
+                        child: widget.options.theme.likedIcon ??
+                            Icon(
+                              Icons.thumb_up_rounded,
+                              color: widget.options.theme.iconColor,
+                              size: widget.options.iconSize,
+                            ),
+                      ),
                     ),
                   ],
                   const SizedBox(width: 8),
-                  if (widget.post.reactionEnabled)
-                    widget.options.theme.commentIcon ??
-                        Icon(
-                          Icons.chat_bubble_outline_rounded,
-                          color: widget.options.theme.iconColor,
-                        ),
+                  if (widget.post.reactionEnabled) ...[
+                    Container(
+                      color: Colors.transparent,
+                      child: widget.options.theme.commentIcon ??
+                          Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            color: widget.options.theme.iconColor,
+                            size: widget.options.iconSize,
+                          ),
+                    ),
+                  ],
                 ],
               ),
 
