@@ -14,16 +14,22 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: any
-  flutter_timeline_view:
-    git: 
-       url: https://github.com/Iconica-Development/flutter_timeline
-       path: packages/flutter_timeline_view
-       ref: 1.0.0
+  # flutter_timeline_view:
+    # git: 
+    #    url: https://github.com/Iconica-Development/flutter_timeline
+    #    path: packages/flutter_timeline_view
+    #    ref: 1.0.0
+  # flutter_timeline_interface:
+    # git: 
+    #    url: https://github.com/Iconica-Development/flutter_timeline
+    #    path: packages/flutter_timeline_interface
+    #    ref: 1.0.0
+
   flutter_timeline_interface:
-    git: 
-       url: https://github.com/Iconica-Development/flutter_timeline
-       path: packages/flutter_timeline_interface
-       ref: 1.0.0
+    path: ../flutter_timeline_interface
+  flutter_timeline_view:
+    path: ../flutter_timeline_view
+
 
 dev_dependencies:
   flutter_lints: ^2.0.0

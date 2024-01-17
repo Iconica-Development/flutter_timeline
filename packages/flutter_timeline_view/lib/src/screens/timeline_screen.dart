@@ -100,6 +100,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 (post) => Padding(
                   padding: widget.padding,
                   child: TimelinePostWidget(
+                    service: widget.service,
                     userId: widget.userId,
                     options: widget.options,
                     post: post,

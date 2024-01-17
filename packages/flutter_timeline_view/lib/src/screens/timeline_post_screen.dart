@@ -12,6 +12,7 @@ import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
+import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
 import 'package:intl/intl.dart';
 
 class TimelinePostScreen extends StatefulWidget {
@@ -223,11 +224,40 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      child: CachedNetworkImage(
-                        width: double.infinity,
-                        imageUrl: post.imageUrl!,
-                        fit: BoxFit.fitHeight,
-                      ),
+                      child: widget.options.doubleTapTolike
+                          ? TappableImage(
+                              likeAndDislikeIcon: widget
+                                  .options.likeAndDislikeIconsForDoubleTap,
+                              post: post,
+                              userId: widget.userId,
+                              onLike: ({required bool liked}) async {
+                                var userId = widget.userId;
+
+                                late TimelinePost result;
+
+                                if (!liked) {
+                                  result = await widget.service.likePost(
+                                    userId,
+                                    post,
+                                  );
+                                } else {
+                                  result = await widget.service.unlikePost(
+                                    userId,
+                                    post,
+                                  );
+                                }
+
+                                await loadPostDetails();
+
+                                return result.likedBy?.contains(userId) ??
+                                    false;
+                              },
+                            )
+                          : CachedNetworkImage(
+                              width: double.infinity,
+                              imageUrl: post.imageUrl!,
+                              fit: BoxFit.fitHeight,
+                            ),
                     ),
                   ],
                   const SizedBox(
