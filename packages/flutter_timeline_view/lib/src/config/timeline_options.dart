@@ -39,6 +39,8 @@ class TimelineOptions {
     this.nameBuilder,
     this.padding = const EdgeInsets.symmetric(vertical: 12.0),
     this.iconSize = 26,
+    this.postWidgetheight,
+    this.postPadding = const EdgeInsets.all(12.0),
   });
 
   /// Theming options for the timeline
@@ -105,6 +107,12 @@ class TimelineOptions {
 
   /// Size of icons like the comment and like icons. Dafualts to 26
   final double iconSize;
+
+  /// Sets a predefined height for the postWidget.
+  final double? postWidgetheight;
+
+  /// Padding of each post
+  final EdgeInsets postPadding;
 }
 
 typedef ButtonBuilder = Widget Function(

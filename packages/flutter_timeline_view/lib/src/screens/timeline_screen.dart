@@ -18,6 +18,7 @@ class TimelineScreen extends StatefulWidget {
     this.onUserTap,
     this.posts,
     this.timelineCategoryFilter,
+    this.postWidget,
     super.key,
   });
 
@@ -30,7 +31,7 @@ class TimelineScreen extends StatefulWidget {
   /// All the configuration options for the timelinescreens and widgets
   final TimelineOptions options;
 
-    /// The controller for the scroll view
+  /// The controller for the scroll view
   final ScrollController? scrollController;
 
   /// The string to filter the timeline by category
@@ -45,6 +46,9 @@ class TimelineScreen extends StatefulWidget {
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
+
+  /// Override the standard postwidget
+  final Widget Function(TimelinePost post)? postWidget;
 
   @override
   State<TimelineScreen> createState() => _TimelineScreenState();
@@ -95,43 +99,43 @@ class _TimelineScreenState extends State<TimelineScreen> {
             children: [
               ...posts.map(
                 (post) => Padding(
-                  padding: widget.options.padding,
-                  child: TimelinePostWidget(
-                    service: widget.service,
-                    userId: widget.userId,
-                    options: widget.options,
-                    post: post,
-                    height: widget.options.timelinePostHeight,
-                    onTap: () async {
-                      if (widget.onPostTap != null) {
-                        widget.onPostTap!.call(post);
-                        return;
-                      }
+                  padding: widget.options.postPadding,
+                  child: widget.postWidget?.call(post) ??
+                      TimelinePostWidget(
+                        service: widget.service,
+                        userId: widget.userId,
+                        options: widget.options,
+                        post: post,
+                        onTap: () async {
+                          if (widget.onPostTap != null) {
+                            widget.onPostTap!.call(post);
+                            return;
+                          }
 
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Scaffold(
-                            body: TimelinePostScreen(
-                              userId: widget.userId,
-                              service: widget.service,
-                              options: widget.options,
-                              post: post,
-                              onPostDelete: () {
-                                widget.service.deletePost(post);
-                              },
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Scaffold(
+                                body: TimelinePostScreen(
+                                  userId: widget.userId,
+                                  service: widget.service,
+                                  options: widget.options,
+                                  post: post,
+                                  onPostDelete: () {
+                                    widget.service.deletePost(post);
+                                  },
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                    onTapLike: () async =>
-                        service.likePost(widget.userId, post),
-                    onTapUnlike: () async =>
-                        service.unlikePost(widget.userId, post),
-                    onPostDelete: () async => service.deletePost(post),
-                    onUserTap: widget.onUserTap,
-                  ),
+                          );
+                        },
+                        onTapLike: () async =>
+                            service.likePost(widget.userId, post),
+                        onTapUnlike: () async =>
+                            service.unlikePost(widget.userId, post),
+                        onPostDelete: () async => service.deletePost(post),
+                        onUserTap: widget.onUserTap,
+                      ),
                 ),
               ),
               if (posts.isEmpty)

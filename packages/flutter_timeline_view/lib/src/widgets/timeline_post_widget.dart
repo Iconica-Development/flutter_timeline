@@ -13,7 +13,6 @@ class TimelinePostWidget extends StatefulWidget {
     required this.userId,
     required this.options,
     required this.post,
-    required this.height,
     required this.onTap,
     required this.onTapLike,
     required this.onTapUnlike,
@@ -30,7 +29,6 @@ class TimelinePostWidget extends StatefulWidget {
   final TimelinePost post;
 
   /// Optional max height of the post
-  final double? height;
   final VoidCallback onTap;
   final VoidCallback onTapLike;
   final VoidCallback onTapUnlike;
@@ -51,7 +49,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
     return InkWell(
       onTap: widget.onTap,
       child: SizedBox(
-        height: widget.post.imageUrl != null ? widget.height : null,
+        height: widget.post.imageUrl != null ? widget.options.postWidgetheight : null,
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +143,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
             if (widget.post.imageUrl != null) ...[
               const SizedBox(height: 8),
               Flexible(
-                flex: widget.height != null ? 1 : 0,
+                flex: widget.options.postWidgetheight != null ? 1 : 0,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                   child: widget.options.doubleTapTolike
