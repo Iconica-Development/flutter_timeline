@@ -41,6 +41,9 @@ class TimelineOptions {
     this.iconSize = 26,
     this.postWidgetheight,
     this.postPadding = const EdgeInsets.all(12.0),
+    this.categories,
+    this.categoryButtonBuilder,
+    this.catergoryLabelBuilder,
   });
 
   /// Theming options for the timeline
@@ -113,6 +116,22 @@ class TimelineOptions {
 
   /// Padding of each post
   final EdgeInsets postPadding;
+
+  /// List of categories that the user can select.
+  /// If this is null no categories will be shown.
+  final List<String>? categories;
+
+  /// Abilty to override the standard category selector
+  final Widget Function({
+    required String? categoryKey,
+    required String categoryName,
+    required Function onTap,
+    required bool selected,
+  })? categoryButtonBuilder;
+
+  /// Ability to set an proper label for the category selectors.
+  /// Default to category key.
+  final String Function(String? categoryKey)? catergoryLabelBuilder;
 }
 
 typedef ButtonBuilder = Widget Function(

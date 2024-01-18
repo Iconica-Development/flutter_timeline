@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
+import 'package:flutter_timeline_view/src/widgets/category_selector.dart';
 
 class TimelineScreen extends StatefulWidget {
   const TimelineScreen({
@@ -60,6 +61,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
   bool isLoading = true;
 
+  late var filter = widget.timelineCategoryFilter;
+
   @override
   void initState() {
     super.initState();
@@ -77,13 +80,10 @@ class _TimelineScreenState extends State<TimelineScreen> {
     return ListenableBuilder(
       listenable: service,
       builder: (context, _) {
-        var posts =
-            widget.posts ?? service.getPosts(widget.timelineCategoryFilter);
+        var posts = widget.posts ?? service.getPosts(filter);
         posts = posts
             .where(
-              (p) =>
-                  widget.timelineCategoryFilter == null ||
-                  p.category == widget.timelineCategoryFilter,
+              (p) => filter == null || p.category == filter,
             )
             .toList();
 
@@ -93,65 +93,84 @@ class _TimelineScreenState extends State<TimelineScreen> {
               ? a.createdAt.compareTo(b.createdAt)
               : b.createdAt.compareTo(a.createdAt),
         );
-        return SingleChildScrollView(
-          controller: controller,
-          child: Column(
-            children: [
-              ...posts.map(
-                (post) => Padding(
-                  padding: widget.options.postPadding,
-                  child: widget.postWidget?.call(post) ??
-                      TimelinePostWidget(
-                        service: widget.service,
-                        userId: widget.userId,
-                        options: widget.options,
-                        post: post,
-                        onTap: () async {
-                          if (widget.onPostTap != null) {
-                            widget.onPostTap!.call(post);
-                            return;
-                          }
 
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Scaffold(
-                                body: TimelinePostScreen(
-                                  userId: widget.userId,
-                                  service: widget.service,
-                                  options: widget.options,
-                                  post: post,
-                                  onPostDelete: () {
-                                    widget.service.deletePost(post);
-                                  },
-                                ),
-                              ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CategorySelector(
+              filter: filter,
+              options: widget.options,
+              onTapCategory: (categoryKey) {
+                setState(() {
+                  filter = categoryKey;
+                });
+              },
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: controller,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...posts.map(
+                      (post) => Padding(
+                        padding: widget.options.postPadding,
+                        child: widget.postWidget?.call(post) ??
+                            TimelinePostWidget(
+                              service: widget.service,
+                              userId: widget.userId,
+                              options: widget.options,
+                              post: post,
+                              onTap: () async {
+                                if (widget.onPostTap != null) {
+                                  widget.onPostTap!.call(post);
+                                  return;
+                                }
+
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Scaffold(
+                                      body: TimelinePostScreen(
+                                        userId: widget.userId,
+                                        service: widget.service,
+                                        options: widget.options,
+                                        post: post,
+                                        onPostDelete: () {
+                                          widget.service.deletePost(post);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              onTapLike: () async =>
+                                  service.likePost(widget.userId, post),
+                              onTapUnlike: () async =>
+                                  service.unlikePost(widget.userId, post),
+                              onPostDelete: () async =>
+                                  service.deletePost(post),
+                              onUserTap: widget.onUserTap,
                             ),
-                          );
-                        },
-                        onTapLike: () async =>
-                            service.likePost(widget.userId, post),
-                        onTapUnlike: () async =>
-                            service.unlikePost(widget.userId, post),
-                        onPostDelete: () async => service.deletePost(post),
-                        onUserTap: widget.onUserTap,
                       ),
+                    ),
+                    if (posts.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            filter == null
+                                ? widget.options.translations.noPosts
+                                : widget.options.translations.noPostsWithFilter,
+                            style: widget.options.theme.textStyles.noPostsStyle,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-              if (posts.isEmpty)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      widget.timelineCategoryFilter == null
-                          ? widget.options.translations.noPosts
-                          : widget.options.translations.noPostsWithFilter,
-                      style: widget.options.theme.textStyles.noPostsStyle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -160,7 +179,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null) return;
     try {
-      await service.fetchPosts(widget.timelineCategoryFilter);
+      await service.fetchPosts(filter);
       setState(() {
         isLoading = false;
       });
