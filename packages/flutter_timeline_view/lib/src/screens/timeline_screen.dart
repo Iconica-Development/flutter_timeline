@@ -18,7 +18,7 @@ class TimelineScreen extends StatefulWidget {
     this.onPostTap,
     this.onUserTap,
     this.posts,
-    this.timelineCategoryFilter,
+    this.timelineCategory,
     this.postWidget,
     super.key,
   });
@@ -36,7 +36,7 @@ class TimelineScreen extends StatefulWidget {
   final ScrollController? scrollController;
 
   /// The string to filter the timeline by category
-  final String? timelineCategoryFilter;
+  final String? timelineCategory;
 
   /// This is used if you want to pass in a list of posts instead
   /// of fetching them from the service
@@ -57,11 +57,15 @@ class TimelineScreen extends StatefulWidget {
 
 class _TimelineScreenState extends State<TimelineScreen> {
   late ScrollController controller;
+  late var textFieldController =
+      TextEditingController(text: widget.options.initialFilterWord);
   late var service = widget.service;
 
   bool isLoading = true;
 
-  late var filter = widget.timelineCategoryFilter;
+  late var category = widget.timelineCategory;
+
+  late var filterWord = widget.options.initialFilterWord;
 
   @override
   void initState() {
@@ -80,31 +84,108 @@ class _TimelineScreenState extends State<TimelineScreen> {
     return ListenableBuilder(
       listenable: service,
       builder: (context, _) {
-        var posts = widget.posts ?? service.getPosts(filter);
+        var posts = widget.posts ?? service.getPosts(category);
+
         posts = posts
             .where(
-              (p) => filter == null || p.category == filter,
+              (p) => category == null || p.category == category,
             )
             .toList();
 
+        if (widget.options.filterEnabled && filterWord != null) {
+          if (service is TimelineFilterService?) {
+            posts =
+                (service as TimelineFilterService).filterPosts(filterWord!, {});
+          } else {
+            debugPrint('Timeline service needs to mixin'
+                ' with TimelineFilterService');
+          }
+        }
+
         // sort posts by date
-        posts.sort(
-          (a, b) => widget.options.sortPostsAscending
-              ? a.createdAt.compareTo(b.createdAt)
-              : b.createdAt.compareTo(a.createdAt),
-        );
+        if (widget.options.sortPostsAscending != null) {
+          posts.sort(
+            (a, b) => widget.options.sortPostsAscending!
+                ? a.createdAt.compareTo(b.createdAt)
+                : b.createdAt.compareTo(a.createdAt),
+          );
+        }
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: widget.options.padding.top,
+            ),
+            if (widget.options.filterEnabled) ...[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: widget.options.padding.horizontal,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: textFieldController,
+                        onChanged: (value) {
+                          setState(() {
+                            filterWord = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: widget.options.translations.searchHint,
+                          suffixIconConstraints:
+                              const BoxConstraints(maxHeight: 14),
+                          contentPadding: const EdgeInsets.only(
+                            left: 12,
+                            right: 12,
+                            bottom: -10,
+                          ),
+                          suffixIcon: const Padding(
+                            padding: EdgeInsets.only(right: 12),
+                            child: Icon(Icons.search),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          textFieldController.clear();
+                          widget.options.filterEnabled = false;
+                          filterWord = null;
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.close,
+                          color: Color(0xFF000000),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+            ],
             CategorySelector(
-              filter: filter,
+              filter: category,
               options: widget.options,
               onTapCategory: (categoryKey) {
                 setState(() {
-                  filter = categoryKey;
+                  category = categoryKey;
                 });
               },
+            ),
+            const SizedBox(
+              height: 12,
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -159,7 +240,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            filter == null
+                            category == null
                                 ? widget.options.translations.noPosts
                                 : widget.options.translations.noPostsWithFilter,
                             style: widget.options.theme.textStyles.noPostsStyle,
@@ -170,6 +251,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 ),
               ),
             ),
+            SizedBox(
+              height: widget.options.padding.bottom,
+            ),
           ],
         );
       },
@@ -179,7 +263,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null) return;
     try {
-      await service.fetchPosts(filter);
+      await service.fetchPosts(category);
       setState(() {
         isLoading = false;
       });

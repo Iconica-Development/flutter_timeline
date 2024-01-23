@@ -49,7 +49,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
     return InkWell(
       onTap: widget.onTap,
       child: SizedBox(
-        height: widget.post.imageUrl != null ? widget.options.postWidgetheight : null,
+        height: widget.post.imageUrl != null
+            ? widget.options.postWidgetheight
+            : null,
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

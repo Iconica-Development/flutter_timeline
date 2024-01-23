@@ -25,7 +25,6 @@ List<GoRoute> getTimelineStoryRoutes(
             options: configuration.optionsBuilder(context),
             onPostTap: (post) async =>
                 TimelineUserStoryRoutes.timelineViewPath(post.id),
-            timelineCategoryFilter: null,
           );
           return buildScreenWithoutTransition(
             context: context,

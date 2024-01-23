@@ -21,6 +21,7 @@ class CategorySelectorButton extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: ButtonStyle(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         padding: const MaterialStatePropertyAll(
           EdgeInsets.symmetric(
             vertical: 5,

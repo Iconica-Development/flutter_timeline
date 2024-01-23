@@ -13,9 +13,7 @@ import 'package:flutter_timeline_firebase/src/models/firebase_user_document.dart
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:uuid/uuid.dart';
 
-class FirebaseTimelineService
-    with ChangeNotifier
-    implements TimelineService, TimelineUserService {
+class FirebaseTimelineService extends TimelineService with TimelineUserService {
   FirebaseTimelineService({
     required TimelineUserService userService,
     FirebaseApp? app,
@@ -35,8 +33,6 @@ class FirebaseTimelineService
 
   final Map<String, TimelinePosterUserModel> _users = {};
 
-  List<TimelinePost> _posts = [];
-
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
     var postId = const Uuid().v4();
@@ -52,14 +48,14 @@ class FirebaseTimelineService
     var postRef =
         _db.collection(_options.timelineCollectionName).doc(updatedPost.id);
     await postRef.set(updatedPost.toJson());
-    _posts.add(updatedPost);
+    posts.add(updatedPost);
     notifyListeners();
     return updatedPost;
   }
 
   @override
   Future<void> deletePost(TimelinePost post) async {
-    _posts = _posts.where((element) => element.id != post.id).toList();
+    posts = posts.where((element) => element.id != post.id).toList();
     var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
     await postRef.delete();
     notifyListeners();
@@ -77,7 +73,7 @@ class FirebaseTimelineService
         reaction: post.reaction - 1,
         reactions: (post.reactions ?? [])..remove(reaction),
       );
-      _posts = _posts
+      posts = posts
           .map(
             (p) => p.id == post.id ? updatedPost : p,
           )
@@ -107,7 +103,7 @@ class FirebaseTimelineService
       }
     }
     var updatedPost = post.copyWith(reactions: updatedReactions);
-    _posts = _posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
+    posts = posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
     notifyListeners();
     return updatedPost;
   }
@@ -129,7 +125,7 @@ class FirebaseTimelineService
       var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
       posts.add(post);
     }
-    _posts = posts;
+
     notifyListeners();
     return posts;
   }
@@ -140,12 +136,12 @@ class FirebaseTimelineService
     int limit,
   ) async {
     // only take posts that are in our category
-    var oldestPost = _posts
+    var oldestPost = posts
         .where(
           (element) => category == null || element.category == category,
         )
         .fold(
-          _posts.first,
+          posts.first,
           (previousValue, element) =>
               (previousValue.createdAt.isBefore(element.createdAt))
                   ? previousValue
@@ -166,16 +162,16 @@ class FirebaseTimelineService
             .limit(limit)
             .get();
     // add the new posts to the list
-    var posts = <TimelinePost>[];
+    var newPosts = <TimelinePost>[];
     for (var doc in snapshot.docs) {
       var data = doc.data();
       var user = await _userService.getUser(data['creator_id']);
       var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
-      posts.add(post);
+      newPosts.add(post);
     }
-    _posts = [..._posts, ...posts];
+    posts = [...posts, ...newPosts];
     notifyListeners();
-    return posts;
+    return newPosts;
   }
 
   @override
@@ -190,7 +186,7 @@ class FirebaseTimelineService
     var updatedPost = TimelinePost.fromJson(doc.id, data).copyWith(
       creator: user,
     );
-    _posts = _posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
+    posts = posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
     notifyListeners();
     return updatedPost;
   }
@@ -198,12 +194,12 @@ class FirebaseTimelineService
   @override
   Future<List<TimelinePost>> refreshPosts(String? category) async {
     // fetch all posts between now and the newest posts we have
-    var newestPostWeHave = _posts
+    var newestPostWeHave = posts
         .where(
           (element) => category == null || element.category == category,
         )
         .fold(
-          _posts.first,
+          posts.first,
           (previousValue, element) =>
               (previousValue.createdAt.isAfter(element.createdAt))
                   ? previousValue
@@ -220,26 +216,26 @@ class FirebaseTimelineService
             .orderBy('created_at', descending: true)
             .endBefore([newestPostWeHave.createdAt]).get();
     // add the new posts to the list
-    var posts = <TimelinePost>[];
+    var newPosts = <TimelinePost>[];
     for (var doc in snapshot.docs) {
       var data = doc.data();
       var user = await _userService.getUser(data['creator_id']);
       var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
-      posts.add(post);
+      newPosts.add(post);
     }
-    _posts = [...posts, ..._posts];
+    posts = [...posts, ...newPosts];
     notifyListeners();
-    return posts;
+    return newPosts;
   }
 
   @override
   TimelinePost? getPost(String postId) =>
-      (_posts.any((element) => element.id == postId))
-          ? _posts.firstWhere((element) => element.id == postId)
+      (posts.any((element) => element.id == postId))
+          ? posts.firstWhere((element) => element.id == postId)
           : null;
 
   @override
-  List<TimelinePost> getPosts(String? category) => _posts
+  List<TimelinePost> getPosts(String? category) => posts
       .where((element) => category == null || element.category == category)
       .toList();
 
@@ -250,7 +246,7 @@ class FirebaseTimelineService
       likes: post.likes + 1,
       likedBy: post.likedBy?..add(userId),
     );
-    _posts = _posts
+    posts = posts
         .map(
           (p) => p.id == post.id ? updatedPost : p,
         )
@@ -271,7 +267,7 @@ class FirebaseTimelineService
       likes: post.likes - 1,
       likedBy: post.likedBy?..remove(userId),
     );
-    _posts = _posts
+    posts = posts
         .map(
           (p) => p.id == post.id ? updatedPost : p,
         )
@@ -314,7 +310,7 @@ class FirebaseTimelineService
       'reaction': FieldValue.increment(1),
       'reactions': FieldValue.arrayUnion([updatedReaction.toJson()]),
     });
-    _posts = _posts
+    posts = posts
         .map(
           (p) => p.id == post.id ? updatedPost : p,
         )

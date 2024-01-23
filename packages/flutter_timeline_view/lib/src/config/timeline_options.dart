@@ -8,9 +8,8 @@ import 'package:flutter_timeline_view/src/config/timeline_theme.dart';
 import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 import 'package:intl/intl.dart';
 
-@immutable
 class TimelineOptions {
-  const TimelineOptions({
+  TimelineOptions({
     this.theme = const TimelineTheme(),
     this.translations = const TimelineTranslations.empty(),
     this.imagePickerConfig = const ImagePickerConfig(),
@@ -18,7 +17,7 @@ class TimelineOptions {
     this.timelinePostHeight,
     this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
-    this.sortPostsAscending = false,
+    this.sortPostsAscending,
     this.doubleTapTolike = false,
     this.iconsWithValues = false,
     this.likeAndDislikeIconsForDoubleTap = const (
@@ -44,6 +43,10 @@ class TimelineOptions {
     this.categories,
     this.categoryButtonBuilder,
     this.catergoryLabelBuilder,
+    this.categorySelectorHorizontalPadding,
+    this.filterEnabled = false,
+    this.initialFilterWord,
+    this.searchBarBuilder,
   });
 
   /// Theming options for the timeline
@@ -59,7 +62,7 @@ class TimelineOptions {
   final bool sortCommentsAscending;
 
   /// Whether to sort posts ascending or descending
-  final bool sortPostsAscending;
+  final bool? sortPostsAscending;
 
   /// Allow all posts to be deleted instead of
   ///  only the posts of the current user
@@ -132,6 +135,23 @@ class TimelineOptions {
   /// Ability to set an proper label for the category selectors.
   /// Default to category key.
   final String Function(String? categoryKey)? catergoryLabelBuilder;
+
+  /// Overides the standard horizontal padding of the whole category selector.
+  final double? categorySelectorHorizontalPadding;
+
+  /// if true the filter textfield is enabled.
+  bool filterEnabled;
+
+  /// Set a value to search through posts. When set the searchbar is shown.
+  /// If null no searchbar is shown.
+  final String? initialFilterWord;
+
+  final Widget Function(
+    Future<List<TimelinePost>> Function(
+      String filterWord,
+      Map<String, dynamic> options,
+    ) search,
+  )? searchBarBuilder;
 }
 
 typedef ButtonBuilder = Widget Function(

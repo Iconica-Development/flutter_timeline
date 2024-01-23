@@ -9,6 +9,8 @@ import 'package:flutter_timeline_interface/src/model/timeline_post.dart';
 import 'package:flutter_timeline_interface/src/model/timeline_reaction.dart';
 
 abstract class TimelineService with ChangeNotifier {
+  List<TimelinePost> posts = [];
+
   Future<void> deletePost(TimelinePost post);
   Future<TimelinePost> deletePostReaction(TimelinePost post, String reactionId);
   Future<TimelinePost> createPost(TimelinePost post);
