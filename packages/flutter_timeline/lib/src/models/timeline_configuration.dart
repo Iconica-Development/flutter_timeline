@@ -25,7 +25,7 @@ class TimelineUserStoryConfiguration {
 
   final Function(BuildContext context, String userId)? onUserTap;
 
-  final Widget Function(BuildContext context, Widget filterBar, Widget child)?
+  final Widget Function(BuildContext context, Widget child)?
       mainPageBuilder;
 
   final Widget Function(

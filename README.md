@@ -26,6 +26,39 @@ If you are going to use Firebase as the back-end of the Timeline, you should als
 ## How to use
 To use the module within your Flutter-application with predefined `Go_router` routes you should add the following:
 
+Add go_router as dependency to your project.
+Add the following configuration to your flutter_application:
+
+```
+List<GoRoute> getTimelineStoryRoutes() => getTimelineStoryRoutes(
+      TimelineUserStoryConfiguration(
+        service: FirebaseTimelineService(),
+        userService: FirebaseUserService(),
+        userId: currentUserId,
+        categoriesBuilder: (context) {},
+        optionsBuilder: (context) {},
+      ),
+    );
+```
+
+Add the `getTimelineStoryRoutes()` to your go_router routes like so:
+
+```
+final GoRouter _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return const MyHomePage(
+          title: "home",
+        );
+      },
+    ),
+    ...getTimelineStoryRoutes()
+  ],
+);
+```
+
 To add the `TimelineScreen` add the following code:
 
 ````

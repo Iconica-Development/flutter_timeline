@@ -25,7 +25,7 @@ class _PostScreenState extends State<PostScreen> {
         options: TimelineOptions(),
         post: widget.post,
         onPostDelete: () {
-          print('delete post');
+          Navigator.of(context).pop();
         },
       ),
     );

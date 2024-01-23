@@ -16,8 +16,6 @@ List<GoRoute> getTimelineStoryRoutes(
       GoRoute(
         path: TimelineUserStoryRoutes.timelineHome,
         pageBuilder: (context, state) {
-          var timelineFilter =
-              Container(); // TODO(anyone): create a filter widget
           var timelineScreen = TimelineScreen(
             userId: configuration.userId,
             onUserTap: (user) => configuration.onUserTap?.call(context, user),
@@ -31,7 +29,6 @@ List<GoRoute> getTimelineStoryRoutes(
             state: state,
             child: configuration.mainPageBuilder?.call(
                   context,
-                  timelineFilter,
                   timelineScreen,
                 ) ??
                 Scaffold(
