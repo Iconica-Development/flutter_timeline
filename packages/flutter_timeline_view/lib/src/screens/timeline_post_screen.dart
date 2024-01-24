@@ -15,7 +15,7 @@ import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
 import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
 import 'package:intl/intl.dart';
 
-class TimelinePostScreen extends StatefulWidget {
+class TimelinePostScreen extends StatelessWidget {
   const TimelinePostScreen({
     required this.userId,
     required this.service,
@@ -44,10 +44,45 @@ class TimelinePostScreen extends StatefulWidget {
   final VoidCallback onPostDelete;
 
   @override
-  State<TimelinePostScreen> createState() => _TimelinePostScreenState();
+  Widget build(BuildContext context) => Scaffold(
+        body: _TimelinePostScreen(
+          userId: userId,
+          service: service,
+          options: options,
+          post: post,
+          onPostDelete: onPostDelete,
+          onUserTap: onUserTap,
+        ),
+      );
 }
 
-class _TimelinePostScreenState extends State<TimelinePostScreen> {
+class _TimelinePostScreen extends StatefulWidget {
+  const _TimelinePostScreen({
+    required this.userId,
+    required this.service,
+    required this.options,
+    required this.post,
+    required this.onPostDelete,
+    this.onUserTap,
+  });
+
+  final String userId;
+
+  final TimelineService service;
+
+  final TimelineOptions options;
+
+  final TimelinePost post;
+
+  final Function(String userId)? onUserTap;
+
+  final VoidCallback onPostDelete;
+
+  @override
+  State<_TimelinePostScreen> createState() => _TimelinePostScreenState();
+}
+
+class _TimelinePostScreenState extends State<_TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
 
@@ -96,8 +131,9 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
     var dateFormat = widget.options.dateFormat ??
         DateFormat('dd/MM/yyyy', Localizations.localeOf(context).languageCode);
     var timeFormat = widget.options.timeFormat ?? DateFormat('HH:mm');
+
     if (isLoading) {
-      return const Center(
+      const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -185,12 +221,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       if (widget.options.allowAllDeletion ||
                           post.creator?.userId == widget.userId)
                         PopupMenuButton(
-                          onSelected: (value) async {
-                            if (value == 'delete') {
-                              await widget.service.deletePost(post);
-                              widget.onPostDelete();
-                            }
-                          },
+                          onSelected: (value) => widget.onPostDelete(),
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(

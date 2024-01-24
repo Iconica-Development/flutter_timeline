@@ -54,7 +54,7 @@ final GoRouter _router = GoRouter(
         );
       },
     ),
-    ...getTimelineStoryRoutes()
+    ...getTimelineStoryRoutes(timelineUserStoryConfiguration)
   ],
 );
 ```

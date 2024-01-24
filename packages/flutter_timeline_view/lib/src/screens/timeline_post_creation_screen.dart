@@ -13,16 +13,16 @@ import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 class TimelinePostCreationScreen extends StatefulWidget {
   const TimelinePostCreationScreen({
     required this.userId,
-    required this.postCategory,
     required this.onPostCreated,
     required this.service,
     required this.options,
+    this.postCategory,
     super.key,
   });
 
   final String userId;
 
-  final String postCategory;
+  final String? postCategory;
 
   /// called when the post is created
   final Function(TimelinePost) onPostCreated;

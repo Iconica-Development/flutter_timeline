@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
-import 'package:flutter_timeline_view/src/widgets/category_selector_button.dart';
 
 class CategorySelector extends StatelessWidget {
   const CategorySelector({
@@ -18,9 +17,11 @@ class CategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (options.categories == null) {
+    if (options.categoriesBuilder == null) {
       return const SizedBox.shrink();
     }
+
+    var categories = options.categoriesBuilder!(context);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -30,37 +31,19 @@ class CategorySelector extends StatelessWidget {
             width: options.categorySelectorHorizontalPadding ??
                 max(options.padding.horizontal - 4, 0),
           ),
-          options.categoryButtonBuilder?.call(
-                categoryKey: null,
-                categoryName:
-                    options.catergoryLabelBuilder?.call(null) ?? 'All',
-                onTap: () => onTapCategory(null),
-                selected: filter == null,
-              ) ??
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: CategorySelectorButton(
-                  category: null,
-                  selected: filter == null,
-                  onTap: () => onTapCategory(null),
-                  labelBuilder: options.catergoryLabelBuilder,
-                ),
-              ),
-          for (var category in options.categories!) ...[
+          for (var category in categories) ...[
             options.categoryButtonBuilder?.call(
-                  categoryKey: category,
-                  categoryName:
-                      options.catergoryLabelBuilder?.call(category) ?? category,
-                  onTap: () => onTapCategory(category),
-                  selected: filter == category,
+                  categoryKey: category.key,
+                  categoryName: category.title,
+                  onTap: () => onTapCategory(category.key),
+                  selected: filter == category.key,
                 ) ??
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: CategorySelectorButton(
                     category: category,
-                    selected: filter == category,
-                    onTap: () => onTapCategory(category),
-                    labelBuilder: options.catergoryLabelBuilder,
+                    selected: filter == category.key,
+                    onTap: () => onTapCategory(category.key),
                   ),
                 ),
           ],

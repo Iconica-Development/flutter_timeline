@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 
 class CategorySelectorButton extends StatelessWidget {
   const CategorySelectorButton({
     required this.category,
     required this.selected,
     required this.onTap,
-    this.labelBuilder,
     super.key,
   });
 
-  final String? category;
+  final TimelineCategory category;
   final bool selected;
-  final String Function(String? category)? labelBuilder;
   final void Function() onTap;
 
   @override
@@ -41,7 +40,7 @@ class CategorySelectorButton extends StatelessWidget {
         ),
       ),
       child: Text(
-        labelBuilder?.call(category) ?? category ?? 'All',
+        category.title,
         style: theme.textTheme.labelMedium?.copyWith(
           color: selected
               ? theme.colorScheme.onPrimary

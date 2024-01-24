@@ -22,12 +22,16 @@ List<GoRoute> getTimelineStoryRoutes(
             service: configuration.service,
             options: configuration.optionsBuilder(context),
             onPostTap: (post) async =>
-                TimelineUserStoryRoutes.timelineViewPath(post.id),
+                configuration.onPostTap?.call(context, post) ??
+                await context.push(
+                  TimelineUserStoryRoutes.timelineViewPath(post.id),
+                ),
           );
+
           return buildScreenWithoutTransition(
             context: context,
             state: state,
-            child: configuration.mainPageBuilder?.call(
+            child: configuration.openPageBuilder?.call(
                   context,
                   timelineScreen,
                 ) ??
@@ -38,72 +42,26 @@ List<GoRoute> getTimelineStoryRoutes(
         },
       ),
       GoRoute(
-        path: TimelineUserStoryRoutes.timelineSelect,
-        pageBuilder: (context, state) {
-          var timelineSelectionWidget = TimelineSelectionScreen(
-            options: configuration.optionsBuilder(context),
-            categories: configuration.categoriesBuilder(context),
-            onCategorySelected: (category) async => context.push(
-              TimelineUserStoryRoutes.timelineCreatePath(category.name),
-            ),
-          );
-          return buildScreenWithoutTransition(
-            context: context,
-            state: state,
-            child: configuration.postSelectionScreenBuilder?.call(
-                  context,
-                  timelineSelectionWidget,
-                ) ??
-                Scaffold(
-                  body: timelineSelectionWidget,
-                ),
-          );
-        },
-      ),
-      GoRoute(
-        path: TimelineUserStoryRoutes.timelineCreate,
-        pageBuilder: (context, state) {
-          var timelineCreateWidget = TimelinePostCreationScreen(
-            userId: configuration.userId,
-            options: configuration.optionsBuilder(context),
-            postCategory: state.pathParameters['category'] ?? '',
-            service: configuration.service,
-            onPostCreated: (post) => context.go(
-              TimelineUserStoryRoutes.timelineViewPath(post.id),
-            ),
-          );
-          return buildScreenWithoutTransition(
-            context: context,
-            state: state,
-            child: configuration.postCreationScreenBuilder?.call(
-                  context,
-                  timelineCreateWidget,
-                ) ??
-                Scaffold(
-                  body: timelineCreateWidget,
-                ),
-          );
-        },
-      ),
-      GoRoute(
         path: TimelineUserStoryRoutes.timelineView,
         pageBuilder: (context, state) {
+          var post =
+              configuration.service.getPost(state.pathParameters['post']!)!;
+
           var timelinePostWidget = TimelinePostScreen(
             userId: configuration.userId,
             options: configuration.optionsBuilder(context),
             service: configuration.service,
-            post: configuration.service.getPost(state.pathParameters['post']!)!,
-            onPostDelete: () => context.pop(),
+            post: post,
+            onPostDelete: () => configuration.onPostDelete?.call(context, post),
             onUserTap: (user) => configuration.onUserTap?.call(context, user),
           );
-          var category = configuration.categoriesBuilder(context).first;
+
           return buildScreenWithoutTransition(
             context: context,
             state: state,
-            child: configuration.postScreenBuilder?.call(
+            child: configuration.openPageBuilder?.call(
                   context,
                   timelinePostWidget,
-                  category,
                 ) ??
                 Scaffold(
                   body: timelinePostWidget,

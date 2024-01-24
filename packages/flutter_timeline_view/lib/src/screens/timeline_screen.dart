@@ -7,19 +7,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
-import 'package:flutter_timeline_view/src/widgets/category_selector.dart';
 
 class TimelineScreen extends StatefulWidget {
   const TimelineScreen({
     required this.userId,
     required this.service,
     required this.options,
+    required this.onPostTap,
     this.scrollController,
-    this.onPostTap,
     this.onUserTap,
     this.posts,
     this.timelineCategory,
-    this.postWidget,
     super.key,
   });
 
@@ -43,13 +41,10 @@ class TimelineScreen extends StatefulWidget {
   final List<TimelinePost>? posts;
 
   /// Called when a post is tapped
-  final Function(TimelinePost)? onPostTap;
+  final Function(TimelinePost) onPostTap;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
-
-  /// Override the standard postwidget
-  final Widget Function(TimelinePost post)? postWidget;
 
   @override
   State<TimelineScreen> createState() => _TimelineScreenState();
@@ -196,35 +191,13 @@ class _TimelineScreenState extends State<TimelineScreen> {
                     ...posts.map(
                       (post) => Padding(
                         padding: widget.options.postPadding,
-                        child: widget.postWidget?.call(post) ??
+                        child: widget.options.postWidget?.call(post) ??
                             TimelinePostWidget(
                               service: widget.service,
                               userId: widget.userId,
                               options: widget.options,
                               post: post,
-                              onTap: () async {
-                                if (widget.onPostTap != null) {
-                                  widget.onPostTap!.call(post);
-                                  return;
-                                }
-
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Scaffold(
-                                      body: TimelinePostScreen(
-                                        userId: widget.userId,
-                                        service: widget.service,
-                                        options: widget.options,
-                                        post: post,
-                                        onPostDelete: () {
-                                          widget.service.deletePost(post);
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: () => widget.onPostTap(post),
                               onTapLike: () async =>
                                   service.likePost(widget.userId, post),
                               onTapUnlike: () async =>

@@ -72,7 +72,7 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    var posts = getMockedPosts();
+    posts = getMockedPosts();
     notifyListeners();
     return posts;
   }
@@ -175,7 +175,7 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
         id: 'Post0',
         creatorId: 'test_user',
         title: 'Post 0',
-        category: 'text',
+        category: null,
         content: "Post 0 content",
         likes: 0,
         reaction: 0,
