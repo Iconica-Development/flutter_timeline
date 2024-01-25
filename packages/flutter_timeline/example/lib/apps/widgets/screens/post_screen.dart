@@ -22,7 +22,7 @@ class _PostScreenState extends State<PostScreen> {
       body: TimelinePostScreen(
         userId: 'test_user',
         service: widget.service,
-        options: TimelineOptions(),
+        options: const TimelineOptions(),
         post: widget.post,
         onPostDelete: () {
           Navigator.of(context).pop();
