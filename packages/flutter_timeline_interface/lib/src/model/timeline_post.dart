@@ -34,7 +34,7 @@ class TimelinePost {
         id: id,
         creatorId: json['creator_id'] as String,
         title: json['title'] as String,
-        category: json['category'] as String,
+        category: json['category'] as String?,
         imageUrl: json['image_url'] as String?,
         content: json['content'] as String,
         likes: json['likes'] as int,
