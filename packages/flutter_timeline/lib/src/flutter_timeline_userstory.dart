@@ -26,6 +26,8 @@ List<GoRoute> getTimelineStoryRoutes(
                 await context.push(
                   TimelineUserStoryRoutes.timelineViewPath(post.id),
                 ),
+            filterEnabled: configuration.filterEnabled,
+            postWidgetBuilder: configuration.postWidgetBuilder,
           );
 
           return buildScreenWithoutTransition(

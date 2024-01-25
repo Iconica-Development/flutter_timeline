@@ -17,22 +17,23 @@ class CategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (options.categoriesBuilder == null) {
+    if (options.categoriesOptions.categoriesBuilder == null) {
       return const SizedBox.shrink();
     }
 
-    var categories = options.categoriesBuilder!(context);
+    var categories = options.categoriesOptions.categoriesBuilder!(context);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
           SizedBox(
-            width: options.categorySelectorHorizontalPadding ??
-                max(options.padding.horizontal - 4, 0),
+            width:
+                options.categoriesOptions.categorySelectorHorizontalPadding ??
+                    max(options.padding.horizontal - 4, 0),
           ),
           for (var category in categories) ...[
-            options.categoryButtonBuilder?.call(
+            options.categoriesOptions.categoryButtonBuilder?.call(
                   categoryKey: category.key,
                   categoryName: category.title,
                   onTap: () => onTapCategory(category.key),
@@ -48,8 +49,9 @@ class CategorySelector extends StatelessWidget {
                 ),
           ],
           SizedBox(
-            width: options.categorySelectorHorizontalPadding ??
-                max(options.padding.horizontal - 4, 0),
+            width:
+                options.categoriesOptions.categorySelectorHorizontalPadding ??
+                    max(options.padding.horizontal - 4, 0),
           ),
         ],
       ),

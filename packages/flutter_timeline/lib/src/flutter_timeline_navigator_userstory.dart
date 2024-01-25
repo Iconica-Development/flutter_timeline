@@ -30,6 +30,8 @@ Widget _timelineScreenRoute(
       onUserTap: (userId) {
         configuration.onUserTap?.call(context, userId);
       },
+      filterEnabled: configuration.filterEnabled,
+      postWidgetBuilder: configuration.postWidgetBuilder,
     );
 
 Widget _postDetailScreenRoute(

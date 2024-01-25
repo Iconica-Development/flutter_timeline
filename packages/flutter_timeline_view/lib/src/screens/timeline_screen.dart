@@ -18,6 +18,8 @@ class TimelineScreen extends StatefulWidget {
     this.onUserTap,
     this.posts,
     this.timelineCategory,
+    this.postWidgetBuilder,
+    this.filterEnabled = false,
     super.key,
   });
 
@@ -46,21 +48,28 @@ class TimelineScreen extends StatefulWidget {
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
 
+  /// Override the standard postwidget
+  final Widget Function(TimelinePost post)? postWidgetBuilder;
+
+  /// if true the filter textfield is enabled.
+  final bool filterEnabled;
+
   @override
   State<TimelineScreen> createState() => _TimelineScreenState();
 }
 
 class _TimelineScreenState extends State<TimelineScreen> {
   late ScrollController controller;
-  late var textFieldController =
-      TextEditingController(text: widget.options.initialFilterWord);
+  late var textFieldController = TextEditingController(
+    text: widget.options.filterOptions.initialFilterWord,
+  );
   late var service = widget.service;
 
   bool isLoading = true;
 
   late var category = widget.timelineCategory;
 
-  late var filterWord = widget.options.initialFilterWord;
+  late var filterWord = widget.options.filterOptions.initialFilterWord;
 
   @override
   void initState() {
@@ -81,13 +90,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
       builder: (context, _) {
         var posts = widget.posts ?? service.getPosts(category);
 
-        posts = posts
-            .where(
-              (p) => category == null || p.category == category,
-            )
-            .toList();
-
-        if (widget.options.filterEnabled && filterWord != null) {
+        if (widget.filterEnabled && filterWord != null) {
           if (service is TimelineFilterService?) {
             posts =
                 (service as TimelineFilterService).filterPosts(filterWord!, {});
@@ -96,6 +99,12 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 ' with TimelineFilterService');
           }
         }
+
+        posts = posts
+            .where(
+              (p) => category == null || p.category == category,
+            )
+            .toList();
 
         // sort posts by date
         if (widget.options.sortPostsAscending != null) {
@@ -112,7 +121,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
             SizedBox(
               height: widget.options.padding.top,
             ),
-            if (widget.options.filterEnabled) ...[
+            if (widget.filterEnabled) ...[
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: widget.options.padding.horizontal,
@@ -151,8 +160,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
                       onTap: () {
                         setState(() {
                           textFieldController.clear();
-                          widget.options.filterEnabled = false;
                           filterWord = null;
+                          widget.options.filterOptions.onFilterEnabledChange
+                              ?.call(filterEnabled: false);
                         });
                       },
                       child: const Padding(
@@ -191,7 +201,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                     ...posts.map(
                       (post) => Padding(
                         padding: widget.options.postPadding,
-                        child: widget.options.postWidget?.call(post) ??
+                        child: widget.postWidgetBuilder?.call(post) ??
                             TimelinePostWidget(
                               service: widget.service,
                               userId: widget.userId,

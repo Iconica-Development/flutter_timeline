@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Iconica
 //
 // SPDX-License-Identifier: BSD-3-Clause
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 import 'package:intl/intl.dart';
 
 class TimelineOptions {
-  TimelineOptions({
+  const TimelineOptions({
     this.theme = const TimelineTheme(),
     this.translations = const TimelineTranslations.empty(),
     this.imagePickerConfig = const ImagePickerConfig(),
@@ -40,13 +41,8 @@ class TimelineOptions {
     this.iconSize = 26,
     this.postWidgetheight,
     this.postPadding = const EdgeInsets.all(12.0),
-    this.categoriesBuilder,
-    this.categoryButtonBuilder,
-    this.categorySelectorHorizontalPadding,
-    this.filterEnabled = false,
-    this.initialFilterWord,
-    this.searchBarBuilder,
-    this.postWidget,
+    this.filterOptions = const FilterOptions(),
+    this.categoriesOptions = const CategoriesOptions(),
   });
 
   /// Theming options for the timeline
@@ -120,6 +116,18 @@ class TimelineOptions {
   /// Padding of each post
   final EdgeInsets postPadding;
 
+  final FilterOptions filterOptions;
+
+  final CategoriesOptions categoriesOptions;
+}
+
+class CategoriesOptions {
+  const CategoriesOptions({
+    this.categoriesBuilder,
+    this.categoryButtonBuilder,
+    this.categorySelectorHorizontalPadding,
+  });
+
   /// List of categories that the user can select.
   /// If this is null no categories will be shown.
   final List<TimelineCategory> Function(BuildContext context)?
@@ -136,22 +144,39 @@ class TimelineOptions {
   /// Overides the standard horizontal padding of the whole category selector.
   final double? categorySelectorHorizontalPadding;
 
-  /// if true the filter textfield is enabled.
-  bool filterEnabled;
+  TimelineCategory? getCategoryByKey(
+    BuildContext context,
+    String? key,
+  ) {
+    if (categoriesBuilder == null) {
+      return null;
+    }
+
+    return categoriesBuilder!
+        .call(context)
+        .firstWhereOrNull((category) => category.key == key);
+  }
+}
+
+class FilterOptions {
+  const FilterOptions({
+    this.initialFilterWord,
+    this.searchBarBuilder,
+    this.onFilterEnabledChange,
+  });
 
   /// Set a value to search through posts. When set the searchbar is shown.
   /// If null no searchbar is shown.
   final String? initialFilterWord;
 
+  // Possibilty to override the standard search bar.
   final Widget Function(
     Future<List<TimelinePost>> Function(
       String filterWord,
-      Map<String, dynamic> options,
     ) search,
   )? searchBarBuilder;
 
-  /// Override the standard postwidget
-  final Widget Function(TimelinePost post)? postWidget;
+  final void Function({required bool filterEnabled})? onFilterEnabledChange;
 }
 
 typedef ButtonBuilder = Widget Function(

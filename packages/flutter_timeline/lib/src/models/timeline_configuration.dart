@@ -17,6 +17,8 @@ class TimelineUserStoryConfiguration {
     this.onPostTap,
     this.onUserTap,
     this.onPostDelete,
+    this.filterEnabled = false,
+    this.postWidgetBuilder,
   });
 
   final String userId;
@@ -34,4 +36,8 @@ class TimelineUserStoryConfiguration {
   final Function(BuildContext context, TimelinePost post)? onPostTap;
 
   final Widget Function(BuildContext context, TimelinePost post)? onPostDelete;
+
+  final bool filterEnabled;
+
+  final Widget Function(TimelinePost post)? postWidgetBuilder;
 }

@@ -14,23 +14,25 @@ var options = TimelineOptions(
   textInputBuilder: null,
   padding: const EdgeInsets.all(20).copyWith(top: 28),
   allowAllDeletion: true,
-  categoriesBuilder: (context) => [
-    const TimelineCategory(
-      key: null,
-      title: 'All',
-      icon: SizedBox.shrink(),
-    ),
-    const TimelineCategory(
-      key: 'category1',
-      title: 'Category 1',
-      icon: SizedBox.shrink(),
-    ),
-    const TimelineCategory(
-      key: 'category2',
-      title: 'Category 2',
-      icon: SizedBox.shrink(),
-    ),
-  ],
+  categoriesOptions: CategoriesOptions(
+    categoriesBuilder: (context) => [
+      const TimelineCategory(
+        key: null,
+        title: 'All',
+        icon: SizedBox.shrink(),
+      ),
+      const TimelineCategory(
+        key: 'category1',
+        title: 'Category 1',
+        icon: SizedBox.shrink(),
+      ),
+      const TimelineCategory(
+        key: 'category2',
+        title: 'Category 2',
+        icon: SizedBox.shrink(),
+      ),
+    ],
+  ),
 );
 
 void createPost(BuildContext context, TimelineService service,
