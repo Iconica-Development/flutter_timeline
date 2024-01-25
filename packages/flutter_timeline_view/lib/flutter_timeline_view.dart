@@ -12,4 +12,6 @@ export 'src/screens/timeline_post_creation_screen.dart';
 export 'src/screens/timeline_post_screen.dart';
 export 'src/screens/timeline_screen.dart';
 export 'src/screens/timeline_selection_screen.dart';
+export 'src/widgets/category_selector.dart';
+export 'src/widgets/category_selector_button.dart';
 export 'src/widgets/timeline_post_widget.dart';

@@ -16,23 +16,25 @@ List<GoRoute> getTimelineStoryRoutes(
       GoRoute(
         path: TimelineUserStoryRoutes.timelineHome,
         pageBuilder: (context, state) {
-          var timelineFilter =
-              Container(); // TODO(anyone): create a filter widget
           var timelineScreen = TimelineScreen(
             userId: configuration.userId,
             onUserTap: (user) => configuration.onUserTap?.call(context, user),
             service: configuration.service,
             options: configuration.optionsBuilder(context),
             onPostTap: (post) async =>
-                TimelineUserStoryRoutes.timelineViewPath(post.id),
-            timelineCategoryFilter: null,
+                configuration.onPostTap?.call(context, post) ??
+                await context.push(
+                  TimelineUserStoryRoutes.timelineViewPath(post.id),
+                ),
+            filterEnabled: configuration.filterEnabled,
+            postWidgetBuilder: configuration.postWidgetBuilder,
           );
+
           return buildScreenWithoutTransition(
             context: context,
             state: state,
-            child: configuration.mainPageBuilder?.call(
+            child: configuration.openPageBuilder?.call(
                   context,
-                  timelineFilter,
                   timelineScreen,
                 ) ??
                 Scaffold(
@@ -42,73 +44,26 @@ List<GoRoute> getTimelineStoryRoutes(
         },
       ),
       GoRoute(
-        path: TimelineUserStoryRoutes.timelineSelect,
-        pageBuilder: (context, state) {
-          var timelineSelectionWidget = TimelineSelectionScreen(
-            options: configuration.optionsBuilder(context),
-            categories: configuration.categoriesBuilder(context),
-            onCategorySelected: (category) async => context.push(
-              TimelineUserStoryRoutes.timelineCreatePath(category.name),
-            ),
-          );
-          return buildScreenWithoutTransition(
-            context: context,
-            state: state,
-            child: configuration.postSelectionScreenBuilder?.call(
-                  context,
-                  timelineSelectionWidget,
-                ) ??
-                Scaffold(
-                  body: timelineSelectionWidget,
-                ),
-          );
-        },
-      ),
-      GoRoute(
-        path: TimelineUserStoryRoutes.timelineCreate,
-        pageBuilder: (context, state) {
-          var timelineCreateWidget = TimelinePostCreationScreen(
-            userId: configuration.userId,
-            options: configuration.optionsBuilder(context),
-            postCategory: state.pathParameters['category'] ?? '',
-            service: configuration.service,
-            onPostCreated: (post) => context.go(
-              TimelineUserStoryRoutes.timelineViewPath(post.id),
-            ),
-          );
-          return buildScreenWithoutTransition(
-            context: context,
-            state: state,
-            child: configuration.postCreationScreenBuilder?.call(
-                  context,
-                  timelineCreateWidget,
-                ) ??
-                Scaffold(
-                  body: timelineCreateWidget,
-                ),
-          );
-        },
-      ),
-      GoRoute(
         path: TimelineUserStoryRoutes.timelineView,
         pageBuilder: (context, state) {
+          var post =
+              configuration.service.getPost(state.pathParameters['post']!)!;
+
           var timelinePostWidget = TimelinePostScreen(
             userId: configuration.userId,
             options: configuration.optionsBuilder(context),
             service: configuration.service,
-            userService: configuration.userService,
-            post: configuration.service.getPost(state.pathParameters['post']!)!,
-            onPostDelete: () => context.pop(),
+            post: post,
+            onPostDelete: () => configuration.onPostDelete?.call(context, post),
             onUserTap: (user) => configuration.onUserTap?.call(context, user),
           );
-          var category = configuration.categoriesBuilder(context).first;
+
           return buildScreenWithoutTransition(
             context: context,
             state: state,
-            child: configuration.postScreenBuilder?.call(
+            child: configuration.openPageBuilder?.call(
                   context,
                   timelinePostWidget,
-                  category,
                 ) ??
                 Scaffold(
                   body: timelinePostWidget,

@@ -15,12 +15,12 @@ class TimelinePost {
     required this.id,
     required this.creatorId,
     required this.title,
-    required this.category,
     required this.content,
     required this.likes,
     required this.reaction,
     required this.createdAt,
     required this.reactionEnabled,
+    this.category,
     this.creator,
     this.likedBy,
     this.reactions,
@@ -67,7 +67,7 @@ class TimelinePost {
   final String title;
 
   /// The category of the post on which can be filtered.
-  final String category;
+  final String? category;
 
   /// The url of the image of the post.
   final String? imageUrl;

@@ -12,18 +12,17 @@ import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
+import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
 import 'package:intl/intl.dart';
 
-class TimelinePostScreen extends StatefulWidget {
+class TimelinePostScreen extends StatelessWidget {
   const TimelinePostScreen({
     required this.userId,
     required this.service,
-    required this.userService,
     required this.options,
     required this.post,
     required this.onPostDelete,
     this.onUserTap,
-    this.padding = const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
     super.key,
   });
 
@@ -33,17 +32,11 @@ class TimelinePostScreen extends StatefulWidget {
   /// The timeline service to fetch the post details
   final TimelineService service;
 
-  /// The user service to fetch the profile picture of the user
-  final TimelineUserService userService;
-
   /// Options to configure the timeline screens
   final TimelineOptions options;
 
   /// The post to show
   final TimelinePost post;
-
-  /// The padding around the screen
-  final EdgeInsets padding;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
@@ -51,12 +44,57 @@ class TimelinePostScreen extends StatefulWidget {
   final VoidCallback onPostDelete;
 
   @override
-  State<TimelinePostScreen> createState() => _TimelinePostScreenState();
+  Widget build(BuildContext context) => Scaffold(
+        body: _TimelinePostScreen(
+          userId: userId,
+          service: service,
+          options: options,
+          post: post,
+          onPostDelete: onPostDelete,
+          onUserTap: onUserTap,
+        ),
+      );
 }
 
-class _TimelinePostScreenState extends State<TimelinePostScreen> {
+class _TimelinePostScreen extends StatefulWidget {
+  const _TimelinePostScreen({
+    required this.userId,
+    required this.service,
+    required this.options,
+    required this.post,
+    required this.onPostDelete,
+    this.onUserTap,
+  });
+
+  final String userId;
+
+  final TimelineService service;
+
+  final TimelineOptions options;
+
+  final TimelinePost post;
+
+  final Function(String userId)? onUserTap;
+
+  final VoidCallback onPostDelete;
+
+  @override
+  State<_TimelinePostScreen> createState() => _TimelinePostScreenState();
+}
+
+class _TimelinePostScreenState extends State<_TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
+
+  late var textInputBuilder = widget.options.textInputBuilder ??
+      (controller, suffixIcon, hintText) => TextField(
+            textCapitalization: TextCapitalization.sentences,
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: hintText,
+              suffixIcon: suffixIcon,
+            ),
+          );
 
   @override
   void initState() {
@@ -90,11 +128,12 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var dateFormat = widget.options.dateformat ??
+    var dateFormat = widget.options.dateFormat ??
         DateFormat('dd/MM/yyyy', Localizations.localeOf(context).languageCode);
     var timeFormat = widget.options.timeFormat ?? DateFormat('HH:mm');
+
     if (isLoading) {
-      return const Center(
+      const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -127,7 +166,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: widget.padding,
+              padding: widget.options.padding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -182,12 +221,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       if (widget.options.allowAllDeletion ||
                           post.creator?.userId == widget.userId)
                         PopupMenuButton(
-                          onSelected: (value) async {
-                            if (value == 'delete') {
-                              await widget.service.deletePost(post);
-                              widget.onPostDelete();
-                            }
-                          },
+                          onSelected: (value) => widget.onPostDelete(),
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(
@@ -223,11 +257,40 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      child: CachedNetworkImage(
-                        width: double.infinity,
-                        imageUrl: post.imageUrl!,
-                        fit: BoxFit.fitHeight,
-                      ),
+                      child: widget.options.doubleTapTolike
+                          ? TappableImage(
+                              likeAndDislikeIcon: widget
+                                  .options.likeAndDislikeIconsForDoubleTap,
+                              post: post,
+                              userId: widget.userId,
+                              onLike: ({required bool liked}) async {
+                                var userId = widget.userId;
+
+                                late TimelinePost result;
+
+                                if (!liked) {
+                                  result = await widget.service.likePost(
+                                    userId,
+                                    post,
+                                  );
+                                } else {
+                                  result = await widget.service.unlikePost(
+                                    userId,
+                                    post,
+                                  );
+                                }
+
+                                await loadPostDetails();
+
+                                return result.likedBy?.contains(userId) ??
+                                    false;
+                              },
+                            )
+                          : CachedNetworkImage(
+                              width: double.infinity,
+                              imageUrl: post.imageUrl!,
+                              fit: BoxFit.fitHeight,
+                            ),
                     ),
                   ],
                   const SizedBox(
@@ -246,11 +309,14 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               ),
                             );
                           },
-                          child: widget.options.theme.likedIcon ??
-                              Icon(
-                                Icons.thumb_up_rounded,
-                                color: widget.options.theme.iconColor,
-                              ),
+                          child: Container(
+                            color: Colors.transparent,
+                            child: widget.options.theme.likedIcon ??
+                                Icon(
+                                  Icons.thumb_up_rounded,
+                                  color: widget.options.theme.iconColor,
+                                ),
+                          ),
                         ),
                       ] else ...[
                         InkWell(
@@ -262,11 +328,15 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               ),
                             );
                           },
-                          child: widget.options.theme.likeIcon ??
-                              Icon(
-                                Icons.thumb_up_alt_outlined,
-                                color: widget.options.theme.iconColor,
-                              ),
+                          child: Container(
+                            color: Colors.transparent,
+                            child: widget.options.theme.likeIcon ??
+                                Icon(
+                                  Icons.thumb_up_alt_outlined,
+                                  color: widget.options.theme.iconColor,
+                                  size: widget.options.iconSize,
+                                ),
+                          ),
                         ),
                       ],
                       const SizedBox(width: 8),
@@ -275,6 +345,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                             Icon(
                               Icons.chat_bubble_outline_rounded,
                               color: widget.options.theme.iconColor,
+                              size: widget.options.iconSize,
                             ),
                     ],
                   ),
@@ -481,14 +552,14 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: ReactionBottom(
-              messageInputBuilder: widget.options.textInputBuilder!,
+              messageInputBuilder: textInputBuilder,
               onPressSelectImage: () async {
                 // open the image picker
                 var result = await showModalBottomSheet<Uint8List?>(
                   context: context,
                   builder: (context) => Container(
                     padding: const EdgeInsets.all(8.0),
-                    color: Colors.black,
+                    color: theme.colorScheme.background,
                     child: ImagePicker(
                       imagePickerConfig: widget.options.imagePickerConfig,
                       imagePickerTheme: widget.options.imagePickerTheme,

@@ -4,7 +4,7 @@
 
 name: flutter_timeline_view
 description: Visual elements of the Flutter Timeline Component
-version: 1.0.0
+version: 2.0.0
 
 publish_to: none
 
@@ -23,11 +23,12 @@ dependencies:
     git: 
        url: https://github.com/Iconica-Development/flutter_timeline
        path: packages/flutter_timeline_interface
-       ref: 1.0.0
+       ref: 2.0.0
   flutter_image_picker:
     git:
       url: https://github.com/Iconica-Development/flutter_image_picker
       ref: 1.0.4
+  collection: any
 
 dev_dependencies:
   flutter_lints: ^2.0.0

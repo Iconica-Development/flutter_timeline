@@ -9,36 +9,19 @@ import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 @immutable
 class TimelineUserStoryConfiguration {
   const TimelineUserStoryConfiguration({
-    required this.categoriesBuilder,
-    required this.optionsBuilder,
     required this.userId,
     required this.service,
     required this.userService,
-    this.mainPageBuilder,
-    this.postScreenBuilder,
-    this.postCreationScreenBuilder,
-    this.postSelectionScreenBuilder,
+    required this.optionsBuilder,
+    this.openPageBuilder,
+    this.onPostTap,
     this.onUserTap,
+    this.onPostDelete,
+    this.filterEnabled = false,
+    this.postWidgetBuilder,
   });
 
   final String userId;
-
-  final Function(BuildContext context, String userId)? onUserTap;
-
-  final Widget Function(BuildContext context, Widget filterBar, Widget child)?
-      mainPageBuilder;
-
-  final Widget Function(
-    BuildContext context,
-    Widget child,
-    TimelineCategory category,
-  )? postScreenBuilder;
-
-  final Widget Function(BuildContext context, Widget child)?
-      postCreationScreenBuilder;
-
-  final Widget Function(BuildContext context, Widget child)?
-      postSelectionScreenBuilder;
 
   final TimelineService service;
 
@@ -46,5 +29,15 @@ class TimelineUserStoryConfiguration {
 
   final TimelineOptions Function(BuildContext context) optionsBuilder;
 
-  final List<TimelineCategory> Function(BuildContext context) categoriesBuilder;
+  final Function(BuildContext context, String userId)? onUserTap;
+
+  final Function(BuildContext context, Widget child)? openPageBuilder;
+
+  final Function(BuildContext context, TimelinePost post)? onPostTap;
+
+  final Widget Function(BuildContext context, TimelinePost post)? onPostDelete;
+
+  final bool filterEnabled;
+
+  final Widget Function(TimelinePost post)? postWidgetBuilder;
 }
