@@ -19,7 +19,6 @@ class TimelineScreen extends StatefulWidget {
     this.posts,
     this.controller,
     this.timelineCategoryFilter,
-    this.timelinePostHeight,
     this.padding = const EdgeInsets.symmetric(vertical: 12.0),
     super.key,
   });
@@ -36,10 +35,8 @@ class TimelineScreen extends StatefulWidget {
   /// The controller for the scroll view
   final ScrollController? controller;
 
+  /// The string to filter the timeline by category
   final String? timelineCategoryFilter;
-
-  /// The height of a post in the timeline
-  final double? timelinePostHeight;
 
   /// This is used if you want to pass in a list of posts instead
   /// of fetching them from the service
@@ -106,7 +103,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                     userId: widget.userId,
                     options: widget.options,
                     post: post,
-                    height: widget.timelinePostHeight,
+                    height: widget.options.timelinePostHeight,
                     onTap: () => widget.onPostTap.call(post),
                     onTapLike: () async =>
                         widget.service.likePost(widget.userId, post),
@@ -125,6 +122,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                       widget.timelineCategoryFilter == null
                           ? widget.options.translations.noPosts
                           : widget.options.translations.noPostsWithFilter,
+                      style: widget.options.theme.textStyles.noPostsStyle,
                     ),
                   ),
                 ),

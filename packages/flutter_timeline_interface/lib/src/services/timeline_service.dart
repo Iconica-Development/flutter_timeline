@@ -10,10 +10,14 @@ import 'package:flutter_timeline_interface/src/model/timeline_reaction.dart';
 
 abstract class TimelineService with ChangeNotifier {
   Future<void> deletePost(TimelinePost post);
+  Future<TimelinePost> deletePostReaction(TimelinePost post, String reactionId);
   Future<TimelinePost> createPost(TimelinePost post);
   Future<List<TimelinePost>> fetchPosts(String? category);
   Future<TimelinePost> fetchPost(TimelinePost post);
+  Future<List<TimelinePost>> fetchPostsPaginated(String? category, int limit);
+  TimelinePost? getPost(String postId);
   List<TimelinePost> getPosts(String? category);
+  Future<List<TimelinePost>> refreshPosts(String? category);
   Future<TimelinePost> fetchPostDetails(TimelinePost post);
   Future<TimelinePost> reactToPost(
     TimelinePost post,

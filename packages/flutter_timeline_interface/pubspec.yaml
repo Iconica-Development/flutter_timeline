@@ -4,7 +4,7 @@
 
 name: flutter_timeline_interface
 description: Interface for the service of the Flutter Timeline component
-version: 0.0.1
+version: 1.0.0
 
 publish_to: none
 
@@ -14,10 +14,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_data_interface:
-    git:
-      url: https://github.com/Iconica-Development/flutter_data_interface.git
-      ref: 1.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

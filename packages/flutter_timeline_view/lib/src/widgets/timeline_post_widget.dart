@@ -43,7 +43,6 @@ class TimelinePostWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: SizedBox(
-        // TODO(anyone): should posts with text have a max height?
         height: post.imageUrl != null ? height : null,
         width: double.infinity,
         child: Column(
@@ -69,14 +68,27 @@ class TimelinePostWidget extends StatelessWidget {
                                   post.creator!.imageUrl!,
                                 ),
                               ),
+                        ] else ...[
+                          options.anonymousAvatarBuilder?.call(
+                                post.creator!,
+                                40,
+                              ) ??
+                              const CircleAvatar(
+                                radius: 20,
+                                child: Icon(
+                                  Icons.person,
+                                ),
+                              ),
                         ],
                         const SizedBox(width: 10),
-                        if (post.creator!.fullName != null) ...[
-                          Text(
-                            post.creator!.fullName!,
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ],
+                        Text(
+                          options.nameBuilder?.call(post.creator) ??
+                              post.creator?.fullName ??
+                              options.translations.anonymousUser,
+                          style:
+                              options.theme.textStyles.postCreatorTitleStyle ??
+                                  theme.textTheme.titleMedium,
+                        ),
                       ],
                     ),
                   ),
@@ -94,7 +106,11 @@ class TimelinePostWidget extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Text(options.translations.deletePost),
+                            Text(
+                              options.translations.deletePost,
+                              style: options.theme.textStyles.deletePostStyle ??
+                                  theme.textTheme.bodyMedium,
+                            ),
                             const SizedBox(width: 8),
                             options.theme.deleteIcon ??
                                 Icon(
@@ -113,74 +129,87 @@ class TimelinePostWidget extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 8),
             // image of the post
             if (post.imageUrl != null) ...[
+              const SizedBox(height: 8),
               Flexible(
                 flex: height != null ? 1 : 0,
-                child: CachedNetworkImage(
-                  imageUrl: post.imageUrl!,
-                  width: double.infinity,
-                  fit: BoxFit.fitWidth,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  child: CachedNetworkImage(
+                    width: double.infinity,
+                    imageUrl: post.imageUrl!,
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
             ],
-            // post information
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                children: [
-                  if (post.likedBy?.contains(userId) ?? false) ...[
-                    InkWell(
-                      onTap: onTapUnlike,
-                      child: options.theme.likedIcon ??
-                          Icon(
-                            Icons.thumb_up_rounded,
-                            color: options.theme.iconColor,
-                          ),
-                    ),
-                  ] else ...[
-                    InkWell(
-                      onTap: onTapLike,
-                      child: options.theme.likeIcon ??
-                          Icon(
-                            Icons.thumb_up_alt_outlined,
-                            color: options.theme.iconColor,
-                          ),
-                    ),
-                  ],
-                  const SizedBox(width: 8),
-                  if (post.reactionEnabled)
-                    options.theme.commentIcon ??
-                        const Icon(
-                          Icons.chat_bubble_outline_rounded,
-                        ),
-                ],
-              ),
+            const SizedBox(
+              height: 8,
             ),
+            // post information
+            Row(
+              children: [
+                if (post.likedBy?.contains(userId) ?? false) ...[
+                  InkWell(
+                    onTap: onTapUnlike,
+                    child: options.theme.likedIcon ??
+                        Icon(
+                          Icons.thumb_up_rounded,
+                          color: options.theme.iconColor,
+                        ),
+                  ),
+                ] else ...[
+                  InkWell(
+                    onTap: onTapLike,
+                    child: options.theme.likeIcon ??
+                        Icon(
+                          Icons.thumb_up_alt_outlined,
+                          color: options.theme.iconColor,
+                        ),
+                  ),
+                ],
+                const SizedBox(width: 8),
+                if (post.reactionEnabled)
+                  options.theme.commentIcon ??
+                      Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        color: options.theme.iconColor,
+                      ),
+              ],
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+
             Text(
               '${post.likes} ${options.translations.likesTitle}',
-              style: theme.textTheme.titleSmall,
+              style: options.theme.textStyles.listPostLikeTitleAndAmount ??
+                  theme.textTheme.titleSmall,
             ),
             const SizedBox(height: 4),
             Text.rich(
               TextSpan(
-                text: post.creator?.fullName ??
+                text: options.nameBuilder?.call(post.creator) ??
+                    post.creator?.fullName ??
                     options.translations.anonymousUser,
-                style: theme.textTheme.titleSmall,
+                style: options.theme.textStyles.listCreatorNameStyle ??
+                    theme.textTheme.titleSmall,
                 children: [
                   const TextSpan(text: ' '),
                   TextSpan(
                     text: post.title,
-                    style: theme.textTheme.bodyMedium,
+                    style: options.theme.textStyles.listPostTitleStyle ??
+                        theme.textTheme.bodyMedium,
                   ),
                 ],
               ),
-              overflow: TextOverflow.ellipsis,
             ),
+            const SizedBox(height: 4),
             Text(
               options.translations.viewPost,
-              style: theme.textTheme.bodySmall,
+              style: options.theme.textStyles.viewPostStyle ??
+                  theme.textTheme.bodySmall,
             ),
           ],
         ),
