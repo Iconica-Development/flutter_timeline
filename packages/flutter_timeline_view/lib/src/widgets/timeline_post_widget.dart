@@ -50,7 +50,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
       onTap: widget.onTap,
       child: SizedBox(
         height: widget.post.imageUrl != null
-            ? widget.options.postWidgetheight
+            ? widget.options.postWidgetHeight
             : null,
         width: double.infinity,
         child: Column(
@@ -145,7 +145,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
             if (widget.post.imageUrl != null) ...[
               const SizedBox(height: 8),
               Flexible(
-                flex: widget.options.postWidgetheight != null ? 1 : 0,
+                flex: widget.options.postWidgetHeight != null ? 1 : 0,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                   child: widget.options.doubleTapTolike

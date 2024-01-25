@@ -39,7 +39,7 @@ class TimelineOptions {
     this.nameBuilder,
     this.padding = const EdgeInsets.symmetric(vertical: 12.0),
     this.iconSize = 26,
-    this.postWidgetheight,
+    this.postWidgetHeight,
     this.postPadding = const EdgeInsets.all(12.0),
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
@@ -111,13 +111,15 @@ class TimelineOptions {
   final double iconSize;
 
   /// Sets a predefined height for the postWidget.
-  final double? postWidgetheight;
+  final double? postWidgetHeight;
 
   /// Padding of each post
   final EdgeInsets postPadding;
 
+  /// Options for filtering
   final FilterOptions filterOptions;
 
+  /// Options for using the category selector.
   final CategoriesOptions categoriesOptions;
 }
 

@@ -35,7 +35,6 @@ List<GoRoute> getTimelineStoryRoutes() => getTimelineStoryRoutes(
         service: FirebaseTimelineService(),
         userService: FirebaseUserService(),
         userId: currentUserId,
-        categoriesBuilder: (context) {},
         optionsBuilder: (context) {},
       ),
     );
@@ -59,6 +58,15 @@ final GoRouter _router = GoRouter(
 );
 ```
 
+The user story can also be used without go router:
+Add the following code somewhere in your widget tree:
+
+````
+timeLineNavigatorUserStory(TimelineUserStoryConfiguration, context),
+````
+
+
+Or create your own routing using the Screens:
 To add the `TimelineScreen` add the following code:
 
 ````
@@ -66,6 +74,7 @@ TimelineScreen(
   userId:  currentUserId,
   service: timelineService,
   options: timelineOptions,
+  onPostTap: (post) {}
 ),
 ````
 
@@ -117,20 +126,32 @@ The `TimelineOptions` has its own parameters, as specified below:
 
 | Parameter | Explanation |
 |-----------|-------------|
+| theme | Used to set icon colors and textstyles |
 | translations | Ability to provide desired text and tanslations. |
+| imagePickerConfig | Config for the image picker in the post creation screen. |
+| imagePickerTheme | Theme for the image picker in the post creation screen. |
 | timelinePostHeight | Sets the height for each post widget in the list of post. If null, the size depends on the size of the image. |
 | allowAllDeletion | Determines of users are allowed to delete thier own posts. |
 | sortCommentsAscending | Determines if the comments are sorted from old to new or new to old. |
 | sortPostsAscending | Determines if the posts are sorted from old to new or new to old. |
+| doubleTapToLike | Enables the abilty to double tap the image to like the post. |
+| iconsWithValues | Ability to provide desired text and tanslations. |
+| likeAndDislikeIconsForDoubleTap | Ability to override the standard icon which appears on double tap. |
+| itemInfoBuilder | Ability to override the bottom of the postwidgets. (Everything under the like and comment icons) |
 | dateFormat | Sets the used date format |
 | timeFormat | Sets the used time format |
 | buttonBuilder | The ability to provide a custom button for the post creation screen. |
 | textInputBuilder | The ability to provide a custom text input widget for the post creation screen. |
+| dividerBuilder | Ability to provide desired text and tanslations. |
 | userAvatarBuilder | The ability to provide a custom avatar. |
 | anonymousAvatarBuilder | The ability to provide a custom avatar for anonymous users. |
 | nameBuilder | The ability to override the standard way of display the post creator name. |
 | padding | Padding used for the whole page. |
 | iconSize | Size of icons like the comment and like icons. Dafualts to 26. |
+| postWidgetHeight | Ability to provide desired text and tanslations. |
+| postPadding | Padding for each post. |
+| filterOptions | Options for using the filter to filter posts. |
+| categoriesOptions | Options for using the category selector to provide posts of a certain category. |
 
 
 The `ImagePickerTheme` ans `imagePickerConfig` also have their own parameters, how to use these parameters can be found in [the documentation of the flutter_image_picker package](https://github.com/Iconica-Development/flutter_image_picker).
