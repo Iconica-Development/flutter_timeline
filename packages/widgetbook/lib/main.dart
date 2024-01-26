@@ -65,7 +65,7 @@ Widget postScreenUseCase(BuildContext context) {
   var service = TestTimelineService()..fetchPosts(null);
   var options = const TimelineOptions();
   return TimelinePostScreen(
-    userId: '1',
+    userId: '2',
     service: service,
     options: options,
     post: service.posts.first,
@@ -83,7 +83,7 @@ Widget timelineUseCase(BuildContext context) {
   var service = TestTimelineService()..fetchPosts(null);
   var options = const TimelineOptions();
   return TimelineScreen(
-    userId: '1',
+    userId: '2',
     options: options,
     onPostTap: (_) {},
     service: service,
