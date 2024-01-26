@@ -58,7 +58,7 @@ class WidgetBookApp extends StatelessWidget {
 @widgetbook.UseCase(
   designLink:
       'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
-  name: 'Timeline post screen',
+  name: 'Timeline post screen 2',
   type: TimelinePostScreen,
 )
 Widget postScreenUseCase(BuildContext context) {
@@ -78,7 +78,7 @@ Widget postScreenUseCase(BuildContext context) {
 @widgetbook.UseCase(
   designLink:
       'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
-  name: 'Timeline screen',
+  name: 'Timeline screen 2',
   type: TimelineScreen,
 )
 Widget timelineUseCase(BuildContext context) {
