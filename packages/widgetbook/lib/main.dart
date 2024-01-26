@@ -63,12 +63,12 @@ class WidgetBookApp extends StatelessWidget {
 )
 Widget postScreenUseCase(BuildContext context) {
   var service = TestTimelineService()..fetchPosts(null);
-  var options = const TimelineOptions();
+  var options = const TimelineOptions(doubleTapTolike: true);
   return TimelinePostScreen(
     userId: '2',
     service: service,
     options: options,
-    post: service.posts.first,
+    post: service.posts.last,
     onPostDelete: () {},
   );
 }
@@ -81,7 +81,7 @@ Widget postScreenUseCase(BuildContext context) {
 )
 Widget timelineUseCase(BuildContext context) {
   var service = TestTimelineService()..fetchPosts(null);
-  var options = const TimelineOptions();
+  var options = const TimelineOptions(doubleTapTolike: true);
   return TimelineScreen(
     userId: '2',
     options: options,
