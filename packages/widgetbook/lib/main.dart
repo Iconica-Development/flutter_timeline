@@ -55,41 +55,41 @@ class WidgetBookApp extends StatelessWidget {
   }
 }
 
-// @widgetbook.UseCase(
-//   designLink:
-//       'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
-//   name: 'Timeline post screen 2',
-//   type: TimelinePostScreen,
-// )
-// Widget postScreenUseCase(BuildContext context) {
-//   var service = TestTimelineService()..fetchPosts(null);
-//   var options = const TimelineOptions(doubleTapTolike: true);
-//   return Scaffold(
-//     body: TimelinePostScreen(
-//       userId: '2',
-//       service: service,
-//       options: options,
-//       post: service.posts.last,
-//       onPostDelete: () {},
-//     ),
-//   );
-// }
+@widgetbook.UseCase(
+  designLink:
+      'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
+  name: 'Timeline post screen 2',
+  type: TimelinePostScreen,
+)
+Widget postScreenUseCase(BuildContext context) {
+  var service = TestTimelineService()..fetchPosts(null);
+  var options = const TimelineOptions(doubleTapTolike: true);
+  return Scaffold(
+    body: TimelinePostScreen(
+      userId: '2',
+      service: service,
+      options: options,
+      post: service.posts.last,
+      onPostDelete: () {},
+    ),
+  );
+}
 
-// @widgetbook.UseCase(
-//   designLink:
-//       'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
-//   name: 'Timeline screen 2',
-//   type: TimelineScreen,
-// )
-// Widget timelineUseCase(BuildContext context) {
-//   var service = TestTimelineService()..fetchPosts(null);
-//   var options = const TimelineOptions(doubleTapTolike: true);
-//   return Scaffold(
-//     body: TimelineScreen(
-//       userId: '2',
-//       options: options,
-//       onPostTap: (_) {},
-//       service: service,
-//     ),
-//   );
-// }
+@widgetbook.UseCase(
+  designLink:
+      'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
+  name: 'Timeline screen 2',
+  type: TimelineScreen,
+)
+Widget timelineUseCase(BuildContext context) {
+  var service = TestTimelineService()..fetchPosts(null);
+  var options = const TimelineOptions(doubleTapTolike: true);
+  return Scaffold(
+    body: TimelineScreen(
+      userId: '2',
+      options: options,
+      onPostTap: (_) {},
+      service: service,
+    ),
+  );
+}
