@@ -40,7 +40,7 @@ List<GoRoute> getTimelineStoryRoutes() => getTimelineStoryRoutes(
         service: FirebaseTimelineService(),
         userService: FirebaseUserService(),
         userId: currentUserId,
-        optionsBuilder: (context) {},
+        optionsBuilder: (context) => FirebaseOptions(),
       ),
     );
 ```
@@ -79,13 +79,12 @@ TimelineScreen(
   userId:  currentUserId,
   service: timelineService,
   options: timelineOptions,
-  onPostTap: (post) {}
 ),
 ````
 
 `TimelineScreen` is supplied with a standard `TimelinePostScreen` which opens the detail page of the selected post. Needed parameter like `TimelineService` and `TimelineOptions` will be the same as the ones supplied to the `TimelineScreen`.
 
-The standard `TimelinePostScreen` can be overridden by supplying `onPostTap` as shown below.
+The standard `TimelinePostScreen` can be overridden by defining `onPostTap` as shown below.
 
 ```
 TimelineScreen(

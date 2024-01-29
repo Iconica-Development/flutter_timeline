@@ -4,7 +4,7 @@ import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:go_router/go_router.dart';
 
 List<GoRoute> getTimelineRoutes() => getTimelineStoryRoutes(
-      getConfig(TimelineService(
+      configuration: getConfig(TimelineService(
         postService: LocalTimelinePostService(),
       )),
     );
