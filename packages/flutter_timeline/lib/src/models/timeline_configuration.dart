@@ -9,9 +9,9 @@ import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 @immutable
 class TimelineUserStoryConfiguration {
   const TimelineUserStoryConfiguration({
-    required this.userId,
     required this.service,
     required this.optionsBuilder,
+    this.userId = 'test_user',
     this.openPageBuilder,
     this.onPostTap,
     this.onUserTap,

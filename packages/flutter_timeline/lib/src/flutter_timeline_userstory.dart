@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 List<GoRoute> getTimelineStoryRoutes({
   TimelineUserStoryConfiguration? configuration,
 }) {
-  var config = configuration ??= TimelineUserStoryConfiguration(
+  var config = configuration ?? TimelineUserStoryConfiguration(
     userId: 'test_user',
     service: TimelineService(
       postService: LocalTimelinePostService(),

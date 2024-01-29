@@ -9,8 +9,7 @@ class FirebaseTimelineService implements TimelineService {
     this.firebasePostService,
     this.firebaseUserService,
   }) {
-    firebaseUserService ??= FirebaseTimelinePostService(
-      userService: userService,
+    firebaseUserService ??= FirebaseTimelineUserService(
       options: options,
       app: app,
     );
@@ -45,7 +44,7 @@ class FirebaseTimelineService implements TimelineService {
     if (firebaseUserService != null) {
       return firebaseUserService!;
     } else {
-      return FirebaseUserService(
+      return FirebaseTimelineUserService(
         options: options,
         app: app,
       );
