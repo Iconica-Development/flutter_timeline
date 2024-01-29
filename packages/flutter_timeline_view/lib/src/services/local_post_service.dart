@@ -5,12 +5,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_timeline/flutter_timeline.dart';
+import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 
-// ignore: depend_on_referenced_packages
-import 'package:uuid/uuid.dart';
-
-class TestTimelineService with ChangeNotifier implements TimelineService {
+class LocalTimelinePostService
+    with ChangeNotifier
+    implements TimelinePostService {
   @override
   List<TimelinePost> posts = [];
 
@@ -61,8 +60,11 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
     var reactions = post.reactions ?? [];
     var updatedReactions = <TimelinePostReaction>[];
     for (var reaction in reactions) {
-      updatedReactions.add(reaction.copyWith(
-          creator: const TimelinePosterUserModel(userId: 'test_user')));
+      updatedReactions.add(
+        reaction.copyWith(
+          creator: const TimelinePosterUserModel(userId: 'test_user'),
+        ),
+      );
     }
     var updatedPost = post.copyWith(reactions: updatedReactions);
     posts = posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
@@ -150,10 +152,12 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
     TimelinePostReaction reaction, {
     Uint8List? image,
   }) async {
-    var reactionId = const Uuid().v4();
+    var reactionId = DateTime.now().millisecondsSinceEpoch.toString();
+
     var updatedReaction = reaction.copyWith(
-        id: reactionId,
-        creator: const TimelinePosterUserModel(userId: 'test_user'));
+      id: reactionId,
+      creator: const TimelinePosterUserModel(userId: 'test_user'),
+    );
 
     var updatedPost = post.copyWith(
       reaction: post.reaction + 1,
@@ -169,19 +173,45 @@ class TestTimelineService with ChangeNotifier implements TimelineService {
     return updatedPost;
   }
 
-  List<TimelinePost> getMockedPosts() {
-    return [
-      TimelinePost(
-        id: 'Post0',
-        creatorId: 'test_user',
-        title: 'Post 0',
-        category: null,
-        content: "Post 0 content",
-        likes: 0,
-        reaction: 0,
-        createdAt: DateTime.now(),
-        reactionEnabled: false,
-      )
-    ];
-  }
+  List<TimelinePost> getMockedPosts() => [
+        TimelinePost(
+          id: 'Post0',
+          creatorId: 'test_user',
+          title: 'Post 0',
+          category: null,
+          content: 'Standard post without image made by the current user',
+          likes: 0,
+          reaction: 0,
+          createdAt: DateTime.now(),
+          reactionEnabled: false,
+        ),
+        TimelinePost(
+          id: 'Post1',
+          creatorId: 'test_user2',
+          title: 'Post 1',
+          category: null,
+          content: 'Standard post with image made by a different user and '
+              'reactions enabled',
+          likes: 0,
+          reaction: 0,
+          createdAt: DateTime.now(),
+          reactionEnabled: false,
+          imageUrl:
+              'https://s3-eu-west-1.amazonaws.com/sortlist-core-api/6qpvvqjtmniirpkvp8eg83bicnc2',
+        ),
+        TimelinePost(
+          id: 'Post2',
+          creatorId: 'test_user',
+          title: 'Post 2',
+          category: null,
+          content: 'Standard post with image made by the current user and'
+              ' reactions enabled',
+          likes: 0,
+          reaction: 0,
+          createdAt: DateTime.now(),
+          reactionEnabled: true,
+          imageUrl:
+              'https://s3-eu-west-1.amazonaws.com/sortlist-core-api/6qpvvqjtmniirpkvp8eg83bicnc2',
+        ),
+      ];
 }

@@ -1,5 +1,4 @@
 import 'package:example/config/config.dart';
-import 'package:example/services/timeline_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 
@@ -32,7 +31,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var timelineService = TestTimelineService();
+  var timelineService =
+      TimelineService(postService: LocalTimelinePostService());
   var timelineOptions = options;
 
   @override
@@ -64,7 +64,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: SafeArea(
-        child: timeLineNavigatorUserStory(getConfig(timelineService), context),
+        child: timeLineNavigatorUserStory(
+            getConfig(
+              timelineService,
+            ),
+            context),
       ),
     );
   }

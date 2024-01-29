@@ -4,7 +4,7 @@
 
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 
-mixin TimelineFilterService on TimelineService {
+mixin TimelineFilterService on TimelinePostService {
   List<TimelinePost> filterPosts(
     String filterWord,
     Map<String, dynamic> options,

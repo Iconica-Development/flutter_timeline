@@ -82,7 +82,7 @@ class _TimelinePostCreationScreenState
         reactionEnabled: allowComments,
         image: image,
       );
-      var newPost = await widget.service.createPost(post);
+      var newPost = await widget.service.postService.createPost(post);
       widget.onPostCreated.call(newPost);
     }
 

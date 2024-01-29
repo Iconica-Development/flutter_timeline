@@ -46,6 +46,6 @@ Widget _postDetailScreenRoute(
       post: post,
       onPostDelete: () async {
         configuration.onPostDelete?.call(context, post) ??
-            await configuration.service.deletePost(post);
+            await configuration.service.postService.deletePost(post);
       },
     );

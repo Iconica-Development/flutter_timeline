@@ -1,11 +1,9 @@
-import 'package:example/apps/widgets/screens/post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 
 TimelineUserStoryConfiguration getConfig(TimelineService service) {
   return TimelineUserStoryConfiguration(
       service: service,
-      userService: TestUserService(),
       userId: 'test_user',
       optionsBuilder: (context) => options);
 }
@@ -56,9 +54,9 @@ void createPost(BuildContext context, TimelineService service,
 }
 
 void generatePost(TimelineService service) {
-  var amountOfPosts = service.getPosts(null).length;
+  var amountOfPosts = service.postService.getPosts(null).length;
 
-  service.createPost(
+  service.postService.createPost(
     TimelinePost(
       id: 'Post$amountOfPosts',
       creatorId: 'test_user',

@@ -11,7 +11,6 @@ class TimelineUserStoryConfiguration {
   const TimelineUserStoryConfiguration({
     required this.userId,
     required this.service,
-    required this.userService,
     required this.optionsBuilder,
     this.openPageBuilder,
     this.onPostTap,
@@ -24,8 +23,6 @@ class TimelineUserStoryConfiguration {
   final String userId;
 
   final TimelineService service;
-
-  final TimelineUserService userService;
 
   final TimelineOptions Function(BuildContext context) optionsBuilder;
 

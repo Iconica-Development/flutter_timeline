@@ -46,8 +46,8 @@ List<GoRoute> getTimelineStoryRoutes(
       GoRoute(
         path: TimelineUserStoryRoutes.timelineView,
         pageBuilder: (context, state) {
-          var post =
-              configuration.service.getPost(state.pathParameters['post']!)!;
+          var post = configuration.service.postService
+              .getPost(state.pathParameters['post']!)!;
 
           var timelinePostWidget = TimelinePostScreen(
             userId: configuration.userId,

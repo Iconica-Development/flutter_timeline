@@ -13,7 +13,8 @@ import 'package:flutter_timeline_firebase/src/models/firebase_user_document.dart
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:uuid/uuid.dart';
 
-class FirebaseTimelineService extends TimelineService with TimelineUserService {
+class FirebaseTimelineService extends TimelinePostService
+    with TimelineUserService {
   FirebaseTimelineService({
     required TimelineUserService userService,
     FirebaseApp? app,

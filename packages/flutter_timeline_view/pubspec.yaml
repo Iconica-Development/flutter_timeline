@@ -20,10 +20,11 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   
   flutter_timeline_interface:
-    git: 
-       url: https://github.com/Iconica-Development/flutter_timeline
-       path: packages/flutter_timeline_interface
-       ref: 2.0.0
+    path: ../flutter_timeline_interface
+    # git: 
+    #    url: https://github.com/Iconica-Development/flutter_timeline
+    #    path: packages/flutter_timeline_interface
+    #    ref: 2.0.0
   flutter_image_picker:
     git:
       url: https://github.com/Iconica-Development/flutter_image_picker

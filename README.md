@@ -23,6 +23,11 @@ If you are going to use Firebase as the back-end of the Timeline, you should als
         path: packages/flutter_timeline_firebase
 ```
 
+Add the following code in your `main` function, before the runApp().
+```
+  initializeDateFormatting();
+```
+
 ## How to use
 To use the module within your Flutter-application with predefined `Go_router` routes you should add the following:
 
