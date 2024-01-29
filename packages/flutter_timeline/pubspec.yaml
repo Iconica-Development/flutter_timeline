@@ -24,7 +24,7 @@ dependencies:
   flutter_timeline_interface:
     git: 
        url: https://github.com/Iconica-Development/flutter_timeline
-       path: packages/flutter_timeline_view
+       path: packages/flutter_timeline_interface
        ref: 2.0.0
 
 dev_dependencies:
