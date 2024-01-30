@@ -17,15 +17,6 @@ final directories = <_i1.WidgetbookNode>[
     name: 'screens',
     children: [
       _i1.WidgetbookLeafComponent(
-        name: 'TimelinePostScreen',
-        useCase: _i1.WidgetbookUseCase(
-          name: 'Timeline post screen',
-          builder: _i2.postScreenUseCase,
-          designLink:
-              'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
-        ),
-      ),
-      _i1.WidgetbookLeafComponent(
         name: 'TimelineScreen',
         useCase: _i1.WidgetbookUseCase(
           name: 'Timeline screen',
@@ -33,7 +24,7 @@ final directories = <_i1.WidgetbookNode>[
           designLink:
               'https://www.figma.com/file/PRJoVXQ5aOjAICfkQdAq2A/Iconica-User-Stories?type=design&node-id=34-2763&mode=design&t=W72P3tkEascAKDCk-4',
         ),
-      ),
+      )
     ],
   )
 ];
