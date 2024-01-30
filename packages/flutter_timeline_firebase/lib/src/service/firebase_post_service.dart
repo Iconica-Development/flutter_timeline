@@ -119,7 +119,7 @@ class FirebaseTimelinePostService extends TimelinePostService
             .get()
         : await _db.collection(_options.timelineCollectionName).get();
 
-    var posts = <TimelinePost>[];
+    posts = <TimelinePost>[];
     for (var doc in snapshot.docs) {
       var data = doc.data();
       var user = await _userService.getUser(data['creator_id']);
