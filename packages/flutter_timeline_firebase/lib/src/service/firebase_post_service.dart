@@ -13,8 +13,9 @@ import 'package:flutter_timeline_firebase/src/models/firebase_user_document.dart
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:uuid/uuid.dart';
 
-class FirebaseTimelinePostService extends TimelinePostService
-    with TimelineUserService {
+class FirebaseTimelinePostService
+    with TimelineUserService, ChangeNotifier
+    implements TimelinePostService {
   FirebaseTimelinePostService({
     required TimelineUserService userService,
     FirebaseApp? app,
@@ -33,6 +34,9 @@ class FirebaseTimelinePostService extends TimelinePostService
   late FirebaseTimelineOptions _options;
 
   final Map<String, TimelinePosterUserModel> _users = {};
+
+  @override
+  List<TimelinePost> posts = [];
 
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
@@ -119,13 +123,15 @@ class FirebaseTimelinePostService extends TimelinePostService
             .get()
         : await _db.collection(_options.timelineCollectionName).get();
 
-    posts = <TimelinePost>[];
+    var fetchedPosts = <TimelinePost>[];
     for (var doc in snapshot.docs) {
       var data = doc.data();
       var user = await _userService.getUser(data['creator_id']);
       var post = TimelinePost.fromJson(doc.id, data).copyWith(creator: user);
-      posts.add(post);
+      fetchedPosts.add(post);
     }
+
+    posts = fetchedPosts;
 
     notifyListeners();
     return posts;
