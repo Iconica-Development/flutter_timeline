@@ -94,9 +94,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
         var posts = widget.posts ?? service.postService.getPosts(category);
 
         if (widget.filterEnabled && filterWord != null) {
-          if (service is TimelineFilterService?) {
-            posts =
-                (service as TimelineFilterService).filterPosts(filterWord!, {});
+          if (service.postService is TimelineFilterService) {
+            posts = (service.postService as TimelineFilterService)
+                .filterPosts(filterWord!, {});
           } else {
             debugPrint('Timeline service needs to mixin'
                 ' with TimelineFilterService');
