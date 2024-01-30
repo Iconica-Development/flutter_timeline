@@ -18,13 +18,13 @@ class FirebaseTimelinePostService extends TimelinePostService
   FirebaseTimelinePostService({
     required TimelineUserService userService,
     FirebaseApp? app,
-    options = const FirebaseTimelineOptions(),
+    FirebaseTimelineOptions? options,
   }) {
     var appInstance = app ?? Firebase.app();
     _db = FirebaseFirestore.instanceFor(app: appInstance);
     _storage = FirebaseStorage.instanceFor(app: appInstance);
     _userService = userService;
-    _options = options;
+    _options = options ?? const FirebaseTimelineOptions();
   }
 
   late FirebaseFirestore _db;

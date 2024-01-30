@@ -31,7 +31,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var timelineService = TimelineService(postService: LocalTimelinePostService());
+  var timelineService =
+      TimelineService(postService: LocalTimelinePostService());
   var timelineOptions = options;
 
   @override
@@ -64,10 +65,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SafeArea(
         child: timeLineNavigatorUserStory(
-            getConfig(
+            configuration: getConfig(
               timelineService,
             ),
-            context),
+            context: context),
       ),
     );
   }
