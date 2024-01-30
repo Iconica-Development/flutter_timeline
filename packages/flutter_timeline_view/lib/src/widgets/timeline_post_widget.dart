@@ -160,12 +160,14 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                             late TimelinePost result;
 
                             if (!liked) {
-                              result = await widget.service.likePost(
+                              result =
+                                  await widget.service.postService.likePost(
                                 userId,
                                 widget.post,
                               );
                             } else {
-                              result = await widget.service.unlikePost(
+                              result =
+                                  await widget.service.postService.unlikePost(
                                 userId,
                                 widget.post,
                               );
@@ -197,12 +199,12 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                           widget.post.likedBy?.contains(userId) ?? false;
 
                       if (!liked) {
-                        await widget.service.likePost(
+                        await widget.service.postService.likePost(
                           userId,
                           widget.post,
                         );
                       } else {
-                        await widget.service.unlikePost(
+                        await widget.service.postService.unlikePost(
                           userId,
                           widget.post,
                         );

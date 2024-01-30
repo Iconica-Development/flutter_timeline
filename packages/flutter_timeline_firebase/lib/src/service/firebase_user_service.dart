@@ -8,14 +8,14 @@ import 'package:flutter_timeline_firebase/src/config/firebase_timeline_options.d
 import 'package:flutter_timeline_firebase/src/models/firebase_user_document.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 
-class FirebaseUserService implements TimelineUserService {
-  FirebaseUserService({
+class FirebaseTimelineUserService implements TimelineUserService {
+  FirebaseTimelineUserService({
     FirebaseApp? app,
-    options = const FirebaseTimelineOptions(),
+    FirebaseTimelineOptions? options,
   }) {
     var appInstance = app ?? Firebase.app();
     _db = FirebaseFirestore.instanceFor(app: appInstance);
-    _options = options;
+    _options = options ?? const FirebaseTimelineOptions();
   }
 
   late FirebaseFirestore _db;

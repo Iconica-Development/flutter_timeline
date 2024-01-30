@@ -106,7 +106,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
 
   Future<void> loadPostDetails() async {
     try {
-      var loadedPost = await widget.service.fetchPostDetails(widget.post);
+      var loadedPost =
+          await widget.service.postService.fetchPostDetails(widget.post);
       setState(() {
         post = loadedPost;
         isLoading = false;
@@ -157,8 +158,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
         RefreshIndicator(
           onRefresh: () async {
             updatePost(
-              await widget.service.fetchPostDetails(
-                await widget.service.fetchPost(
+              await widget.service.postService.fetchPostDetails(
+                await widget.service.postService.fetchPost(
                   post,
                 ),
               ),
@@ -269,12 +270,14 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 late TimelinePost result;
 
                                 if (!liked) {
-                                  result = await widget.service.likePost(
+                                  result =
+                                      await widget.service.postService.likePost(
                                     userId,
                                     post,
                                   );
                                 } else {
-                                  result = await widget.service.unlikePost(
+                                  result = await widget.service.postService
+                                      .unlikePost(
                                     userId,
                                     post,
                                   );
@@ -303,7 +306,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                         InkWell(
                           onTap: () async {
                             updatePost(
-                              await widget.service.unlikePost(
+                              await widget.service.postService.unlikePost(
                                 widget.userId,
                                 post,
                               ),
@@ -322,7 +325,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                         InkWell(
                           onTap: () async {
                             updatePost(
-                              await widget.service.likePost(
+                              await widget.service.postService.likePost(
                                 widget.userId,
                                 post,
                               ),
@@ -450,7 +453,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                             if (value == 'delete') {
                               // Call service to delete reaction
                               updatePost(
-                                await widget.service
+                                await widget.service.postService
                                     .deletePostReaction(post, reaction.id),
                               );
                             }
@@ -568,7 +571,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                 );
                 if (result != null) {
                   updatePost(
-                    await widget.service.reactToPost(
+                    await widget.service.postService.reactToPost(
                       post,
                       TimelinePostReaction(
                         id: '',
@@ -582,7 +585,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                 }
               },
               onReactionSubmit: (reaction) async => updatePost(
-                await widget.service.reactToPost(
+                await widget.service.postService.reactToPost(
                   post,
                   TimelinePostReaction(
                     id: '',

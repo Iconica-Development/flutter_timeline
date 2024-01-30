@@ -10,10 +10,10 @@ import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 
 class TimelineScreen extends StatefulWidget {
   const TimelineScreen({
-    required this.userId,
-    required this.service,
-    required this.options,
-    required this.onPostTap,
+    this.userId = 'test_user',
+    this.service,
+    this.options = const TimelineOptions(),
+    this.onPostTap,
     this.scrollController,
     this.onUserTap,
     this.posts,
@@ -27,7 +27,7 @@ class TimelineScreen extends StatefulWidget {
   final String userId;
 
   /// The service to use for fetching and manipulating posts
-  final TimelineService service;
+  final TimelineService? service;
 
   /// All the configuration options for the timelinescreens and widgets
   final TimelineOptions options;
@@ -43,7 +43,7 @@ class TimelineScreen extends StatefulWidget {
   final List<TimelinePost>? posts;
 
   /// Called when a post is tapped
-  final Function(TimelinePost) onPostTap;
+  final Function(TimelinePost)? onPostTap;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
@@ -63,7 +63,10 @@ class _TimelineScreenState extends State<TimelineScreen> {
   late var textFieldController = TextEditingController(
     text: widget.options.filterOptions.initialFilterWord,
   );
-  late var service = widget.service;
+  late var service = widget.service ??
+      TimelineService(
+        postService: LocalTimelinePostService(),
+      );
 
   bool isLoading = true;
 
@@ -86,14 +89,14 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
     // Build the list of posts
     return ListenableBuilder(
-      listenable: service,
+      listenable: service.postService,
       builder: (context, _) {
-        var posts = widget.posts ?? service.getPosts(category);
+        var posts = widget.posts ?? service.postService.getPosts(category);
 
         if (widget.filterEnabled && filterWord != null) {
-          if (service is TimelineFilterService?) {
-            posts =
-                (service as TimelineFilterService).filterPosts(filterWord!, {});
+          if (service.postService is TimelineFilterService) {
+            posts = (service.postService as TimelineFilterService)
+                .filterPosts(filterWord!, {});
           } else {
             debugPrint('Timeline service needs to mixin'
                 ' with TimelineFilterService');
@@ -203,17 +206,41 @@ class _TimelineScreenState extends State<TimelineScreen> {
                         padding: widget.options.postPadding,
                         child: widget.postWidgetBuilder?.call(post) ??
                             TimelinePostWidget(
-                              service: widget.service,
+                              service: service,
                               userId: widget.userId,
                               options: widget.options,
                               post: post,
-                              onTap: () => widget.onPostTap(post),
-                              onTapLike: () async =>
-                                  service.likePost(widget.userId, post),
-                              onTapUnlike: () async =>
-                                  service.unlikePost(widget.userId, post),
+                              onTap: () async {
+                                if (widget.onPostTap != null) {
+                                  widget.onPostTap!.call(post);
+
+                                  return;
+                                }
+
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Scaffold(
+                                      body: TimelinePostScreen(
+                                        userId: 'test_user',
+                                        service: service,
+                                        options: widget.options,
+                                        post: post,
+                                        onPostDelete: () {
+                                          service.postService.deletePost(post);
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              onTapLike: () async => service.postService
+                                  .likePost(widget.userId, post),
+                              onTapUnlike: () async => service.postService
+                                  .unlikePost(widget.userId, post),
                               onPostDelete: () async =>
-                                  service.deletePost(post),
+                                  service.postService.deletePost(post),
                               onUserTap: widget.onUserTap,
                             ),
                       ),
@@ -246,7 +273,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null) return;
     try {
-      await service.fetchPosts(category);
+      await service.postService.fetchPosts(category);
       setState(() {
         isLoading = false;
       });
