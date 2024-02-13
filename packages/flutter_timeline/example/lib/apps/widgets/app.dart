@@ -32,7 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var timelineService = TimelineService(postService: LocalTimelinePostService());
+  var timelineService =
+      TimelineService(postService: LocalTimelinePostService());
   var timelineOptions = options;
 
   @override
