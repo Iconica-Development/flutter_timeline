@@ -5,6 +5,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 
+/// A widget function that creates a timeline navigator for user stories.
+///
+/// This function creates a navigator for displaying user stories on a timeline.
+/// It takes a [BuildContext] and an optional [TimelineUserStoryConfiguration]
+/// as parameters. If no configuration is provided, default values will be used.
 Widget timeLineNavigatorUserStory({
   required BuildContext context,
   TimelineUserStoryConfiguration? configuration,
@@ -21,6 +26,11 @@ Widget timeLineNavigatorUserStory({
   return _timelineScreenRoute(configuration: config, context: context);
 }
 
+/// A widget function that creates a timeline screen route.
+///
+/// This function creates a route for displaying a timeline screen. It takes
+/// a [BuildContext] and an optional [TimelineUserStoryConfiguration] as
+/// parameters. If no configuration is provided, default values will be used.
 Widget _timelineScreenRoute({
   required BuildContext context,
   TimelineUserStoryConfiguration? configuration,
@@ -57,6 +67,12 @@ Widget _timelineScreenRoute({
   );
 }
 
+/// A widget function that creates a post detail screen route.
+///
+/// This function creates a route for displaying a post detail screen. It takes
+/// a [BuildContext], a [TimelinePost], and an optional
+/// [TimelineUserStoryConfiguration] as parameters. If no configuration is
+/// provided, default values will be used.
 Widget _postDetailScreenRoute({
   required BuildContext context,
   required TimelinePost post,
