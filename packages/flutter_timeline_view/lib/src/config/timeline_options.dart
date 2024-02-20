@@ -43,6 +43,11 @@ class TimelineOptions {
     this.postPadding = const EdgeInsets.all(12.0),
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
+    this.requireImageForPost = false,
+    this.minTitleLength,
+    this.maxTitleLength,
+    this.minContentLength,
+    this.maxContentLength,
   });
 
   /// Theming options for the timeline
@@ -121,6 +126,21 @@ class TimelineOptions {
 
   /// Options for using the category selector.
   final CategoriesOptions categoriesOptions;
+
+  /// Require image for post
+  final bool requireImageForPost;
+
+  /// Minimum length of the title
+  final int? minTitleLength;
+
+  /// Maximum length of the title
+  final int? maxTitleLength;
+
+  /// Minimum length of the post content
+  final int? minContentLength;
+
+  /// Maximum length of the post content
+  final int? maxContentLength;
 }
 
 class CategoriesOptions {

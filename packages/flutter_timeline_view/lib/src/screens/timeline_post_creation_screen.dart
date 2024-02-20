@@ -64,6 +64,25 @@ class _TimelinePostCreationScreenState
     setState(() {
       editingDone =
           titleController.text.isNotEmpty && contentController.text.isNotEmpty;
+      if (widget.options.requireImageForPost) {
+        editingDone = editingDone && image != null;
+      }
+      if (widget.options.minTitleLength != null) {
+        editingDone = editingDone &&
+            titleController.text.length >= widget.options.minTitleLength!;
+      }
+      if (widget.options.maxTitleLength != null) {
+        editingDone = editingDone &&
+            titleController.text.length <= widget.options.maxTitleLength!;
+      }
+      if (widget.options.minContentLength != null) {
+        editingDone = editingDone &&
+            contentController.text.length >= widget.options.minContentLength!;
+      }
+      if (widget.options.maxContentLength != null) {
+        editingDone = editingDone &&
+            contentController.text.length <= widget.options.maxContentLength!;
+      }
     });
   }
 
