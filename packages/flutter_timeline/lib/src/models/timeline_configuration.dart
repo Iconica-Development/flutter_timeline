@@ -6,8 +6,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 
+/// Configuration class for defining user-specific settings and callbacks for a
+/// timeline user story.
+///
+/// This class holds various parameters to customize the behavior and appearance
+/// of a user story timeline.
 @immutable
 class TimelineUserStoryConfiguration {
+  /// Constructs a [TimelineUserStoryConfiguration] with the specified
+  /// parameters.
+  ///
+  /// [service] is the TimelineService responsible for fetching user story data.
+  ///
+  /// [optionsBuilder] is a function that builds TimelineOptions based on the
+  /// given [BuildContext].
+  ///
+  /// [userId] is the ID of the user associated with this user story
+  /// configuration. Default is 'test_user'.
+  ///
+  /// [openPageBuilder] is a function that defines the behavior when a page
+  /// needs to be opened. This function should accept a [BuildContext] and a
+  /// child widget.
+  ///
+  /// [onPostTap] is a callback function invoked when a timeline post is
+  /// tapped. It should accept a [BuildContext] and the tapped post.
+  ///
+  /// [onUserTap] is a callback function invoked when the user's profile is
+  /// tapped. It should accept a [BuildContext] and the user ID of the tapped
+  /// user.
+  ///
+  /// [onPostDelete] is a callback function invoked when a post deletion is
+  /// requested. It should accept a [BuildContext] and the post widget. This
+  /// function can return a widget to be displayed after the post is deleted.
+  ///
+  /// [filterEnabled] determines whether filtering functionality is enabled for
+  /// this user story timeline. Default is false.
+  ///
+  /// [postWidgetBuilder] is a function that builds a widget for a timeline
+  /// post. It should accept a [TimelinePost] and return a widget representing
+  /// that post.
   const TimelineUserStoryConfiguration({
     required this.service,
     required this.optionsBuilder,
@@ -20,21 +57,31 @@ class TimelineUserStoryConfiguration {
     this.postWidgetBuilder,
   });
 
+  /// The ID of the user associated with this user story configuration.
   final String userId;
 
+  /// The TimelineService responsible for fetching user story data.
   final TimelineService service;
 
+  /// A function that builds TimelineOptions based on the given BuildContext.
   final TimelineOptions Function(BuildContext context) optionsBuilder;
 
-  final Function(BuildContext context, String userId)? onUserTap;
-
+  /// A function that defines the behavior when a page needs to be opened.
   final Function(BuildContext context, Widget child)? openPageBuilder;
 
+  /// A callback function invoked when a timeline post is tapped.
   final Function(BuildContext context, TimelinePost post)? onPostTap;
 
+  /// A callback function invoked when the user's profile is tapped.
+  final Function(BuildContext context, String userId)? onUserTap;
+
+  /// A callback function invoked when a post deletion is requested.
   final Widget Function(BuildContext context, TimelinePost post)? onPostDelete;
 
+  /// Determines whether filtering functionality is enabled for this user story
+  /// timeline.
   final bool filterEnabled;
 
+  /// A function that builds a widget for a timeline post.
   final Widget Function(TimelinePost post)? postWidgetBuilder;
 }

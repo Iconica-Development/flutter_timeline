@@ -7,6 +7,11 @@ import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/src/go_router.dart';
 import 'package:go_router/go_router.dart';
 
+/// Retrieves a list of GoRouter routes for timeline stories.
+///
+/// This function retrieves a list of GoRouter routes for displaying timeline
+/// stories. It takes an optional [TimelineUserStoryConfiguration] as parameter.
+/// If no configuration is provided, default values will be used.
 List<GoRoute> getTimelineStoryRoutes({
   TimelineUserStoryConfiguration? configuration,
 }) {
