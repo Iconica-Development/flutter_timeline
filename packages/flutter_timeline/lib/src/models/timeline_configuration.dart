@@ -55,6 +55,7 @@ class TimelineUserStoryConfiguration {
     this.onPostDelete,
     this.filterEnabled = false,
     this.postWidgetBuilder,
+    this.enablePostOverviewScreen = false,
   });
 
   /// The ID of the user associated with this user story configuration.
@@ -84,4 +85,7 @@ class TimelineUserStoryConfiguration {
 
   /// A function that builds a widget for a timeline post.
   final Widget Function(TimelinePost post)? postWidgetBuilder;
+
+  /// Boolean to enable timeline post overview screen before submitting
+  final bool enablePostOverviewScreen;
 }

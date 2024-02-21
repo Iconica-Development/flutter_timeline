@@ -1,7 +1,9 @@
-## 2.0.1
+## 2.1.0
 
 - Fixed multiline textfield not being dismissible.
 - Fixed liking a new post you created.
+- Added options to require image and enforce content length in post creation
+- Added post overview screen before creating post
 
 ## 1.0.0 - November 27 2023
 

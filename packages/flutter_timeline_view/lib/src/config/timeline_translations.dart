@@ -29,6 +29,8 @@ class TimelineTranslations {
     required this.postLoadingError,
     required this.timelineSelectionDescription,
     required this.searchHint,
+    required this.postOverview,
+    required this.postIn,
   });
 
   const TimelineTranslations.empty()
@@ -54,7 +56,9 @@ class TimelineTranslations {
         postAt = 'at',
         postLoadingError = 'Something went wrong while loading the post',
         timelineSelectionDescription = 'Choose a category',
-        searchHint = 'Search...';
+        searchHint = 'Search...',
+        postOverview = 'Post Overview',
+        postIn = 'Post in';
 
   final String noPosts;
   final String noPostsWithFilter;
@@ -83,6 +87,9 @@ class TimelineTranslations {
 
   final String searchHint;
 
+  final String postOverview;
+  final String postIn;
+
   TimelineTranslations copyWith({
     String? noPosts,
     String? noPostsWithFilter,
@@ -106,6 +113,8 @@ class TimelineTranslations {
     String? postLoadingError,
     String? timelineSelectionDescription,
     String? searchHint,
+    String? postOverview,
+    String? postIn,
   }) =>
       TimelineTranslations(
         noPosts: noPosts ?? this.noPosts,
@@ -133,5 +142,7 @@ class TimelineTranslations {
         timelineSelectionDescription:
             timelineSelectionDescription ?? this.timelineSelectionDescription,
         searchHint: searchHint ?? this.searchHint,
+        postOverview: postOverview ?? this.postOverview,
+        postIn: postIn ?? this.postIn,
       );
 }

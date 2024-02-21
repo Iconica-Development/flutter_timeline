@@ -3,9 +3,10 @@ import 'package:flutter_timeline/flutter_timeline.dart';
 
 TimelineUserStoryConfiguration getConfig(TimelineService service) {
   return TimelineUserStoryConfiguration(
-      service: service,
-      userId: 'test_user',
-      optionsBuilder: (context) => options);
+    service: service,
+    userId: 'test_user',
+    optionsBuilder: (context) => options,
+  );
 }
 
 var options = TimelineOptions(
@@ -33,9 +34,39 @@ var options = TimelineOptions(
   ),
 );
 
-void createPost(BuildContext context, TimelineService service,
-    TimelineOptions options) async {
-  await Navigator.push(
+void navigateToOverview(
+  BuildContext context,
+  TimelineService service,
+  TimelineOptions options,
+  TimelinePost post,
+) {
+  if (context.mounted) {
+    Navigator.of(context).pop();
+  }
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => TimelinePostOverviewScreen(
+        timelinePost: post,
+        options: options,
+        service: service,
+        onPostSubmit: (post) {
+          service.postService.createPost(post);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+    ),
+  );
+}
+
+void createPost(
+    BuildContext context,
+    TimelineService service,
+    TimelineOptions options,
+    TimelineUserStoryConfiguration configuration) async {
+  await Navigator.pushReplacement(
     context,
     MaterialPageRoute(
       builder: (context) => Scaffold(
@@ -46,6 +77,9 @@ void createPost(BuildContext context, TimelineService service,
           options: options,
           onPostCreated: (post) {
             Navigator.of(context).pop();
+          },
+          onPostOverview: (post) {
+            navigateToOverview(context, service, options, post);
           },
         ),
       ),
