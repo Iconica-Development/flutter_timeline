@@ -1,3 +1,8 @@
+## 2.0.1
+
+- Fixed multiline textfield not being dismissible.
+- Fixed liking a new post you created.
+
 ## 1.0.0 - November 27 2023
 
 - Improved TimelineService with support for pagination
