@@ -106,176 +106,184 @@ class _TimelinePostCreationScreenState
     }
 
     var theme = Theme.of(context);
-    return Padding(
-      padding: widget.options.padding,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.options.translations.title,
-              style: theme.textTheme.displaySmall,
-            ),
-            widget.options.textInputBuilder?.call(
-                  titleController,
-                  null,
-                  '',
-                ) ??
-                TextField(
-                  controller: titleController,
-                ),
-            const SizedBox(height: 16),
-            Text(
-              widget.options.translations.content,
-              style: theme.textTheme.displaySmall,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              widget.options.translations.contentDescription,
-              style: theme.textTheme.bodyMedium,
-            ),
-            // input field for the content
-            SizedBox(
-              height: 100,
-              child: TextField(
-                controller: contentController,
-                textCapitalization: TextCapitalization.sentences,
-                expands: true,
-                maxLines: null,
-                minLines: null,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Padding(
+        padding: widget.options.padding,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.options.translations.title,
+                style: theme.textTheme.displaySmall,
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            // input field for the content
-            Text(
-              widget.options.translations.uploadImage,
-              style: theme.textTheme.displaySmall,
-            ),
-            Text(
-              widget.options.translations.uploadImageDescription,
-              style: theme.textTheme.bodyMedium,
-            ),
-            // image picker field
-            const SizedBox(
-              height: 8,
-            ),
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    // open a dialog to choose between camera and gallery
-                    var result = await showModalBottomSheet<Uint8List?>(
-                      context: context,
-                      builder: (context) => Container(
-                        padding: const EdgeInsets.all(8.0),
-                        color: theme.colorScheme.background,
-                        child: ImagePicker(
-                          imagePickerConfig: widget.options.imagePickerConfig,
-                          imagePickerTheme: widget.options.imagePickerTheme,
-                        ),
-                      ),
-                    );
-                    if (result != null) {
-                      setState(() {
-                        image = result;
-                      });
-                    }
-                    checkIfEditingDone();
-                  },
-                  child: image != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.memory(
-                            image!,
-                            width: double.infinity,
-                            height: 150.0,
-                            fit: BoxFit.cover,
-                            // give it a rounded border
+              widget.options.textInputBuilder?.call(
+                    titleController,
+                    null,
+                    '',
+                  ) ??
+                  TextField(
+                    controller: titleController,
+                  ),
+              const SizedBox(height: 16),
+              Text(
+                widget.options.translations.content,
+                style: theme.textTheme.displaySmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                widget.options.translations.contentDescription,
+                style: theme.textTheme.bodyMedium,
+              ),
+              // input field for the content
+              SizedBox(
+                height: 100,
+                child: TextField(
+                  controller: contentController,
+                  textCapitalization: TextCapitalization.sentences,
+                  expands: true,
+                  maxLines: null,
+                  minLines: null,
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              // input field for the content
+              Text(
+                widget.options.translations.uploadImage,
+                style: theme.textTheme.displaySmall,
+              ),
+              Text(
+                widget.options.translations.uploadImageDescription,
+                style: theme.textTheme.bodyMedium,
+              ),
+              // image picker field
+              const SizedBox(
+                height: 8,
+              ),
+              Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      // open a dialog to choose between camera and gallery
+                      var result = await showModalBottomSheet<Uint8List?>(
+                        context: context,
+                        builder: (context) => Container(
+                          padding: const EdgeInsets.all(8.0),
+                          color: theme.colorScheme.background,
+                          child: ImagePicker(
+                            imagePickerConfig: widget.options.imagePickerConfig,
+                            imagePickerTheme: widget.options.imagePickerTheme,
                           ),
-                        )
-                      : DottedBorder(
-                          radius: const Radius.circular(8.0),
-                          color: theme.textTheme.displayMedium?.color ??
-                              Colors.white,
-                          child: const SizedBox(
-                            width: double.infinity,
-                            height: 150.0,
-                            child: Icon(
-                              Icons.image,
-                              size: 32,
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() {
+                          image = result;
+                        });
+                      }
+                      checkIfEditingDone();
+                    },
+                    child: image != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.memory(
+                              image!,
+                              width: double.infinity,
+                              height: 150.0,
+                              fit: BoxFit.cover,
+                              // give it a rounded border
+                            ),
+                          )
+                        : DottedBorder(
+                            radius: const Radius.circular(8.0),
+                            color: theme.textTheme.displayMedium?.color ??
+                                Colors.white,
+                            child: const SizedBox(
+                              width: double.infinity,
+                              height: 150.0,
+                              child: Icon(
+                                Icons.image,
+                                size: 32,
+                              ),
                             ),
                           ),
-                        ),
-                ),
-                // if an image is selected, show a delete button
-                if (image != null) ...[
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          image = null;
-                        });
-                        checkIfEditingDone();
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
                   ),
-                ],
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            Text(
-              widget.options.translations.commentsTitle,
-              style: theme.textTheme.displaySmall,
-            ),
-            Text(
-              widget.options.translations.allowCommentsDescription,
-              style: theme.textTheme.bodyMedium,
-            ),
-            // radio buttons for yes or no
-            Switch(
-              value: allowComments,
-              onChanged: (newValue) {
-                setState(() {
-                  allowComments = newValue;
-                });
-              },
-            ),
-            // const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: (widget.options.buttonBuilder != null)
-                  ? widget.options.buttonBuilder!(
-                      context,
-                      onPostCreated,
-                      widget.options.translations.checkPost,
-                      enabled: editingDone,
-                    )
-                  : ElevatedButton(
-                      onPressed: editingDone ? onPostCreated : null,
-                      child: Text(
-                        widget.options.translations.checkPost,
-                        style: theme.textTheme.bodyMedium,
+                  // if an image is selected, show a delete button
+                  if (image != null) ...[
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            image = null;
+                          });
+                          checkIfEditingDone();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-            ),
-          ],
+                  ],
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              Text(
+                widget.options.translations.commentsTitle,
+                style: theme.textTheme.displaySmall,
+              ),
+              Text(
+                widget.options.translations.allowCommentsDescription,
+                style: theme.textTheme.bodyMedium,
+              ),
+              // radio buttons for yes or no
+              Switch(
+                value: allowComments,
+                onChanged: (newValue) {
+                  setState(() {
+                    allowComments = newValue;
+                  });
+                },
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: (widget.options.buttonBuilder != null)
+                    ? widget.options.buttonBuilder!(
+                        context,
+                        onPostCreated,
+                        widget.options.translations.checkPost,
+                        enabled: editingDone,
+                      )
+                    : ElevatedButton(
+                        onPressed: editingDone
+                            ? () async {
+                                await onPostCreated();
+                                await widget.service.postService
+                                    .fetchPosts(null);
+                              }
+                            : null,
+                        child: Text(
+                          widget.options.translations.checkPost,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );

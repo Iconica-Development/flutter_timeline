@@ -357,7 +357,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                     '${post.likes} ${widget.options.translations.likesTitle}',
                     style: widget
                             .options.theme.textStyles.postLikeTitleAndAmount ??
-                        theme.textTheme.titleSmall,
+                        theme.textTheme.titleSmall
+                            ?.copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 4),
                   Text.rich(
