@@ -43,8 +43,12 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           FloatingActionButton(
             heroTag: 'btn1',
-            onPressed: () =>
-                createPost(context, timelineService, timelineOptions),
+            onPressed: () => createPost(
+              context,
+              timelineService,
+              timelineOptions,
+              getConfig(timelineService),
+            ),
             child: const Icon(
               Icons.edit,
               color: Colors.white,

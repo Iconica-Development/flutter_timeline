@@ -8,6 +8,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
+import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 
 class TimelinePostCreationScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class TimelinePostCreationScreen extends StatefulWidget {
     required this.service,
     required this.options,
     this.postCategory,
+    this.onPostOverview,
     super.key,
   });
 
@@ -32,6 +34,9 @@ class TimelinePostCreationScreen extends StatefulWidget {
 
   /// The options for the timeline
   final TimelineOptions options;
+
+  /// Nullable callback for routing to the post overview
+  final void Function(TimelinePost)? onPostOverview;
 
   @override
   State<TimelinePostCreationScreen> createState() =>
@@ -101,8 +106,13 @@ class _TimelinePostCreationScreenState
         reactionEnabled: allowComments,
         image: image,
       );
-      var newPost = await widget.service.postService.createPost(post);
-      widget.onPostCreated.call(newPost);
+
+      if (widget.onPostOverview != null) {
+        widget.onPostOverview?.call(post);
+      } else {
+        var newPost = await widget.service.postService.createPost(post);
+        widget.onPostCreated.call(newPost);
+      }
     }
 
     var theme = Theme.of(context);
