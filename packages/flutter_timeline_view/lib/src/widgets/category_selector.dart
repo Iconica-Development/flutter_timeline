@@ -28,9 +28,9 @@ class CategorySelector extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width:
-                options.categoriesOptions.categorySelectorHorizontalPadding ??
-                    max(options.padding.horizontal - 4, 0),
+            width: options
+                    .categoriesOptions.categorySelectorHorizontalPadding ??
+                max(options.postCreationTheme.pagePadding.horizontal - 4, 0),
           ),
           for (var category in categories) ...[
             options.categoriesOptions.categoryButtonBuilder?.call(
@@ -49,9 +49,9 @@ class CategorySelector extends StatelessWidget {
                 ),
           ],
           SizedBox(
-            width:
-                options.categoriesOptions.categorySelectorHorizontalPadding ??
-                    max(options.padding.horizontal - 4, 0),
+            width: options
+                    .categoriesOptions.categorySelectorHorizontalPadding ??
+                max(options.postCreationTheme.pagePadding.horizontal - 4, 0),
           ),
         ],
       ),

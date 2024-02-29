@@ -5,86 +5,34 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
+import 'package:flutter_timeline_view/flutter_timeline_view.dart';
+import 'package:flutter_timeline_view/src/config/post_config.dart';
+import 'package:flutter_timeline_view/src/config/post_creation_config.dart';
+import 'package:flutter_timeline_view/src/config/post_creation_theme.dart';
+import 'package:flutter_timeline_view/src/config/post_theme.dart';
+import 'package:flutter_timeline_view/src/config/timeline_config.dart';
 import 'package:flutter_timeline_view/src/config/timeline_theme.dart';
-import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
-import 'package:intl/intl.dart';
 
 class TimelineOptions {
   const TimelineOptions({
-    this.theme = const TimelineTheme(),
+    this.textStyles = const TimelineTextStyles(),
     this.translations = const TimelineTranslations.empty(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
-    this.timelinePostHeight,
-    this.allowAllDeletion = false,
-    this.sortCommentsAscending = true,
-    this.sortPostsAscending,
-    this.doubleTapTolike = false,
-    this.iconsWithValues = false,
-    this.likeAndDislikeIconsForDoubleTap = const (
-      Icon(
-        Icons.favorite_rounded,
-        color: Color(0xFFC3007A),
-      ),
-      null,
-    ),
-    this.itemInfoBuilder,
-    this.dateFormat,
-    this.timeFormat,
-    this.buttonBuilder,
-    this.textInputBuilder,
-    this.dividerBuilder,
-    this.userAvatarBuilder,
-    this.anonymousAvatarBuilder,
-    this.nameBuilder,
-    this.padding = const EdgeInsets.symmetric(vertical: 12.0),
-    this.iconSize = 26,
-    this.postWidgetHeight,
-    this.postPadding = const EdgeInsets.all(12.0),
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
-    this.requireImageForPost = false,
-    this.minTitleLength,
-    this.maxTitleLength,
-    this.minContentLength,
-    this.maxContentLength,
+    this.postTheme = const TimelinePostTheme(),
+    this.config = const TimelineConfig(),
+    this.postConfig = const TimelinePostConfig(),
+    this.theme = const TimelineTheme(),
+    this.postCreationTheme = const TimelinePostCreationTheme(),
+    this.postCreationConfig = const TimelinePostCreationConfig(),
   });
 
-  /// Theming options for the timeline
-  final TimelineTheme theme;
-
-  /// The format to display the post date in
-  final DateFormat? dateFormat;
-
-  /// The format to display the post time in
-  final DateFormat? timeFormat;
-
-  /// Whether to sort comments ascending or descending
-  final bool sortCommentsAscending;
-
-  /// Whether to sort posts ascending or descending
-  final bool? sortPostsAscending;
-
-  /// Allow all posts to be deleted instead of
-  ///  only the posts of the current user
-  final bool allowAllDeletion;
-
-  /// The height of a post in the timeline
-  final double? timelinePostHeight;
+  /// Parameter to set all textstyles within timeline
+  final TimelineTextStyles textStyles;
 
   final TimelineTranslations translations;
-
-  final ButtonBuilder? buttonBuilder;
-
-  final TextInputBuilder? textInputBuilder;
-
-  final UserAvatarBuilder? userAvatarBuilder;
-
-  /// When the imageUrl is null this anonymousAvatarBuilder will be used
-  /// You can use it to display a default avatarW
-  final UserAvatarBuilder? anonymousAvatarBuilder;
-
-  final String Function(TimelinePosterUserModel?)? nameBuilder;
 
   /// ImagePickerTheme can be used to change the UI of the
   /// Image Picker Widget to change the text/icons to your liking.
@@ -94,53 +42,20 @@ class TimelineOptions {
   /// size and quality for the uploaded image.
   final ImagePickerConfig imagePickerConfig;
 
-  /// Whether to allow double tap to like
-  final bool doubleTapTolike;
-
-  /// The icons to display when double tap to like is enabled
-  final (Icon?, Icon?) likeAndDislikeIconsForDoubleTap;
-
-  /// Whether to display the icons with values
-  final bool iconsWithValues;
-
-  /// The builder for the item info, all below the like and comment buttons
-  final Widget Function({required TimelinePost post})? itemInfoBuilder;
-
-  /// The builder for the divider
-  final Widget Function()? dividerBuilder;
-
-  /// The padding between posts in the timeline
-  final EdgeInsets padding;
-
-  /// Size of icons like the comment and like icons. Dafualts to 26
-  final double iconSize;
-
-  /// Sets a predefined height for the postWidget.
-  final double? postWidgetHeight;
-
-  /// Padding of each post
-  final EdgeInsets postPadding;
-
   /// Options for filtering
   final FilterOptions filterOptions;
 
   /// Options for using the category selector.
   final CategoriesOptions categoriesOptions;
 
-  /// Require image for post
-  final bool requireImageForPost;
+  final TimelineConfig config;
+  final TimelineTheme theme;
 
-  /// Minimum length of the title
-  final int? minTitleLength;
+  final TimelinePostConfig postConfig;
+  final TimelinePostTheme postTheme;
 
-  /// Maximum length of the title
-  final int? maxTitleLength;
-
-  /// Minimum length of the post content
-  final int? minContentLength;
-
-  /// Maximum length of the post content
-  final int? maxContentLength;
+  final TimelinePostCreationTheme postCreationTheme;
+  final TimelinePostCreationConfig postCreationConfig;
 }
 
 class CategoriesOptions {

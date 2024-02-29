@@ -110,9 +110,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
             .toList();
 
         // sort posts by date
-        if (widget.options.sortPostsAscending != null) {
+        if (widget.options.config.sortPostsAscending != null) {
           posts.sort(
-            (a, b) => widget.options.sortPostsAscending!
+            (a, b) => widget.options.config.sortPostsAscending!
                 ? a.createdAt.compareTo(b.createdAt)
                 : b.createdAt.compareTo(a.createdAt),
           );
@@ -122,12 +122,12 @@ class _TimelineScreenState extends State<TimelineScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: widget.options.padding.top,
+              height: widget.options.postTheme.postPadding.top,
             ),
             if (widget.filterEnabled) ...[
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: widget.options.padding.horizontal,
+                  horizontal: widget.options.postTheme.postPadding.horizontal,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -203,7 +203,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                   children: [
                     ...posts.map(
                       (post) => Padding(
-                        padding: widget.options.postPadding,
+                        padding: widget.options.postTheme.postPadding,
                         child: widget.postWidgetBuilder?.call(post) ??
                             TimelinePostWidget(
                               service: service,
@@ -253,7 +253,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                             category == null
                                 ? widget.options.translations.noPosts
                                 : widget.options.translations.noPostsWithFilter,
-                            style: widget.options.theme.textStyles.noPostsStyle,
+                            style: widget.options.textStyles.noPostsStyle,
                           ),
                         ),
                       ),
@@ -262,7 +262,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
               ),
             ),
             SizedBox(
-              height: widget.options.padding.bottom,
+              height: widget.options.postTheme.postPadding.bottom,
             ),
           ],
         );

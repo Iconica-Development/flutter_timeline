@@ -1,3 +1,8 @@
+## 3.0.0
+
+- Reorder of all parameters of TimelineOptions
+- Updated Flutter Image Picker form 1.0.4 to 3.0.0
+
 ## 2.1.0
 
 - Fixed multiline textfield not being dismissible.

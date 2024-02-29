@@ -86,15 +86,16 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
 
-  late var textInputBuilder = widget.options.textInputBuilder ??
-      (controller, suffixIcon, hintText) => TextField(
-            textCapitalization: TextCapitalization.sentences,
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: hintText,
-              suffixIcon: suffixIcon,
-            ),
-          );
+  late var textInputBuilder =
+      widget.options.postCreationTheme.textInputBuilder ??
+          (controller, suffixIcon, hintText) => TextField(
+                textCapitalization: TextCapitalization.sentences,
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: hintText,
+                  suffixIcon: suffixIcon,
+                ),
+              );
 
   @override
   void initState() {
@@ -129,9 +130,9 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var dateFormat = widget.options.dateFormat ??
+    var dateFormat = widget.options.postTheme.dateFormat ??
         DateFormat('dd/MM/yyyy', Localizations.localeOf(context).languageCode);
-    var timeFormat = widget.options.timeFormat ?? DateFormat('HH:mm');
+    var timeFormat = widget.options.postTheme.timeFormat ?? DateFormat('HH:mm');
 
     if (isLoading) {
       const Center(
@@ -142,13 +143,13 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
       return Center(
         child: Text(
           widget.options.translations.postLoadingError,
-          style: widget.options.theme.textStyles.errorTextStyle,
+          style: widget.options.textStyles.errorTextStyle,
         ),
       );
     }
     var post = this.post!;
     post.reactions?.sort(
-      (a, b) => widget.options.sortCommentsAscending
+      (a, b) => widget.options.config.sortCommentsAscending
           ? a.createdAt.compareTo(b.createdAt)
           : b.createdAt.compareTo(a.createdAt),
     );
@@ -167,7 +168,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: widget.options.padding,
+              padding: widget.options.postTheme.pagePadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -182,7 +183,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                           child: Row(
                             children: [
                               if (post.creator!.imageUrl != null) ...[
-                                widget.options.userAvatarBuilder?.call(
+                                widget.options.postTheme.userAvatarBuilder
+                                        ?.call(
                                       post.creator!,
                                       40,
                                     ) ??
@@ -194,7 +196,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                       ),
                                     ),
                               ] else ...[
-                                widget.options.anonymousAvatarBuilder?.call(
+                                widget.options.postTheme.anonymousAvatarBuilder
+                                        ?.call(
                                       post.creator!,
                                       40,
                                     ) ??
@@ -207,11 +210,11 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               ],
                               const SizedBox(width: 10),
                               Text(
-                                widget.options.nameBuilder
+                                widget.options.postTheme.nameBuilder
                                         ?.call(post.creator) ??
                                     post.creator?.fullName ??
                                     widget.options.translations.anonymousUser,
-                                style: widget.options.theme.textStyles
+                                style: widget.options.textStyles
                                         .postCreatorTitleStyle ??
                                     theme.textTheme.titleMedium,
                               ),
@@ -219,7 +222,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                           ),
                         ),
                       const Spacer(),
-                      if (widget.options.allowAllDeletion ||
+                      if (widget.options.config.allowAllDeletion ||
                           post.creator?.userId == widget.userId)
                         PopupMenuButton(
                           onSelected: (value) => widget.onPostDelete(),
@@ -231,24 +234,27 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 children: [
                                   Text(
                                     widget.options.translations.deletePost,
-                                    style: widget.options.theme.textStyles
+                                    style: widget.options.textStyles
                                             .deletePostStyle ??
                                         theme.textTheme.bodyMedium,
                                   ),
                                   const SizedBox(width: 8),
-                                  widget.options.theme.deleteIcon ??
+                                  widget.options.postTheme.iconTheme
+                                          .deleteIcon ??
                                       Icon(
                                         Icons.delete,
-                                        color: widget.options.theme.iconColor,
+                                        color: widget.options.postTheme
+                                            .iconTheme.iconColor,
                                       ),
                                 ],
                               ),
                             ),
                           ],
-                          child: widget.options.theme.moreIcon ??
+                          child: widget.options.postTheme.iconTheme.moreIcon ??
                               Icon(
                                 Icons.more_horiz_rounded,
-                                color: widget.options.theme.iconColor,
+                                color: widget
+                                    .options.postTheme.iconTheme.iconColor,
                               ),
                         ),
                     ],
@@ -258,10 +264,10 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                     const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      child: widget.options.doubleTapTolike
+                      child: widget.options.postConfig.doubleTapTolike
                           ? TappableImage(
-                              likeAndDislikeIcon: widget
-                                  .options.likeAndDislikeIconsForDoubleTap,
+                              likeAndDislikeIcon: widget.options.postTheme
+                                  .iconTheme.likeAndDislikeIconsForDoubleTap,
                               post: post,
                               userId: widget.userId,
                               onLike: ({required bool liked}) async {
@@ -314,11 +320,13 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                           },
                           child: Container(
                             color: Colors.transparent,
-                            child: widget.options.theme.likedIcon ??
-                                Icon(
-                                  Icons.thumb_up_rounded,
-                                  color: widget.options.theme.iconColor,
-                                ),
+                            child:
+                                widget.options.postTheme.iconTheme.likedIcon ??
+                                    Icon(
+                                      Icons.thumb_up_rounded,
+                                      color: widget.options.postTheme.iconTheme
+                                          .iconColor,
+                                    ),
                           ),
                         ),
                       ] else ...[
@@ -333,49 +341,50 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                           },
                           child: Container(
                             color: Colors.transparent,
-                            child: widget.options.theme.likeIcon ??
-                                Icon(
-                                  Icons.thumb_up_alt_outlined,
-                                  color: widget.options.theme.iconColor,
-                                  size: widget.options.iconSize,
-                                ),
+                            child:
+                                widget.options.postTheme.iconTheme.likeIcon ??
+                                    Icon(
+                                      Icons.thumb_up_alt_outlined,
+                                      color: widget.options.postTheme.iconTheme
+                                          .iconColor,
+                                      size: widget.options.postTheme.iconSize,
+                                    ),
                           ),
                         ),
                       ],
                       const SizedBox(width: 8),
                       if (post.reactionEnabled)
-                        widget.options.theme.commentIcon ??
+                        widget.options.postTheme.iconTheme.commentIcon ??
                             Icon(
                               Icons.chat_bubble_outline_rounded,
-                              color: widget.options.theme.iconColor,
-                              size: widget.options.iconSize,
+                              color:
+                                  widget.options.postTheme.iconTheme.iconColor,
+                              size: widget.options.postTheme.iconSize,
                             ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '${post.likes} ${widget.options.translations.likesTitle}',
-                    style: widget
-                            .options.theme.textStyles.postLikeTitleAndAmount ??
+                    style: widget.options.textStyles.postLikeTitleAndAmount ??
                         theme.textTheme.titleSmall
                             ?.copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 4),
                   Text.rich(
                     TextSpan(
-                      text: widget.options.nameBuilder?.call(post.creator) ??
+                      text: widget.options.postTheme.nameBuilder
+                              ?.call(post.creator) ??
                           post.creator?.fullName ??
                           widget.options.translations.anonymousUser,
-                      style: widget
-                              .options.theme.textStyles.postCreatorNameStyle ??
+                      style: widget.options.textStyles.postCreatorNameStyle ??
                           theme.textTheme.titleSmall,
                       children: [
                         const TextSpan(text: ' '),
                         TextSpan(
                           text: post.title,
-                          style:
-                              widget.options.theme.textStyles.postTitleStyle ??
-                                  theme.textTheme.bodyMedium,
+                          style: widget.options.textStyles.postTitleStyle ??
+                              theme.textTheme.bodyMedium,
                         ),
                       ],
                     ),
@@ -427,7 +436,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                       GestureDetector(
                         onLongPressStart: (details) async {
                           if (reaction.creatorId == widget.userId ||
-                              widget.options.allowAllDeletion) {
+                              widget.options.config.allowAllDeletion) {
                             var overlay = Overlay.of(context)
                                 .context
                                 .findRenderObject()! as RenderBox;
@@ -467,7 +476,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                           children: [
                             if (reaction.creator?.imageUrl != null &&
                                 reaction.creator!.imageUrl!.isNotEmpty) ...[
-                              widget.options.userAvatarBuilder?.call(
+                              widget.options.postTheme.userAvatarBuilder?.call(
                                     reaction.creator!,
                                     25,
                                   ) ??
@@ -478,7 +487,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                     ),
                                   ),
                             ] else ...[
-                              widget.options.anonymousAvatarBuilder?.call(
+                              widget.options.postTheme.anonymousAvatarBuilder
+                                      ?.call(
                                     reaction.creator!,
                                     25,
                                   ) ??
@@ -496,7 +506,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      widget.options.nameBuilder
+                                      widget.options.postTheme.nameBuilder
                                               ?.call(post.creator) ??
                                           reaction.creator?.fullName ??
                                           widget.options.translations
@@ -517,7 +527,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               Expanded(
                                 child: Text.rich(
                                   TextSpan(
-                                    text: widget.options.nameBuilder
+                                    text: widget.options.postTheme.nameBuilder
                                             ?.call(post.creator) ??
                                         reaction.creator?.fullName ??
                                         widget
@@ -565,8 +575,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                     padding: const EdgeInsets.all(8.0),
                     color: theme.colorScheme.background,
                     child: ImagePicker(
-                      imagePickerConfig: widget.options.imagePickerConfig,
-                      imagePickerTheme: widget.options.imagePickerTheme,
+                      config: widget.options.imagePickerConfig,
+                      theme: widget.options.imagePickerTheme,
                     ),
                   ),
                 );
@@ -598,7 +608,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                 ),
               ),
               translations: widget.options.translations,
-              iconColor: widget.options.theme.iconColor,
+              iconColor: widget.options.postTheme.iconTheme.iconColor,
             ),
           ),
       ],

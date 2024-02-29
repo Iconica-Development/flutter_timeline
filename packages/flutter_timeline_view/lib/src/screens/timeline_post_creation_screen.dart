@@ -69,24 +69,28 @@ class _TimelinePostCreationScreenState
     setState(() {
       editingDone =
           titleController.text.isNotEmpty && contentController.text.isNotEmpty;
-      if (widget.options.requireImageForPost) {
+      if (widget.options.postCreationConfig.requireImageForPost) {
         editingDone = editingDone && image != null;
       }
-      if (widget.options.minTitleLength != null) {
+      if (widget.options.postCreationConfig.minTitleLength != null) {
         editingDone = editingDone &&
-            titleController.text.length >= widget.options.minTitleLength!;
+            titleController.text.length >=
+                widget.options.postCreationConfig.minTitleLength!;
       }
-      if (widget.options.maxTitleLength != null) {
+      if (widget.options.postCreationConfig.maxTitleLength != null) {
         editingDone = editingDone &&
-            titleController.text.length <= widget.options.maxTitleLength!;
+            titleController.text.length <=
+                widget.options.postCreationConfig.maxTitleLength!;
       }
-      if (widget.options.minContentLength != null) {
+      if (widget.options.postCreationConfig.minContentLength != null) {
         editingDone = editingDone &&
-            contentController.text.length >= widget.options.minContentLength!;
+            contentController.text.length >=
+                widget.options.postCreationConfig.minContentLength!;
       }
-      if (widget.options.maxContentLength != null) {
+      if (widget.options.postCreationConfig.maxContentLength != null) {
         editingDone = editingDone &&
-            contentController.text.length <= widget.options.maxContentLength!;
+            contentController.text.length <=
+                widget.options.postCreationConfig.maxContentLength!;
       }
     });
   }
@@ -119,7 +123,7 @@ class _TimelinePostCreationScreenState
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Padding(
-        padding: widget.options.padding,
+        padding: widget.options.postCreationTheme.pagePadding,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -129,7 +133,7 @@ class _TimelinePostCreationScreenState
                 widget.options.translations.title,
                 style: theme.textTheme.displaySmall,
               ),
-              widget.options.textInputBuilder?.call(
+              widget.options.postCreationTheme.textInputBuilder?.call(
                     titleController,
                     null,
                     '',
@@ -185,8 +189,8 @@ class _TimelinePostCreationScreenState
                           padding: const EdgeInsets.all(8.0),
                           color: theme.colorScheme.background,
                           child: ImagePicker(
-                            imagePickerConfig: widget.options.imagePickerConfig,
-                            imagePickerTheme: widget.options.imagePickerTheme,
+                            config: widget.options.imagePickerConfig,
+                            theme: widget.options.imagePickerTheme,
                           ),
                         ),
                       );
@@ -271,8 +275,8 @@ class _TimelinePostCreationScreenState
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: (widget.options.buttonBuilder != null)
-                    ? widget.options.buttonBuilder!(
+                child: (widget.options.postCreationTheme.buttonBuilder != null)
+                    ? widget.options.postCreationTheme.buttonBuilder!(
                         context,
                         onPostCreated,
                         widget.options.translations.checkPost,

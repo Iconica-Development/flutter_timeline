@@ -4,6 +4,11 @@
 ///
 library flutter_timeline_view;
 
+export 'src/config/icon_timeline_theme.dart';
+export 'src/config/post_config.dart';
+export 'src/config/post_creation_config.dart';
+export 'src/config/post_theme.dart';
+export 'src/config/timeline_config.dart';
 export 'src/config/timeline_options.dart';
 export 'src/config/timeline_styles.dart';
 export 'src/config/timeline_theme.dart';

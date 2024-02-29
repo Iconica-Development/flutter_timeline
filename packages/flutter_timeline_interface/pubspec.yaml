@@ -4,7 +4,7 @@
 
 name: flutter_timeline_interface
 description: Interface for the service of the Flutter Timeline component
-version: 2.1.0
+version: 3.0.0
 
 publish_to: none
 
