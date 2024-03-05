@@ -78,7 +78,10 @@ class _TimelineScreenState extends State<TimelineScreen> {
   void initState() {
     super.initState();
     controller = widget.scrollController ?? ScrollController();
-    unawaited(loadPosts());
+    // only load the posts after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(loadPosts());
+    });
   }
 
   @override
@@ -91,6 +94,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
     return ListenableBuilder(
       listenable: service.postService,
       builder: (context, _) {
+        if (!context.mounted) return const SizedBox();
         var posts = widget.posts ?? service.postService.getPosts(category);
 
         if (widget.filterEnabled && filterWord != null) {
@@ -271,7 +275,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   }
 
   Future<void> loadPosts() async {
-    if (widget.posts != null) return;
+    if (widget.posts != null || !context.mounted) return;
     try {
       await service.postService.fetchPosts(category);
       setState(() {

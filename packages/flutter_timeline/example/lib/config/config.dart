@@ -6,6 +6,7 @@ TimelineUserStoryConfiguration getConfig(TimelineService service) {
     service: service,
     userId: 'test_user',
     optionsBuilder: (context) => options,
+    enablePostOverviewScreen: false,
   );
 }
 
