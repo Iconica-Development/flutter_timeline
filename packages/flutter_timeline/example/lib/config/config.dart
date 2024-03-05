@@ -82,6 +82,7 @@ void createPost(
           onPostOverview: (post) {
             navigateToOverview(context, service, options, post);
           },
+          enablePostOverviewScreen: configuration.enablePostOverviewScreen,
         ),
       ),
     ),

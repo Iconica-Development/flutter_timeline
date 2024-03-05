@@ -115,9 +115,9 @@ Widget _postDetailScreenRoute({
 
 /// A widget function that creates a post creation screen route.
 ///
-/// This function creates a route for displaying a post creation screen. It takes
-/// a [BuildContext] and an optional [TimelineUserStoryConfiguration] as
-/// parameters. If no configuration is provided, default values will be used.
+/// This function creates a route for displaying a post creation screen.
+/// It takes a [BuildContext] and an optional [TimelineUserStoryConfiguration]
+/// as parameters. If no configuration is provided, default values will be used.
 Widget _postCreationScreenRoute({
   required BuildContext context,
   TimelineUserStoryConfiguration? configuration,
@@ -171,8 +171,8 @@ Widget _postCreationScreenRoute({
 
 /// A widget function that creates a post overview screen route.
 ///
-/// This function creates a route for displaying a post overview screen. It takes
-/// a [BuildContext], a [TimelinePost], and an optional
+/// This function creates a route for displaying a post overview screen.
+/// It takes a [BuildContext], a [TimelinePost], and an optional
 /// [TimelineUserStoryConfiguration] as parameters. If no configuration is
 /// provided, default values will be used.
 Widget _postOverviewScreenRoute({
