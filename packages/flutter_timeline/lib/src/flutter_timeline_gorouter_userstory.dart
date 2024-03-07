@@ -107,7 +107,14 @@ List<GoRoute> getTimelineStoryRoutes({
           onPostCreated: (post) async {
             await config.service.postService.createPost(post);
             if (context.mounted) {
-              context.go(TimelineUserStoryRoutes.timelineHome);
+              if (config.afterPostCreationGoHome) {
+                context.go(TimelineUserStoryRoutes.timelineHome);
+              } else {
+                context.go(
+                  TimelineUserStoryRoutes.timelinePostOverview,
+                  extra: post,
+                );
+              }
             }
           },
           onPostOverview: (post) async => context.push(

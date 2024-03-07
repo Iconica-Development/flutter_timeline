@@ -55,6 +55,7 @@ class TimelineUserStoryConfiguration {
     this.onPostDelete,
     this.filterEnabled = false,
     this.postWidgetBuilder,
+    this.afterPostCreationGoHome = false,
     this.enablePostOverviewScreen = false,
   });
 
@@ -88,4 +89,8 @@ class TimelineUserStoryConfiguration {
 
   /// Boolean to enable timeline post overview screen before submitting
   final bool enablePostOverviewScreen;
+
+  /// Boolean to enable redirect to home after post creation.
+  /// If false, it will redirect to created post screen
+  final bool afterPostCreationGoHome;
 }
