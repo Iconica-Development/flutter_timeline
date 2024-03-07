@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 name: flutter_timeline
 description: Visual elements and interface combined into one package
-version: 2.1.0
+version: 2.2.0
 
 publish_to: none
 
