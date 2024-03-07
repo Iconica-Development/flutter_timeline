@@ -72,7 +72,7 @@ void createPost(
     MaterialPageRoute(
       builder: (context) => Scaffold(
         body: TimelinePostCreationScreen(
-          postCategory: null,
+          postCategory: 'category1',
           userId: 'test_user',
           service: service,
           options: options,

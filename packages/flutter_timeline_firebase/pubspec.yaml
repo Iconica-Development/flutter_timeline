@@ -23,7 +23,7 @@ dependencies:
     git: 
        url: https://github.com/Iconica-Development/flutter_timeline
        path: packages/flutter_timeline_interface
-       ref: 2.1.0
+       ref: 2.2.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
