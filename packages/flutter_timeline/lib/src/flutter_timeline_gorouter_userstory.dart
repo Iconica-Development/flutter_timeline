@@ -42,22 +42,22 @@ List<GoRoute> getTimelineStoryRoutes({
           postWidgetBuilder: config.postWidgetBuilder,
         );
 
+        var button = FloatingActionButton(
+          onPressed: () async => context.go(
+            TimelineUserStoryRoutes.timelinePostCreation,
+          ),
+          child: const Icon(Icons.add),
+        );
+
         return buildScreenWithoutTransition(
           context: context,
           state: state,
-          child: config.openPageBuilder?.call(
-                context,
-                timelineScreen,
-              ) ??
+          child: config.homeOpenPageBuilder
+                  ?.call(context, timelineScreen, button) ??
               Scaffold(
                 appBar: AppBar(),
                 body: timelineScreen,
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () async => context.go(
-                    TimelineUserStoryRoutes.timelinePostCreation,
-                  ),
-                  child: const Icon(Icons.add),
-                ),
+                floatingActionButton: button,
               ),
         );
       },
@@ -77,20 +77,19 @@ List<GoRoute> getTimelineStoryRoutes({
           onUserTap: (user) => config.onUserTap?.call(context, user),
         );
 
+        var backButton = IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => context.go(TimelineUserStoryRoutes.timelineHome),
+        );
+
         return buildScreenWithoutTransition(
           context: context,
           state: state,
-          child: config.openPageBuilder?.call(
-                context,
-                timelinePostWidget,
-              ) ??
+          child: config.postViewOpenPageBuilder
+                  ?.call(context, timelinePostWidget, backButton) ??
               Scaffold(
                 appBar: AppBar(
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () =>
-                        context.go(TimelineUserStoryRoutes.timelineHome),
-                  ),
+                  leading: backButton,
                 ),
                 body: timelinePostWidget,
               ),
@@ -105,15 +104,13 @@ List<GoRoute> getTimelineStoryRoutes({
           options: config.optionsBuilder(context),
           service: config.service,
           onPostCreated: (post) async {
-            await config.service.postService.createPost(post);
+            var newPost = await config.service.postService.createPost(post);
             if (context.mounted) {
               if (config.afterPostCreationGoHome) {
                 context.go(TimelineUserStoryRoutes.timelineHome);
               } else {
-                context.go(
-                  TimelineUserStoryRoutes.timelinePostOverview,
-                  extra: post,
-                );
+                await context
+                    .push(TimelineUserStoryRoutes.timelineViewPath(newPost.id));
               }
             }
           },
@@ -124,23 +121,22 @@ List<GoRoute> getTimelineStoryRoutes({
           enablePostOverviewScreen: config.enablePostOverviewScreen,
         );
 
+        var backButton = IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => context.go(TimelineUserStoryRoutes.timelineHome),
+        );
+
         return buildScreenWithoutTransition(
           context: context,
           state: state,
-          child: config.openPageBuilder?.call(
-                context,
-                timelinePostCreationWidget,
-              ) ??
+          child: config.postCreationOpenPageBuilder
+                  ?.call(context, timelinePostCreationWidget, backButton) ??
               Scaffold(
                 appBar: AppBar(
                   title: Text(
                     config.optionsBuilder(context).translations.postCreation,
                   ),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () =>
-                        context.go(TimelineUserStoryRoutes.timelineHome),
-                  ),
+                  leading: backButton,
                 ),
                 body: timelinePostCreationWidget,
               ),
@@ -167,7 +163,7 @@ List<GoRoute> getTimelineStoryRoutes({
         return buildScreenWithoutTransition(
           context: context,
           state: state,
-          child: config.openPageBuilder?.call(
+          child: config.postOverviewOpenPageBuilder?.call(
                 context,
                 timelinePostOverviewWidget,
               ) ??

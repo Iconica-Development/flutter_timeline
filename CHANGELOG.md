@@ -1,3 +1,8 @@
+## 2.3.0
+
+- Added separate open page builders for timeline screens
+- Fixed afterPostCreationGoHome routing in gorouter and navigater user stories
+
 ## 2.2.0
 
 - Add all routes to gorouter and navigator user stories

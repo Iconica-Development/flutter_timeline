@@ -49,7 +49,10 @@ class TimelineUserStoryConfiguration {
     required this.service,
     required this.optionsBuilder,
     this.userId = 'test_user',
-    this.openPageBuilder,
+    this.homeOpenPageBuilder,
+    this.postCreationOpenPageBuilder,
+    this.postViewOpenPageBuilder,
+    this.postOverviewOpenPageBuilder,
     this.onPostTap,
     this.onUserTap,
     this.onPostDelete,
@@ -68,8 +71,44 @@ class TimelineUserStoryConfiguration {
   /// A function that builds TimelineOptions based on the given BuildContext.
   final TimelineOptions Function(BuildContext context) optionsBuilder;
 
-  /// A function that defines the behavior when a page needs to be opened.
-  final Function(BuildContext context, Widget child)? openPageBuilder;
+  /// Open page builder function for the home page. This function accepts
+  /// a [BuildContext], a child widget, and a FloatingActionButton which can
+  /// route to the post creation page.
+
+  final Function(
+    BuildContext context,
+    Widget child,
+    FloatingActionButton? button,
+  )? homeOpenPageBuilder;
+
+  /// Open page builder function for the post creation page. This function
+  /// accepts a [BuildContext], a child widget, and an IconButton which can
+  /// route to the home page.
+
+  final Function(
+    BuildContext context,
+    Widget child,
+    IconButton? button,
+  )? postCreationOpenPageBuilder;
+
+  /// Open page builder function for the post view page. This function accepts
+  /// a [BuildContext], a child widget, and an IconButton which can route to the
+  /// home page.
+
+  final Function(
+    BuildContext context,
+    Widget child,
+    IconButton? button,
+  )? postViewOpenPageBuilder;
+
+  /// Open page builder function for the post overview page. This function
+  /// accepts a [BuildContext], a child widget, and an IconButton which can
+  /// route to the home page.
+
+  final Function(
+    BuildContext context,
+    Widget child,
+  )? postOverviewOpenPageBuilder;
 
   /// A callback function invoked when a timeline post is tapped.
   final Function(BuildContext context, TimelinePost post)? onPostTap;
