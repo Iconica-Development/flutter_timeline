@@ -4,7 +4,7 @@
 
 name: flutter_timeline_firebase
 description: Implementation of the Flutter Timeline interface for Firebase.
-version: 2.2.0
+version: 2.3.0
 
 publish_to: none
 

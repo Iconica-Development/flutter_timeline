@@ -144,13 +144,28 @@ Widget _postCreationScreenRoute({
       onPostCreated: (post) async {
         await config.service.postService.createPost(post);
         if (context.mounted) {
-          await Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  _timelineScreenRoute(configuration: config, context: context),
-            ),
-          );
+          if (config.afterPostCreationGoHome) {
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => _timelineScreenRoute(
+                  configuration: config,
+                  context: context,
+                ),
+              ),
+            );
+          } else {
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => _postDetailScreenRoute(
+                  configuration: config,
+                  context: context,
+                  post: post,
+                ),
+              ),
+            );
+          }
         }
       },
       onPostOverview: (post) async {
