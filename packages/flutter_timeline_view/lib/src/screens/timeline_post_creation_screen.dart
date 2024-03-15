@@ -19,6 +19,7 @@ class TimelinePostCreationScreen extends StatefulWidget {
     required this.options,
     this.postCategory,
     this.onPostOverview,
+    this.enablePostOverviewScreen = false,
     super.key,
   });
 
@@ -37,6 +38,7 @@ class TimelinePostCreationScreen extends StatefulWidget {
 
   /// Nullable callback for routing to the post overview
   final void Function(TimelinePost)? onPostOverview;
+  final bool enablePostOverviewScreen;
 
   @override
   State<TimelinePostCreationScreen> createState() =>
@@ -107,11 +109,10 @@ class _TimelinePostCreationScreenState
         image: image,
       );
 
-      if (widget.onPostOverview != null) {
+      if (widget.enablePostOverviewScreen) {
         widget.onPostOverview?.call(post);
       } else {
-        var newPost = await widget.service.postService.createPost(post);
-        widget.onPostCreated.call(newPost);
+        widget.onPostCreated.call(post);
       }
     }
 
@@ -287,7 +288,9 @@ class _TimelinePostCreationScreenState
                               }
                             : null,
                         child: Text(
-                          widget.options.translations.checkPost,
+                          widget.enablePostOverviewScreen
+                              ? widget.options.translations.checkPost
+                              : widget.options.translations.postCreation,
                           style: theme.textTheme.bodyMedium,
                         ),
                       ),

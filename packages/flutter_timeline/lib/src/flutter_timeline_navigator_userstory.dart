@@ -44,26 +44,40 @@ Widget _timelineScreenRoute({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return TimelineScreen(
-    service: config.service,
-    options: config.optionsBuilder(context),
-    userId: config.userId,
-    onPostTap: (post) async =>
-        config.onPostTap?.call(context, post) ??
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => _postDetailScreenRoute(
-              configuration: config,
-              context: context,
-              post: post,
-            ),
+  return Scaffold(
+    appBar: AppBar(),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () async => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => _postCreationScreenRoute(
+            configuration: config,
+            context: context,
           ),
         ),
-    onUserTap: (userId) {
-      config.onUserTap?.call(context, userId);
-    },
-    filterEnabled: config.filterEnabled,
-    postWidgetBuilder: config.postWidgetBuilder,
+      ),
+      child: const Icon(Icons.add),
+    ),
+    body: TimelineScreen(
+      service: config.service,
+      options: config.optionsBuilder(context),
+      userId: config.userId,
+      onPostTap: (post) async =>
+          config.onPostTap?.call(context, post) ??
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => _postDetailScreenRoute(
+                configuration: config,
+                context: context,
+                post: post,
+              ),
+            ),
+          ),
+      onUserTap: (userId) {
+        config.onUserTap?.call(context, userId);
+      },
+      filterEnabled: config.filterEnabled,
+      postWidgetBuilder: config.postWidgetBuilder,
+    ),
   );
 }
 
@@ -95,6 +109,101 @@ Widget _postDetailScreenRoute({
     onPostDelete: () async {
       config.onPostDelete?.call(context, post) ??
           await config.service.postService.deletePost(post);
+    },
+  );
+}
+
+/// A widget function that creates a post creation screen route.
+///
+/// This function creates a route for displaying a post creation screen.
+/// It takes a [BuildContext] and an optional [TimelineUserStoryConfiguration]
+/// as parameters. If no configuration is provided, default values will be used.
+Widget _postCreationScreenRoute({
+  required BuildContext context,
+  TimelineUserStoryConfiguration? configuration,
+}) {
+  var config = configuration ??
+      TimelineUserStoryConfiguration(
+        userId: 'test_user',
+        service: TimelineService(
+          postService: LocalTimelinePostService(),
+        ),
+        optionsBuilder: (context) => const TimelineOptions(),
+      );
+
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        config.optionsBuilder(context).translations.postCreation,
+      ),
+    ),
+    body: TimelinePostCreationScreen(
+      userId: config.userId,
+      service: config.service,
+      options: config.optionsBuilder(context),
+      onPostCreated: (post) async {
+        await config.service.postService.createPost(post);
+        if (context.mounted) {
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  _timelineScreenRoute(configuration: config, context: context),
+            ),
+          );
+        }
+      },
+      onPostOverview: (post) async {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _postOverviewScreenRoute(
+              configuration: config,
+              context: context,
+              post: post,
+            ),
+          ),
+        );
+      },
+      enablePostOverviewScreen: config.enablePostOverviewScreen,
+    ),
+  );
+}
+
+/// A widget function that creates a post overview screen route.
+///
+/// This function creates a route for displaying a post overview screen.
+/// It takes a [BuildContext], a [TimelinePost], and an optional
+/// [TimelineUserStoryConfiguration] as parameters. If no configuration is
+/// provided, default values will be used.
+Widget _postOverviewScreenRoute({
+  required BuildContext context,
+  required TimelinePost post,
+  TimelineUserStoryConfiguration? configuration,
+}) {
+  var config = configuration ??
+      TimelineUserStoryConfiguration(
+        userId: 'test_user',
+        service: TimelineService(
+          postService: LocalTimelinePostService(),
+        ),
+        optionsBuilder: (context) => const TimelineOptions(),
+      );
+
+  return TimelinePostOverviewScreen(
+    timelinePost: post,
+    options: config.optionsBuilder(context),
+    service: config.service,
+    onPostSubmit: (post) async {
+      await config.service.postService.createPost(post);
+      if (context.mounted) {
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                _timelineScreenRoute(configuration: config, context: context),
+          ),
+        );
+      }
     },
   );
 }

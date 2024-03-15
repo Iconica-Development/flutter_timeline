@@ -1,3 +1,9 @@
+## 2.2.0
+
+- Add all routes to gorouter and navigator user stories
+- Added enablePostOverviewScreen to config
+- Update flutter_image_picker to 1.0.5
+
 ## 2.1.0
 
 - Fixed multiline textfield not being dismissible.

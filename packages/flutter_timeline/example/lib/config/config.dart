@@ -6,6 +6,7 @@ TimelineUserStoryConfiguration getConfig(TimelineService service) {
     service: service,
     userId: 'test_user',
     optionsBuilder: (context) => options,
+    enablePostOverviewScreen: false,
   );
 }
 
@@ -71,7 +72,7 @@ void createPost(
     MaterialPageRoute(
       builder: (context) => Scaffold(
         body: TimelinePostCreationScreen(
-          postCategory: null,
+          postCategory: 'category1',
           userId: 'test_user',
           service: service,
           options: options,
@@ -81,6 +82,7 @@ void createPost(
           onPostOverview: (post) {
             navigateToOverview(context, service, options, post);
           },
+          enablePostOverviewScreen: configuration.enablePostOverviewScreen,
         ),
       ),
     ),

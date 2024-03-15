@@ -30,7 +30,9 @@ class TimelinePostOverviewScreen extends StatelessWidget {
               userId: timelinePost.creatorId,
               options: options,
               post: timelinePost,
-              onPostDelete: () {},
+              onPostDelete: () async {
+                await service.postService.deletePost(timelinePost);
+              },
               service: service,
             ),
           ),

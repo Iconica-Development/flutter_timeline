@@ -37,43 +37,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: 'btn1',
-            onPressed: () => createPost(
-              context,
-              timelineService,
-              timelineOptions,
-              getConfig(timelineService),
-            ),
-            child: const Icon(
-              Icons.edit,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          FloatingActionButton(
-            heroTag: 'btn2',
-            onPressed: () => generatePost(timelineService),
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: timeLineNavigatorUserStory(
-            configuration: getConfig(
-              timelineService,
-            ),
-            context: context),
-      ),
+    return timeLineNavigatorUserStory(
+      context: context,
+      configuration: getConfig(timelineService),
     );
   }
 }
