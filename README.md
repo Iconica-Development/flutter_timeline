@@ -126,6 +126,9 @@ TimelinePostCreationScreen(
 ),
 ```
 
+You can choose to show an overview of the post before actually posting it using the `enablePostOverviewScreen` config setting.
+
+
 The `TimelineOptions` has its own parameters, as specified below:
 
 | Parameter | Explanation |
@@ -136,11 +139,17 @@ The `TimelineOptions` has its own parameters, as specified below:
 | imagePickerTheme | Theme for the image picker in the post creation screen. |
 | timelinePostHeight | Sets the height for each post widget in the list of post. If null, the size depends on the size of the image. |
 | allowAllDeletion | Determines of users are allowed to delete thier own posts. |
+| afterPostCreationGoHome | Boolean to enable redirect to home after post creation. If false, it will redirect to created post screen. |
+| enablePostOverviewScreen | Boolean to enable timeline post overview screen before submitting. |
 | sortCommentsAscending | Determines if the comments are sorted from old to new or new to old. |
 | sortPostsAscending | Determines if the posts are sorted from old to new or new to old. |
 | doubleTapToLike | Enables the abilty to double tap the image to like the post. |
 | iconsWithValues | Ability to provide desired text and tanslations. |
 | likeAndDislikeIconsForDoubleTap | Ability to override the standard icon which appears on double tap. |
+| homeOpenPageBuilder | Open page builder function for the home page. |
+| postCreationOpenPageBuilder | Open page builder function for the post creation page. |
+| postViewOpenPageBuilder | Open page builder function for the post view page. |
+| postOverviewOpenPageBuilder | Open page builder function for the post overview page. |
 | itemInfoBuilder | Ability to override the bottom of the postwidgets. (Everything under the like and comment icons) |
 | dateFormat | Sets the used date format |
 | timeFormat | Sets the used time format |
@@ -153,6 +162,10 @@ The `TimelineOptions` has its own parameters, as specified below:
 | padding | Padding used for the whole page. |
 | iconSize | Size of icons like the comment and like icons. Dafualts to 26. |
 | postWidgetHeight | Ability to provide desired text and tanslations. |
+| minTitleLength | Minimum length of the title. |
+| maxTitleLength | Maximum length of the title. |
+| minContentLength | Minimum length of the post content. |
+| maxContentLength | Maximum length of the post content. |
 | postPadding | Padding for each post. |
 | filterOptions | Options for using the filter to filter posts. |
 | categoriesOptions | Options for using the category selector to provide posts of a certain category. |
