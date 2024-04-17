@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -97,7 +98,7 @@ class _TimelinePostCreationScreenState
   Widget build(BuildContext context) {
     Future<void> onPostCreated() async {
       var post = TimelinePost(
-        id: '',
+        id: 'Post${Random().nextInt(1000)}',
         creatorId: widget.userId,
         title: titleController.text,
         category: widget.postCategory,
@@ -128,7 +129,7 @@ class _TimelinePostCreationScreenState
             children: [
               Text(
                 widget.options.translations.title,
-                style: theme.textTheme.displaySmall,
+                style: theme.textTheme.titleMedium,
               ),
               widget.options.textInputBuilder?.call(
                     titleController,
@@ -137,11 +138,14 @@ class _TimelinePostCreationScreenState
                   ) ??
                   TextField(
                     controller: titleController,
+                    decoration: InputDecoration(
+                      hintText: widget.options.translations.titleHintText,
+                    ),
                   ),
               const SizedBox(height: 16),
               Text(
                 widget.options.translations.content,
-                style: theme.textTheme.displaySmall,
+                style: theme.textTheme.titleMedium,
               ),
               const SizedBox(height: 4),
               Text(
@@ -157,6 +161,9 @@ class _TimelinePostCreationScreenState
                   expands: true,
                   maxLines: null,
                   minLines: null,
+                  decoration: InputDecoration(
+                    hintText: widget.options.translations.contentHintText,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -165,7 +172,7 @@ class _TimelinePostCreationScreenState
               // input field for the content
               Text(
                 widget.options.translations.uploadImage,
-                style: theme.textTheme.displaySmall,
+                style: theme.textTheme.titleMedium,
               ),
               Text(
                 widget.options.translations.uploadImageDescription,
@@ -198,30 +205,31 @@ class _TimelinePostCreationScreenState
                       }
                       checkIfEditingDone();
                     },
-                    child: image != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.memory(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: image != null
+                          ? Image.memory(
                               image!,
                               width: double.infinity,
                               height: 150.0,
                               fit: BoxFit.cover,
                               // give it a rounded border
-                            ),
-                          )
-                        : DottedBorder(
-                            radius: const Radius.circular(8.0),
-                            color: theme.textTheme.displayMedium?.color ??
-                                Colors.white,
-                            child: const SizedBox(
-                              width: double.infinity,
-                              height: 150.0,
-                              child: Icon(
-                                Icons.image,
-                                size: 32,
+                            )
+                          : DottedBorder(
+                              dashPattern: const [4, 4],
+                              radius: const Radius.circular(8.0),
+                              color: theme.textTheme.displayMedium?.color ??
+                                  Colors.white,
+                              child: const SizedBox(
+                                width: double.infinity,
+                                height: 150.0,
+                                child: Icon(
+                                  Icons.image,
+                                  size: 50,
+                                ),
                               ),
                             ),
-                          ),
+                    ),
                   ),
                   // if an image is selected, show a delete button
                   if (image != null) ...[
@@ -255,21 +263,36 @@ class _TimelinePostCreationScreenState
 
               Text(
                 widget.options.translations.commentsTitle,
-                style: theme.textTheme.displaySmall,
+                style: theme.textTheme.titleMedium,
               ),
               Text(
                 widget.options.translations.allowCommentsDescription,
                 style: theme.textTheme.bodyMedium,
               ),
-              // radio buttons for yes or no
-              Switch(
-                value: allowComments,
-                onChanged: (newValue) {
-                  setState(() {
-                    allowComments = newValue;
-                  });
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(
+                    value: allowComments,
+                    onChanged: (value) {
+                      setState(() {
+                        allowComments = true;
+                      });
+                    },
+                  ),
+                  Text(widget.options.translations.yes),
+                  Checkbox(
+                    value: !allowComments,
+                    onChanged: (value) {
+                      setState(() {
+                        allowComments = false;
+                      });
+                    },
+                  ),
+                  Text(widget.options.translations.no),
+                ],
               ),
+
               Align(
                 alignment: Alignment.bottomCenter,
                 child: (widget.options.buttonBuilder != null)

@@ -40,7 +40,8 @@ class TimelineOptions {
     this.padding = const EdgeInsets.symmetric(vertical: 12.0),
     this.iconSize = 26,
     this.postWidgetHeight,
-    this.postPadding = const EdgeInsets.all(12.0),
+    this.postPadding =
+        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
     this.requireImageForPost = false,

@@ -17,7 +17,13 @@ class LocalTimelinePostService
   Future<TimelinePost> createPost(TimelinePost post) async {
     posts.add(
       post.copyWith(
-        creator: const TimelinePosterUserModel(userId: 'test_user'),
+        creator: const TimelinePosterUserModel(
+          userId: 'test_user',
+          imageUrl:
+              'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+          firstName: 'Dirk',
+          lastName: 'lukassen',
+        ),
       ),
     );
     notifyListeners();
@@ -62,7 +68,13 @@ class LocalTimelinePostService
     for (var reaction in reactions) {
       updatedReactions.add(
         reaction.copyWith(
-          creator: const TimelinePosterUserModel(userId: 'test_user'),
+          creator: const TimelinePosterUserModel(
+            userId: 'test_user',
+            imageUrl:
+                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+            firstName: 'Dirk',
+            lastName: 'lukassen',
+          ),
         ),
       );
     }
@@ -156,7 +168,13 @@ class LocalTimelinePostService
 
     var updatedReaction = reaction.copyWith(
       id: reactionId,
-      creator: const TimelinePosterUserModel(userId: 'test_user'),
+      creator: const TimelinePosterUserModel(
+        userId: 'test_user',
+        imageUrl:
+            'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+        firstName: 'Dirk',
+        lastName: 'lukassen',
+      ),
     );
 
     var updatedPost = post.copyWith(
@@ -179,11 +197,20 @@ class LocalTimelinePostService
           creatorId: 'test_user',
           title: 'Post 0',
           category: null,
+          imageUrl:
+              'https://t4.ftcdn.net/jpg/02/77/71/45/240_F_277714513_fQ0akmI3TQxa0wkPCLeO12Rx3cL2AuIf.jpg',
           content: 'Standard post without image made by the current user',
           likes: 0,
           reaction: 0,
           createdAt: DateTime.now(),
           reactionEnabled: false,
+          creator: const TimelinePosterUserModel(
+            userId: 'test_user',
+            imageUrl:
+                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+            firstName: 'Dirk',
+            lastName: 'lukassen',
+          ),
         ),
         TimelinePost(
           id: 'Post1',
@@ -197,7 +224,14 @@ class LocalTimelinePostService
           createdAt: DateTime.now(),
           reactionEnabled: false,
           imageUrl:
-              'https://s3-eu-west-1.amazonaws.com/sortlist-core-api/6qpvvqjtmniirpkvp8eg83bicnc2',
+              'https://t4.ftcdn.net/jpg/02/77/71/45/240_F_277714513_fQ0akmI3TQxa0wkPCLeO12Rx3cL2AuIf.jpg',
+          creator: const TimelinePosterUserModel(
+            userId: 'test_user',
+            imageUrl:
+                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+            firstName: 'Dirk',
+            lastName: 'lukassen',
+          ),
         ),
         TimelinePost(
           id: 'Post2',
@@ -211,7 +245,14 @@ class LocalTimelinePostService
           createdAt: DateTime.now(),
           reactionEnabled: true,
           imageUrl:
-              'https://s3-eu-west-1.amazonaws.com/sortlist-core-api/6qpvvqjtmniirpkvp8eg83bicnc2',
+              'https://t4.ftcdn.net/jpg/02/77/71/45/240_F_277714513_fQ0akmI3TQxa0wkPCLeO12Rx3cL2AuIf.jpg',
+          creator: const TimelinePosterUserModel(
+            userId: 'test_user',
+            imageUrl:
+                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+            firstName: 'Dirk',
+            lastName: 'lukassen',
+          ),
         ),
       ];
 }

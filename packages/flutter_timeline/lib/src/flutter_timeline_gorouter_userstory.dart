@@ -43,10 +43,16 @@ List<GoRoute> getTimelineStoryRoutes({
         );
 
         var button = FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
           onPressed: () async => context.go(
             TimelineUserStoryRoutes.timelinePostCreation,
           ),
-          child: const Icon(Icons.add),
+          shape: const CircleBorder(),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 30,
+          ),
         );
 
         return buildScreenWithoutTransition(
@@ -55,7 +61,13 @@ List<GoRoute> getTimelineStoryRoutes({
           child: config.homeOpenPageBuilder
                   ?.call(context, timelineScreen, button) ??
               Scaffold(
-                appBar: AppBar(),
+                appBar: AppBar(
+                  backgroundColor: Colors.black,
+                  title: Text(
+                    'Iconinstagram',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
                 body: timelineScreen,
                 floatingActionButton: button,
               ),
@@ -66,18 +78,19 @@ List<GoRoute> getTimelineStoryRoutes({
       path: TimelineUserStoryRoutes.timelineView,
       pageBuilder: (context, state) {
         var post =
-            config.service.postService.getPost(state.pathParameters['post']!)!;
+            config.service.postService.getPost(state.pathParameters['post']!);
 
         var timelinePostWidget = TimelinePostScreen(
           userId: config.userId,
           options: config.optionsBuilder(context),
           service: config.service,
-          post: post,
+          post: post!,
           onPostDelete: () => config.onPostDelete?.call(context, post),
           onUserTap: (user) => config.onUserTap?.call(context, user),
         );
 
         var backButton = IconButton(
+          color: Colors.white,
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => context.go(TimelineUserStoryRoutes.timelineHome),
         );
@@ -90,6 +103,11 @@ List<GoRoute> getTimelineStoryRoutes({
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,
+                  backgroundColor: Colors.black,
+                  title: Text(
+                    'Category',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
                 body: timelinePostWidget,
               ),
@@ -133,8 +151,10 @@ List<GoRoute> getTimelineStoryRoutes({
                   ?.call(context, timelinePostCreationWidget, backButton) ??
               Scaffold(
                 appBar: AppBar(
+                  backgroundColor: Colors.black,
                   title: Text(
                     config.optionsBuilder(context).translations.postCreation,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   leading: backButton,
                 ),

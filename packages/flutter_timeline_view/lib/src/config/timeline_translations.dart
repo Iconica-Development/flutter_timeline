@@ -11,12 +11,15 @@ class TimelineTranslations {
     required this.noPosts,
     required this.noPostsWithFilter,
     required this.title,
+    required this.titleHintText,
     required this.content,
+    required this.contentHintText,
     required this.contentDescription,
     required this.uploadImage,
     required this.uploadImageDescription,
     required this.allowComments,
     required this.allowCommentsDescription,
+    required this.commentsTitleOnPost,
     required this.checkPost,
     required this.deletePost,
     required this.deleteReaction,
@@ -32,6 +35,8 @@ class TimelineTranslations {
     required this.postOverview,
     required this.postIn,
     required this.postCreation,
+    required this.yes,
+    required this.no,
   });
 
   const TimelineTranslations.empty()
@@ -46,12 +51,13 @@ class TimelineTranslations {
         allowComments = 'Are people allowed to comment?',
         allowCommentsDescription =
             'Indicate whether people are allowed to respond',
+        commentsTitleOnPost = 'Comments',
         checkPost = 'Check post overview',
         deletePost = 'Delete post',
         deleteReaction = 'Delete Reaction',
         viewPost = 'View post',
         likesTitle = 'Likes',
-        commentsTitle = 'Comments',
+        commentsTitle = 'Are people allowed to comment?',
         firstComment = 'Be the first to comment',
         writeComment = 'Write your comment here...',
         postAt = 'at',
@@ -60,7 +66,11 @@ class TimelineTranslations {
         searchHint = 'Search...',
         postOverview = 'Post Overview',
         postIn = 'Post in',
-        postCreation = 'Create Post';
+        postCreation = 'Create Post',
+        titleHintText = 'Title...',
+        contentHintText = 'Context...',
+        yes = 'Yes',
+        no = 'No';
 
   final String noPosts;
   final String noPostsWithFilter;
@@ -76,11 +86,15 @@ class TimelineTranslations {
   final String checkPost;
   final String postAt;
 
+  final String titleHintText;
+  final String contentHintText;
+
   final String deletePost;
   final String deleteReaction;
   final String viewPost;
   final String likesTitle;
   final String commentsTitle;
+  final String commentsTitleOnPost;
   final String writeComment;
   final String firstComment;
   final String postLoadingError;
@@ -93,6 +107,9 @@ class TimelineTranslations {
   final String postIn;
   final String postCreation;
 
+  final String yes;
+  final String no;
+
   TimelineTranslations copyWith({
     String? noPosts,
     String? noPostsWithFilter,
@@ -104,6 +121,7 @@ class TimelineTranslations {
     String? uploadImageDescription,
     String? allowComments,
     String? allowCommentsDescription,
+    String? commentsTitleOnPost,
     String? checkPost,
     String? postAt,
     String? deletePost,
@@ -119,6 +137,10 @@ class TimelineTranslations {
     String? postOverview,
     String? postIn,
     String? postCreation,
+    String? titleHintText,
+    String? contentHintText,
+    String? yes,
+    String? no,
   }) =>
       TimelineTranslations(
         noPosts: noPosts ?? this.noPosts,
@@ -133,6 +155,7 @@ class TimelineTranslations {
         allowComments: allowComments ?? this.allowComments,
         allowCommentsDescription:
             allowCommentsDescription ?? this.allowCommentsDescription,
+        commentsTitleOnPost: commentsTitleOnPost ?? this.commentsTitleOnPost,
         checkPost: checkPost ?? this.checkPost,
         postAt: postAt ?? this.postAt,
         deletePost: deletePost ?? this.deletePost,
@@ -149,5 +172,9 @@ class TimelineTranslations {
         postOverview: postOverview ?? this.postOverview,
         postIn: postIn ?? this.postIn,
         postCreation: postCreation ?? this.postCreation,
+        titleHintText: titleHintText ?? this.titleHintText,
+        contentHintText: contentHintText ?? this.contentHintText,
+        yes: yes ?? this.yes,
+        no: no ?? this.no,
       );
 }

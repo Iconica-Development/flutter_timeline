@@ -101,6 +101,13 @@ void generatePost(TimelineService service) {
       content: "Post $amountOfPosts content",
       likes: 0,
       reaction: 0,
+      creator: const TimelinePosterUserModel(
+        userId: 'test_user',
+        imageUrl:
+            'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+        firstName: 'Dirk',
+        lastName: 'lukassen',
+      ),
       createdAt: DateTime.now(),
       reactionEnabled: amountOfPosts % 2 == 0 ? false : true,
       imageUrl: amountOfPosts % 3 != 0

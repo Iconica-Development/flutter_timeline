@@ -69,7 +69,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         if (widget.post.creator!.imageUrl != null) ...[
                           widget.options.userAvatarBuilder?.call(
                                 widget.post.creator!,
-                                40,
+                                28,
                               ) ??
                               CircleAvatar(
                                 radius: 20,
@@ -213,7 +213,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                     icon: widget.options.theme.likeIcon ??
                         Icon(
                           widget.post.likedBy?.contains(widget.userId) ?? false
-                              ? Icons.favorite
+                              ? Icons.favorite_rounded
                               : Icons.favorite_outline_outlined,
                         ),
                     label: Text('${widget.post.likes}'),
@@ -240,7 +240,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         color: Colors.transparent,
                         child: widget.options.theme.likedIcon ??
                             Icon(
-                              Icons.thumb_up_rounded,
+                              Icons.favorite_rounded,
                               color: widget.options.theme.iconColor,
                               size: widget.options.iconSize,
                             ),
@@ -253,7 +253,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         color: Colors.transparent,
                         child: widget.options.theme.likedIcon ??
                             Icon(
-                              Icons.thumb_up_rounded,
+                              Icons.favorite_outline,
                               color: widget.options.theme.iconColor,
                               size: widget.options.iconSize,
                             ),

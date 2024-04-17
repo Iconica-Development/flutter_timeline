@@ -74,10 +74,27 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
   late var filterWord = widget.options.filterOptions.initialFilterWord;
 
+  bool _isOnTop = true;
+
+  @override
+  void dispose() {
+    controller.removeListener(_updateIsOnTop);
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _updateIsOnTop() {
+    setState(() {
+      _isOnTop = controller.position.pixels < 40;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     controller = widget.scrollController ?? ScrollController();
+    controller.addListener(_updateIsOnTop);
+
     // only load the posts after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(loadPosts());
@@ -188,6 +205,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
               ),
             ],
             CategorySelector(
+              isOnTop: _isOnTop,
               filter: category,
               options: widget.options,
               onTapCategory: (categoryKey) {

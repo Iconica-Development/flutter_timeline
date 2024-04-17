@@ -21,7 +21,11 @@ class TimelinePostOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(options.translations.postOverview),
+        backgroundColor: Colors.black,
+        title: Text(
+          options.translations.postOverview,
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
       ),
       body: Column(
         children: [
