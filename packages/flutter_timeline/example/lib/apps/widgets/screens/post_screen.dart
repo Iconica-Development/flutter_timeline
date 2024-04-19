@@ -34,7 +34,13 @@ class _PostScreenState extends State<PostScreen> {
 
 class TestUserService implements TimelineUserService {
   final Map<String, TimelinePosterUserModel> _users = {
-    'test_user': const TimelinePosterUserModel(userId: 'test_user')
+    'test_user': const TimelinePosterUserModel(
+      userId: 'test_user',
+      imageUrl:
+          'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
+      firstName: 'Dirk',
+      lastName: 'lukassen',
+    )
   };
 
   @override

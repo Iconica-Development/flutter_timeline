@@ -30,46 +30,43 @@ class _ReactionBottomState extends State<ReactionBottom> {
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) => Container(
-        color: Theme.of(context).colorScheme.background,
+  Widget build(BuildContext context) => SafeArea(
+        bottom: true,
         child: Container(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
-          height: 45,
-          child: widget.messageInputBuilder(
-            _textEditingController,
-            Padding(
-              padding: const EdgeInsets.only(right: 15.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: widget.onPressSelectImage,
-                    icon: Icon(
-                      Icons.image,
-                      color: widget.iconColor,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      var value = _textEditingController.text;
-
-                      if (value.isNotEmpty) {
-                        await widget.onReactionSubmit(value);
-                        _textEditingController.clear();
-                      }
-                    },
-                    icon: Icon(
-                      Icons.send,
-                      color: widget.iconColor,
-                    ),
-                  ),
-                ],
-              ),
+          color: Theme.of(context).colorScheme.background,
+          child: Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
             ),
-            widget.translations.writeComment,
+            height: 48,
+            child: widget.messageInputBuilder(
+              _textEditingController,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        var value = _textEditingController.text;
+                        if (value.isNotEmpty) {
+                          await widget.onReactionSubmit(value);
+                          _textEditingController.clear();
+                        }
+                      },
+                      icon: Icon(
+                        Icons.send,
+                        color: widget.iconColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              widget.translations.writeComment,
+            ),
           ),
         ),
       );

@@ -93,6 +93,10 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
             decoration: InputDecoration(
               hintText: hintText,
               suffixIcon: suffixIcon,
+              border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(20.0), // Adjust the value as needed
+              ),
             ),
           );
 
@@ -184,7 +188,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               if (post.creator!.imageUrl != null) ...[
                                 widget.options.userAvatarBuilder?.call(
                                       post.creator!,
-                                      40,
+                                      28,
                                     ) ??
                                     CircleAvatar(
                                       radius: 20,
@@ -196,7 +200,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               ] else ...[
                                 widget.options.anonymousAvatarBuilder?.call(
                                       post.creator!,
-                                      40,
+                                      28,
                                     ) ??
                                     const CircleAvatar(
                                       radius: 20,
@@ -318,6 +322,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 Icon(
                                   Icons.thumb_up_rounded,
                                   color: widget.options.theme.iconColor,
+                                  size: widget.options.iconSize,
                                 ),
                           ),
                         ),
@@ -418,8 +423,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                   const SizedBox(height: 20),
                   if (post.reactionEnabled) ...[
                     Text(
-                      widget.options.translations.commentsTitle,
-                      style: theme.textTheme.displaySmall,
+                      widget.options.translations.commentsTitleOnPost,
+                      style: theme.textTheme.titleMedium,
                     ),
                     for (var reaction
                         in post.reactions ?? <TimelinePostReaction>[]) ...[
@@ -469,7 +474,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 reaction.creator!.imageUrl!.isNotEmpty) ...[
                               widget.options.userAvatarBuilder?.call(
                                     reaction.creator!,
-                                    25,
+                                    28,
                                   ) ??
                                   CircleAvatar(
                                     radius: 20,
@@ -480,7 +485,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                             ] else ...[
                               widget.options.anonymousAvatarBuilder?.call(
                                     reaction.creator!,
-                                    25,
+                                    28,
                                   ) ??
                                   const CircleAvatar(
                                     radius: 20,

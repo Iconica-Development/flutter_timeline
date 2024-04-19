@@ -20,6 +20,7 @@ class TimelineTextStyles {
     this.postTitleStyle,
     this.postLikeTitleAndAmount,
     this.postCreatedAtStyle,
+    this.categoryTitleStyle,
   });
 
   /// The TextStyle for the text indicating that you can view a post
@@ -70,4 +71,6 @@ class TimelineTextStyles {
 
   /// The TextStyle for the creation time of the post
   final TextStyle? postCreatedAtStyle;
+
+  final TextStyle? categoryTitleStyle;
 }

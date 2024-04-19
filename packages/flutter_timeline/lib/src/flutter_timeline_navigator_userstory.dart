@@ -134,6 +134,7 @@ Widget _postCreationScreenRoute({
   return Scaffold(
     appBar: AppBar(
       title: Text(
+        style: Theme.of(context).textTheme.titleLarge,
         config.optionsBuilder(context).translations.postCreation,
       ),
     ),

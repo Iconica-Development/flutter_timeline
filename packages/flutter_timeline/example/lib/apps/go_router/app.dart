@@ -25,9 +25,14 @@ class GoRouterApp extends StatelessWidget {
       routerConfig: _router,
       title: 'Flutter Timeline',
       theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Colors.deepPurple).copyWith(
-          background: const Color(0xFFB8E2E8),
+        textTheme: const TextTheme(
+            titleLarge: TextStyle(
+                color: Color(0xffb71c6d), fontFamily: 'Playfair Display')),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFB8E2E8),
+          primary: const Color(0xffb71c6d),
+        ).copyWith(
+          background: const Color(0XFFFAF9F6),
         ),
         useMaterial3: true,
       ),
