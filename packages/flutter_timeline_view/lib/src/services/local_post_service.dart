@@ -86,7 +86,9 @@ class LocalTimelinePostService
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    posts = getMockedPosts();
+    if (posts.isEmpty) {
+      posts = getMockedPosts();
+    }
     notifyListeners();
     return posts;
   }

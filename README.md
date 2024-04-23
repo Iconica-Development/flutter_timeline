@@ -1,6 +1,6 @@
 # Flutter Timeline
 
-Flutter Timeline is a package which shows a list posts by a user. This package also has additional features like liking a post and leaving comments. Default this package adds support for a Firebase back-end. You can add your custom back-end (like a Websocket-API) by extending the `CommunityChatInterface` interface from the `flutter_community_chat_interface` package.
+Flutter Timeline is a package which shows a list posts by a user. This package also has additional features like liking a post and leaving comments. Default this package adds support for a Firebase back-end.
 
 ![Flutter Timeline GIF](example.gif)
 
@@ -8,10 +8,10 @@ Flutter Timeline is a package which shows a list posts by a user. This package a
 To use this package, add flutter_timeline as a dependency in your pubspec.yaml file:
 
 ```
-  flutter_timeline
+  flutter_timeline:
     git: 
-        url: https://github.com/Iconica-Development/flutter_timeline.git
-        path: packages/flutter_timeline
+      url: https://github.com/Iconica-Development/flutter_timeline.git
+      path: packages/flutter_timeline
 ```
 
 If you are going to use Firebase as the back-end of the Timeline, you should also add the following package as a dependency to your pubspec.yaml file:
@@ -19,11 +19,17 @@ If you are going to use Firebase as the back-end of the Timeline, you should als
 ```
   flutter_timeline_firebase:
     git: 
-        url: https://github.com/Iconica-Development/flutter_timeline.git
-        path: packages/flutter_timeline_firebase
+      url: https://github.com/Iconica-Development/flutter_timeline.git
+      path: packages/flutter_timeline_firebase
 ```
 
+In firebase add firestore and storage to your project.
+In firestore add a collection named `timeline` and a collection named `users`.
+In the `timeline` collection all posts will be stored. In the `users` collection all users will be stored.
+In the `users` collection you should add your users data.
+
 Add the following code in your `main` function, before the runApp().
+And import this package:   import 'package:intl/date_symbol_data_local.dart';
 ```
   initializeDateFormatting();
 ```
@@ -35,14 +41,17 @@ Add go_router as dependency to your project.
 Add the following configuration to your flutter_application:
 
 ```
-List<GoRoute> getTimelineStoryRoutes() => getTimelineStoryRoutes(
-      TimelineUserStoryConfiguration(
-        service: FirebaseTimelineService(),
-        userService: FirebaseUserService(),
-        userId: currentUserId,
-        optionsBuilder: (context) => FirebaseOptions(),
+List<GoRoute> getTimelineStoryRoutes() => 
+  getTimelineStoryRoutes(
+    TimelineUserStoryConfiguration(
+      service: TimelineService(
+        postService: LocalTimelinePostService(),
       ),
-    );
+      optionsBuilder: (context) {
+        return const TimelineOptions();
+      },
+    ),
+  );
 ```
 
 Add the `getTimelineStoryRoutes()` to your go_router routes like so:
@@ -58,7 +67,7 @@ final GoRouter _router = GoRouter(
         );
       },
     ),
-    ...getTimelineStoryRoutes(timelineUserStoryConfiguration)
+    ...getTimelineStoryRoutes(configuration: configuration);
   ],
 );
 ```
@@ -171,7 +180,7 @@ The `TimelineOptions` has its own parameters, as specified below:
 | categoriesOptions | Options for using the category selector to provide posts of a certain category. |
 
 
-The `ImagePickerTheme` ans `imagePickerConfig` also have their own parameters, how to use these parameters can be found in [the documentation of the flutter_image_picker package](https://github.com/Iconica-Development/flutter_image_picker).
+The `ImagePickerTheme` and `imagePickerConfig` also have their own parameters, how to use these parameters can be found in [the documentation of the flutter_image_picker package](https://github.com/Iconica-Development/flutter_image_picker).
 
 
 ## Issues
