@@ -4,7 +4,7 @@
 
 name: flutter_timeline_firebase
 description: Implementation of the Flutter Timeline interface for Firebase.
-version: 2.3.0
+version: 2.3.1
 
 publish_to: none
 
@@ -23,7 +23,7 @@ dependencies:
     git: 
        url: https://github.com/Iconica-Development/flutter_timeline
        path: packages/flutter_timeline_interface
-       ref: 2.3.0
+       ref: 2.3.1
 
 dev_dependencies:
   flutter_lints: ^2.0.0

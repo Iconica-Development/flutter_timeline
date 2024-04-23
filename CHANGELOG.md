@@ -1,3 +1,8 @@
+## 2.3.1
+
+- Updated readme.
+- fixed bug in `localTimelinePostService` where it was not possible to make a post.
+
 ## 2.3.0
 
 - Added separate open page builders for timeline screens
