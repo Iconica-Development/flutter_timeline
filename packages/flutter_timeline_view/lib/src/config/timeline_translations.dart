@@ -7,108 +7,78 @@ import 'package:flutter/material.dart';
 @immutable
 class TimelineTranslations {
   const TimelineTranslations({
-    required this.anonymousUser,
-    required this.noPosts,
-    required this.noPostsWithFilter,
-    required this.title,
-    required this.titleHintText,
-    required this.content,
-    required this.contentHintText,
-    required this.contentDescription,
-    required this.uploadImage,
-    required this.uploadImageDescription,
-    required this.allowComments,
-    required this.allowCommentsDescription,
-    required this.commentsTitleOnPost,
-    required this.checkPost,
-    required this.deletePost,
-    required this.deleteReaction,
-    required this.viewPost,
-    required this.likesTitle,
-    required this.commentsTitle,
-    required this.firstComment,
-    required this.writeComment,
-    required this.postAt,
-    required this.postLoadingError,
-    required this.timelineSelectionDescription,
-    required this.searchHint,
-    required this.postOverview,
-    required this.postIn,
-    required this.postCreation,
-    required this.yes,
-    required this.no,
+    this.anonymousUser = 'Anonymous user',
+    this.noPosts = 'No posts yet',
+    this.noPostsWithFilter = 'No posts with this filter',
+    this.title = 'Title',
+    this.titleHintText = 'Title...',
+    this.content = 'Content',
+    this.contentHintText = 'Content...',
+    this.contentDescription = 'What do you want to share?',
+    this.uploadImage = 'Upload image',
+    this.uploadImageDescription = 'Upload an image to your message (optional)',
+    this.allowComments = 'Are people allowed to comment?',
+    this.allowCommentsDescription =
+        'Indicate whether people are allowed to respond',
+    this.commentsTitleOnPost = 'Comments',
+    this.checkPost = 'Check post overview',
+    this.deletePost = 'Delete post',
+    this.deleteReaction = 'Delete Reaction',
+    this.viewPost = 'View post',
+    this.likesTitle = 'Likes',
+    this.commentsTitle = 'Are people allowed to comment?',
+    this.firstComment = 'Be the first to comment',
+    this.writeComment = 'Write your comment here...',
+    this.postAt = 'at',
+    this.postLoadingError = 'Something went wrong while loading the post',
+    this.timelineSelectionDescription = 'Choose a category',
+    this.searchHint = 'Search...',
+    this.postOverview = 'Post Overview',
+    this.postIn = 'Post in',
+    this.postCreation = 'add post',
+    this.yes = 'Yes',
+    this.no = 'No',
+    this.timeLineScreenTitle = 'iconinstagram',
   });
 
-  const TimelineTranslations.empty()
-      : anonymousUser = 'Anonymous user',
-        noPosts = 'No posts yet',
-        noPostsWithFilter = 'No posts with this filter',
-        title = 'Title',
-        content = 'Content',
-        contentDescription = 'What do you want to share?',
-        uploadImage = 'Upload image',
-        uploadImageDescription = 'Upload an image to your message (optional)',
-        allowComments = 'Are people allowed to comment?',
-        allowCommentsDescription =
-            'Indicate whether people are allowed to respond',
-        commentsTitleOnPost = 'Comments',
-        checkPost = 'Check post overview',
-        deletePost = 'Delete post',
-        deleteReaction = 'Delete Reaction',
-        viewPost = 'View post',
-        likesTitle = 'Likes',
-        commentsTitle = 'Are people allowed to comment?',
-        firstComment = 'Be the first to comment',
-        writeComment = 'Write your comment here...',
-        postAt = 'at',
-        postLoadingError = 'Something went wrong while loading the post',
-        timelineSelectionDescription = 'Choose a category',
-        searchHint = 'Search...',
-        postOverview = 'Post Overview',
-        postIn = 'Post in',
-        postCreation = 'Create Post',
-        titleHintText = 'Title...',
-        contentHintText = 'Context...',
-        yes = 'Yes',
-        no = 'No';
+  final String? noPosts;
+  final String? noPostsWithFilter;
+  final String? anonymousUser;
 
-  final String noPosts;
-  final String noPostsWithFilter;
-  final String anonymousUser;
+  final String? title;
+  final String? content;
+  final String? contentDescription;
+  final String? uploadImage;
+  final String? uploadImageDescription;
+  final String? allowComments;
+  final String? allowCommentsDescription;
+  final String? checkPost;
+  final String? postAt;
 
-  final String title;
-  final String content;
-  final String contentDescription;
-  final String uploadImage;
-  final String uploadImageDescription;
-  final String allowComments;
-  final String allowCommentsDescription;
-  final String checkPost;
-  final String postAt;
+  final String? titleHintText;
+  final String? contentHintText;
 
-  final String titleHintText;
-  final String contentHintText;
+  final String? deletePost;
+  final String? deleteReaction;
+  final String? viewPost;
+  final String? likesTitle;
+  final String? commentsTitle;
+  final String? commentsTitleOnPost;
+  final String? writeComment;
+  final String? firstComment;
+  final String? postLoadingError;
 
-  final String deletePost;
-  final String deleteReaction;
-  final String viewPost;
-  final String likesTitle;
-  final String commentsTitle;
-  final String commentsTitleOnPost;
-  final String writeComment;
-  final String firstComment;
-  final String postLoadingError;
+  final String? timelineSelectionDescription;
 
-  final String timelineSelectionDescription;
+  final String? searchHint;
 
-  final String searchHint;
+  final String? postOverview;
+  final String? postIn;
+  final String? postCreation;
 
-  final String postOverview;
-  final String postIn;
-  final String postCreation;
-
-  final String yes;
-  final String no;
+  final String? yes;
+  final String? no;
+  final String? timeLineScreenTitle;
 
   TimelineTranslations copyWith({
     String? noPosts,
@@ -141,6 +111,7 @@ class TimelineTranslations {
     String? contentHintText,
     String? yes,
     String? no,
+    String? timeLineScreenTitle,
   }) =>
       TimelineTranslations(
         noPosts: noPosts ?? this.noPosts,
@@ -176,5 +147,6 @@ class TimelineTranslations {
         contentHintText: contentHintText ?? this.contentHintText,
         yes: yes ?? this.yes,
         no: no ?? this.no,
+        timeLineScreenTitle: timeLineScreenTitle ?? this.timeLineScreenTitle,
       );
 }

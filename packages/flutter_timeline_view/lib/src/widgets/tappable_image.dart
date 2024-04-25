@@ -99,11 +99,17 @@ class _TappableImageState extends State<TappableImage>
           offset: Offset(0, animation.value * -32),
           child: Transform.scale(
             scale: 1 + animation.value * 0.1,
-            child: CachedNetworkImage(
-              imageUrl: widget.post.imageUrl ?? '',
-              width: double.infinity,
-              fit: BoxFit.fitHeight,
-            ),
+            child: widget.post.imageUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: widget.post.imageUrl ?? '',
+                    width: double.infinity,
+                    fit: BoxFit.fitHeight,
+                  )
+                : Image.memory(
+                    width: double.infinity,
+                    widget.post.image!,
+                    fit: BoxFit.fitHeight,
+                  ),
           ),
         ),
       );

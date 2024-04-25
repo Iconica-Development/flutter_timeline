@@ -21,8 +21,8 @@ class LocalTimelinePostService
           userId: 'test_user',
           imageUrl:
               'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
-          firstName: 'Dirk',
-          lastName: 'lukassen',
+          firstName: 'Ico',
+          lastName: 'Nica',
         ),
       ),
     );
@@ -174,8 +174,8 @@ class LocalTimelinePostService
         userId: 'test_user',
         imageUrl:
             'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
-        firstName: 'Dirk',
-        lastName: 'lukassen',
+        firstName: 'Ico',
+        lastName: 'Nica',
       ),
     );
 
@@ -197,63 +197,47 @@ class LocalTimelinePostService
         TimelinePost(
           id: 'Post0',
           creatorId: 'test_user',
-          title: 'Post 0',
-          category: null,
+          title: 'De topper van de maand september',
+          category: 'Category',
           imageUrl:
-              'https://t4.ftcdn.net/jpg/02/77/71/45/240_F_277714513_fQ0akmI3TQxa0wkPCLeO12Rx3cL2AuIf.jpg',
-          content: 'Standard post without image made by the current user',
-          likes: 0,
+              'https://firebasestorage.googleapis.com/v0/b/appshell-demo.appspot.com/o/do_not_delete_1.png?alt=media&token=e4b2f9f3-c81f-4ac7-a938-e846691399f7',
+          content: 'Dit is onze topper van de maand september! Gefeliciteerd!',
+          likes: 72,
           reaction: 0,
           createdAt: DateTime.now(),
-          reactionEnabled: false,
+          reactionEnabled: true,
           creator: const TimelinePosterUserModel(
             userId: 'test_user',
             imageUrl:
-                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
-            firstName: 'Dirk',
-            lastName: 'lukassen',
+                'https://firebasestorage.googleapis.com/v0/b/appshell-demo.appspot.com/o/do_not_delete_3.png?alt=media&token=cd7c156d-0dda-43be-9199-f7d31c30132e',
+            firstName: 'Robin',
+            lastName: 'De Vries',
           ),
         ),
         TimelinePost(
           id: 'Post1',
           creatorId: 'test_user2',
-          title: 'Post 1',
-          category: null,
-          content: 'Standard post with image made by a different user and '
-              'reactions enabled',
-          likes: 0,
-          reaction: 0,
-          createdAt: DateTime.now(),
-          reactionEnabled: false,
-          imageUrl:
-              'https://t4.ftcdn.net/jpg/02/77/71/45/240_F_277714513_fQ0akmI3TQxa0wkPCLeO12Rx3cL2AuIf.jpg',
-          creator: const TimelinePosterUserModel(
-            userId: 'test_user',
-            imageUrl:
-                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
-            firstName: 'Dirk',
-            lastName: 'lukassen',
-          ),
-        ),
-        TimelinePost(
-          id: 'Post2',
-          creatorId: 'test_user',
-          title: 'Post 2',
-          category: null,
-          content: 'Standard post with image made by the current user and'
-              ' reactions enabled',
-          likes: 0,
+          title: 'De soep van de week is: Aspergesoep',
+          category: 'Category with two lines',
+          content:
+              'Aspergesoep is echt een heerlijke delicatesse. Deze soep wordt'
+              ' vaak gemaakt met verse asperges, bouillon en wat kruiden voor'
+              ' smaak. Het is een perfecte keuze voor een lichte en smaakvolle'
+              ' maaltijd, vooral in het voorjaar wanneer asperges in seizoen'
+              ' zijn. We serveren het met een vleugje room en wat knapperige'
+              ' croutons voor die extra touch.',
+          likes: 72,
           reaction: 0,
           createdAt: DateTime.now(),
           reactionEnabled: true,
           imageUrl:
-              'https://t4.ftcdn.net/jpg/02/77/71/45/240_F_277714513_fQ0akmI3TQxa0wkPCLeO12Rx3cL2AuIf.jpg',
+              'https://firebasestorage.googleapis.com/v0/b/appshell-demo.appspot.com/o/do_not_delete_2.png?alt=media&token=ee4a8771-531f-4d1d-8613-a2366771e775',
           creator: const TimelinePosterUserModel(
             userId: 'test_user',
             imageUrl:
-                'https://cdn.britannica.com/68/143568-050-5246474F/Donkey.jpg?w=400&h=300&c=crop',
-            firstName: 'Dirk',
-            lastName: 'lukassen',
+                'https://firebasestorage.googleapis.com/v0/b/appshell-demo.appspot.com/o/do_not_delete_4.png?alt=media&token=775d4d10-6d2b-4aef-a51b-ba746b7b137f',
+            firstName: 'Elise',
+            lastName: 'Welling',
           ),
         ),
       ];

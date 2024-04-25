@@ -124,12 +124,15 @@ class _TimelinePostCreationScreenState
         padding: widget.options.padding,
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.options.translations.title,
-                style: theme.textTheme.titleMedium,
+                widget.options.translations.title!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                ),
               ),
               widget.options.textInputBuilder?.call(
                     titleController,
@@ -138,44 +141,49 @@ class _TimelinePostCreationScreenState
                   ) ??
                   TextField(
                     controller: titleController,
-                    decoration: InputDecoration(
-                      hintText: widget.options.translations.titleHintText,
-                    ),
+                    decoration: widget.options.contentInputDecoration ??
+                        InputDecoration(
+                          hintText: widget.options.translations.titleHintText,
+                        ),
                   ),
               const SizedBox(height: 16),
               Text(
-                widget.options.translations.content,
-                style: theme.textTheme.titleMedium,
+                widget.options.translations.content!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
-                widget.options.translations.contentDescription,
+                widget.options.translations.contentDescription!,
                 style: theme.textTheme.bodyMedium,
               ),
               // input field for the content
-              SizedBox(
-                height: 100,
-                child: TextField(
-                  controller: contentController,
-                  textCapitalization: TextCapitalization.sentences,
-                  expands: true,
-                  maxLines: null,
-                  minLines: null,
-                  decoration: InputDecoration(
-                    hintText: widget.options.translations.contentHintText,
-                  ),
-                ),
+              TextField(
+                controller: contentController,
+                textCapitalization: TextCapitalization.sentences,
+                expands: false,
+                maxLines: null,
+                minLines: null,
+                decoration: widget.options.contentInputDecoration ??
+                    InputDecoration(
+                      hintText: widget.options.translations.contentHintText,
+                    ),
               ),
               const SizedBox(
                 height: 16,
               ),
               // input field for the content
               Text(
-                widget.options.translations.uploadImage,
-                style: theme.textTheme.titleMedium,
+                widget.options.translations.uploadImage!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                ),
               ),
               Text(
-                widget.options.translations.uploadImageDescription,
+                widget.options.translations.uploadImageDescription!,
                 style: theme.textTheme.bodyMedium,
               ),
               // image picker field
@@ -262,17 +270,21 @@ class _TimelinePostCreationScreenState
               const SizedBox(height: 16),
 
               Text(
-                widget.options.translations.commentsTitle,
-                style: theme.textTheme.titleMedium,
+                widget.options.translations.commentsTitle!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                ),
               ),
               Text(
-                widget.options.translations.allowCommentsDescription,
+                widget.options.translations.allowCommentsDescription!,
                 style: theme.textTheme.bodyMedium,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Checkbox(
+                    activeColor: const Color(0xff71C6D1),
                     value: allowComments,
                     onChanged: (value) {
                       setState(() {
@@ -280,8 +292,9 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.yes),
+                  Text(widget.options.translations.yes!),
                   Checkbox(
+                    activeColor: const Color(0xff71C6D1),
                     value: !allowComments,
                     onChanged: (value) {
                       setState(() {
@@ -289,9 +302,10 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.no),
+                  Text(widget.options.translations.no!),
                 ],
               ),
+              const SizedBox(height: 120),
 
               Align(
                 alignment: Alignment.bottomCenter,
@@ -299,10 +313,14 @@ class _TimelinePostCreationScreenState
                     ? widget.options.buttonBuilder!(
                         context,
                         onPostCreated,
-                        widget.options.translations.checkPost,
+                        widget.options.translations.checkPost!,
                         enabled: editingDone,
                       )
                     : ElevatedButton(
+                        style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Color(0xff71C6D1)),
+                        ),
                         onPressed: editingDone
                             ? () async {
                                 await onPostCreated();
@@ -310,11 +328,18 @@ class _TimelinePostCreationScreenState
                                     .fetchPosts(null);
                               }
                             : null,
-                        child: Text(
-                          widget.enablePostOverviewScreen
-                              ? widget.options.translations.checkPost
-                              : widget.options.translations.postCreation,
-                          style: theme.textTheme.bodyMedium,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            widget.enablePostOverviewScreen
+                                ? widget.options.translations.checkPost!
+                                : widget.options.translations.postCreation!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                         ),
                       ),
               ),

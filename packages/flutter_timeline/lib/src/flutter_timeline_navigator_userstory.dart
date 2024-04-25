@@ -44,41 +44,60 @@ Widget _timelineScreenRoute({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return Scaffold(
-    appBar: AppBar(),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () async => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => _postCreationScreenRoute(
-            configuration: config,
-            context: context,
-          ),
-        ),
-      ),
-      child: const Icon(Icons.add),
-    ),
-    body: TimelineScreen(
-      service: config.service,
-      options: config.optionsBuilder(context),
-      userId: config.userId,
-      onPostTap: (post) async =>
-          config.onPostTap?.call(context, post) ??
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => _postDetailScreenRoute(
-                configuration: config,
-                context: context,
-                post: post,
-              ),
+  var timelineScreen = TimelineScreen(
+    userId: config.userId,
+    onUserTap: (user) => config.onUserTap?.call(context, user),
+    service: config.service,
+    options: config.optionsBuilder(context),
+    onPostTap: (post) async =>
+        config.onPostTap?.call(context, post) ??
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _postDetailScreenRoute(
+              configuration: config,
+              context: context,
+              post: post,
             ),
           ),
-      onUserTap: (userId) {
-        config.onUserTap?.call(context, userId);
-      },
-      filterEnabled: config.filterEnabled,
-      postWidgetBuilder: config.postWidgetBuilder,
+        ),
+    filterEnabled: config.filterEnabled,
+    postWidgetBuilder: config.postWidgetBuilder,
+  );
+
+  var button = FloatingActionButton(
+    backgroundColor: const Color(0xff71C6D1),
+    onPressed: () async => Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => _postCategorySelectionScreen(
+          configuration: config,
+          context: context,
+        ),
+      ),
+    ),
+    shape: const CircleBorder(),
+    child: const Icon(
+      Icons.add,
+      color: Colors.white,
+      size: 30,
     ),
   );
+
+  return config.homeOpenPageBuilder?.call(context, timelineScreen, button) ??
+      Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xff212121),
+          title: Text(
+            config.optionsBuilder(context).translations.timeLineScreenTitle!,
+            style: const TextStyle(
+              color: Color(0xff71C6D1),
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        body: timelineScreen,
+        floatingActionButton: button,
+      );
 }
 
 /// A widget function that creates a post detail screen route.
@@ -101,16 +120,40 @@ Widget _postDetailScreenRoute({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return TimelinePostScreen(
+  var timelinePostScreen = TimelinePostScreen(
     userId: config.userId,
-    service: config.service,
     options: config.optionsBuilder(context),
+    service: config.service,
     post: post,
-    onPostDelete: () async {
-      config.onPostDelete?.call(context, post) ??
-          await config.service.postService.deletePost(post);
-    },
+    onPostDelete: () async =>
+        config.onPostDelete?.call(context, post) ??
+        await config.service.postService.deletePost(post),
+    onUserTap: (user) => config.onUserTap?.call(context, user),
   );
+
+  var backButton = IconButton(
+    color: Colors.white,
+    icon: const Icon(Icons.arrow_back_ios),
+    onPressed: () => Navigator.of(context).pop(),
+  );
+
+  return config.postViewOpenPageBuilder
+          ?.call(context, timelinePostScreen, backButton) ??
+      Scaffold(
+        appBar: AppBar(
+          leading: backButton,
+          backgroundColor: const Color(0xff212121),
+          title: Text(
+            post.category ?? 'Category',
+            style: const TextStyle(
+              color: Color(0xff71C6D1),
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        body: timelinePostScreen,
+      );
 }
 
 /// A widget function that creates a post creation screen route.
@@ -120,6 +163,7 @@ Widget _postDetailScreenRoute({
 /// as parameters. If no configuration is provided, default values will be used.
 Widget _postCreationScreenRoute({
   required BuildContext context,
+  required TimelineCategory category,
   TimelineUserStoryConfiguration? configuration,
 }) {
   var config = configuration ??
@@ -131,58 +175,75 @@ Widget _postCreationScreenRoute({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(
-        style: Theme.of(context).textTheme.titleLarge,
-        config.optionsBuilder(context).translations.postCreation,
+  var timelinePostCreationScreen = TimelinePostCreationScreen(
+    userId: config.userId,
+    options: config.optionsBuilder(context),
+    service: config.service,
+    onPostCreated: (post) async {
+      var newPost = await config.service.postService.createPost(post);
+      if (context.mounted) {
+        if (config.afterPostCreationGoHome) {
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => _timelineScreenRoute(
+                configuration: config,
+                context: context,
+              ),
+            ),
+          );
+        } else {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => _postOverviewScreenRoute(
+                configuration: config,
+                context: context,
+                post: newPost,
+              ),
+            ),
+          );
+        }
+      }
+    },
+    onPostOverview: (post) async => Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => _postOverviewScreenRoute(
+          configuration: config,
+          context: context,
+          post: post,
+        ),
       ),
     ),
-    body: TimelinePostCreationScreen(
-      userId: config.userId,
-      service: config.service,
-      options: config.optionsBuilder(context),
-      onPostCreated: (post) async {
-        await config.service.postService.createPost(post);
-        if (context.mounted) {
-          if (config.afterPostCreationGoHome) {
-            await Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => _timelineScreenRoute(
-                  configuration: config,
-                  context: context,
-                ),
-              ),
-            );
-          } else {
-            await Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => _postDetailScreenRoute(
-                  configuration: config,
-                  context: context,
-                  post: post,
-                ),
-              ),
-            );
-          }
-        }
-      },
-      onPostOverview: (post) async {
-        await Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => _postOverviewScreenRoute(
-              configuration: config,
-              context: context,
-              post: post,
+    enablePostOverviewScreen: config.enablePostOverviewScreen,
+    postCategory: category.title,
+  );
+
+  var backButton = IconButton(
+    icon: const Icon(
+      Icons.arrow_back_ios,
+      color: Colors.white,
+    ),
+    onPressed: () => Navigator.of(context).pop(),
+  );
+
+  return config.postCreationOpenPageBuilder
+          ?.call(context, timelinePostCreationScreen, backButton) ??
+      Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xff212121),
+          leading: backButton,
+          title: Text(
+            config.optionsBuilder(context).translations.postCreation!,
+            style: const TextStyle(
+              color: Color(0xff71C6D1),
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
             ),
           ),
-        );
-      },
-      enablePostOverviewScreen: config.enablePostOverviewScreen,
-    ),
-  );
+        ),
+        body: timelinePostCreationScreen,
+      );
 }
 
 /// A widget function that creates a post overview screen route.
@@ -205,21 +266,109 @@ Widget _postOverviewScreenRoute({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return TimelinePostOverviewScreen(
-    timelinePost: post,
+  var timelinePostOverviewWidget = TimelinePostOverviewScreen(
     options: config.optionsBuilder(context),
     service: config.service,
+    timelinePost: post,
     onPostSubmit: (post) async {
       await config.service.postService.createPost(post);
       if (context.mounted) {
-        await Navigator.pushReplacement(
-          context,
+        await Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) =>
                 _timelineScreenRoute(configuration: config, context: context),
           ),
+          (route) => false,
         );
       }
     },
+    isOverviewScreen: true,
   );
+
+  var backButton = IconButton(
+    icon: const Icon(
+      Icons.arrow_back_ios,
+      color: Colors.white,
+    ),
+    onPressed: () async => Navigator.of(context).pop(),
+  );
+
+  return config.postOverviewOpenPageBuilder?.call(
+        context,
+        timelinePostOverviewWidget,
+      ) ??
+      Scaffold(
+        appBar: AppBar(
+          leading: backButton,
+          backgroundColor: const Color(0xff212121),
+          title: Text(
+            config.optionsBuilder(context).translations.postOverview!,
+            style: const TextStyle(
+              color: Color(0xff71C6D1),
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        body: timelinePostOverviewWidget,
+      );
+}
+
+Widget _postCategorySelectionScreen({
+  required BuildContext context,
+  TimelineUserStoryConfiguration? configuration,
+}) {
+  var config = configuration ??
+      TimelineUserStoryConfiguration(
+        userId: 'test_user',
+        service: TimelineService(
+          postService: LocalTimelinePostService(),
+        ),
+        optionsBuilder: (context) => const TimelineOptions(),
+      );
+
+  var timelineSelectionScreen = TimelineSelectionScreen(
+    options: config.optionsBuilder(context),
+    categories: config
+        .optionsBuilder(context)
+        .categoriesOptions
+        .categoriesBuilder!(context),
+    onCategorySelected: (category) async {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => _postCreationScreenRoute(
+            configuration: config,
+            context: context,
+            category: category,
+          ),
+        ),
+      );
+    },
+  );
+
+  var backButton = IconButton(
+    color: Colors.white,
+    icon: const Icon(Icons.arrow_back_ios),
+    onPressed: () async {
+      Navigator.of(context).pop();
+    },
+  );
+
+  return config.categorySelectionOpenPageBuilder
+          ?.call(context, timelineSelectionScreen) ??
+      Scaffold(
+        appBar: AppBar(
+          leading: backButton,
+          backgroundColor: const Color(0xff212121),
+          title: Text(
+            config.optionsBuilder(context).translations.postCreation!,
+            style: const TextStyle(
+              color: Color(0xff71C6D1),
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        body: timelineSelectionScreen,
+      );
 }

@@ -1,3 +1,6 @@
+## 3.0.0
+- Add default styling and default flow
+
 ## 2.3.1
 
 - Updated readme.

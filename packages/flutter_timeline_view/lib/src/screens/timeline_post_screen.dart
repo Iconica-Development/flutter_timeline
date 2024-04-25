@@ -22,6 +22,7 @@ class TimelinePostScreen extends StatelessWidget {
     required this.options,
     required this.post,
     required this.onPostDelete,
+    this.isOverviewScreen = false,
     this.onUserTap,
     super.key,
   });
@@ -43,6 +44,8 @@ class TimelinePostScreen extends StatelessWidget {
 
   final VoidCallback onPostDelete;
 
+  final bool? isOverviewScreen;
+
   @override
   Widget build(BuildContext context) => Scaffold(
         body: _TimelinePostScreen(
@@ -52,6 +55,7 @@ class TimelinePostScreen extends StatelessWidget {
           post: post,
           onPostDelete: onPostDelete,
           onUserTap: onUserTap,
+          isOverviewScreen: isOverviewScreen,
         ),
       );
 }
@@ -64,6 +68,7 @@ class _TimelinePostScreen extends StatefulWidget {
     required this.post,
     required this.onPostDelete,
     this.onUserTap,
+    this.isOverviewScreen,
   });
 
   final String userId;
@@ -77,6 +82,8 @@ class _TimelinePostScreen extends StatefulWidget {
   final Function(String userId)? onUserTap;
 
   final VoidCallback onPostDelete;
+
+  final bool? isOverviewScreen;
 
   @override
   State<_TimelinePostScreen> createState() => _TimelinePostScreenState();
@@ -145,7 +152,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
     if (this.post == null) {
       return Center(
         child: Text(
-          widget.options.translations.postLoadingError,
+          widget.options.translations.postLoadingError!,
           style: widget.options.theme.textStyles.errorTextStyle,
         ),
       );
@@ -214,7 +221,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 widget.options.nameBuilder
                                         ?.call(post.creator) ??
                                     post.creator?.fullName ??
-                                    widget.options.translations.anonymousUser,
+                                    widget.options.translations.anonymousUser!,
                                 style: widget.options.theme.textStyles
                                         .postCreatorTitleStyle ??
                                     theme.textTheme.titleMedium,
@@ -234,7 +241,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    widget.options.translations.deletePost,
+                                    widget.options.translations.deletePost!,
                                     style: widget.options.theme.textStyles
                                             .deletePostStyle ??
                                         theme.textTheme.bodyMedium,
@@ -257,8 +264,8 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                         ),
                     ],
                   ),
-                  // image of the post
-                  if (post.imageUrl != null) ...[
+                  // image of the posts
+                  if (post.imageUrl != null || post.image != null) ...[
                     const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -293,11 +300,17 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                     false;
                               },
                             )
-                          : CachedNetworkImage(
-                              width: double.infinity,
-                              imageUrl: post.imageUrl!,
-                              fit: BoxFit.fitHeight,
-                            ),
+                          : post.image != null
+                              ? Image.memory(
+                                  width: double.infinity,
+                                  post.image!,
+                                  fit: BoxFit.fitHeight,
+                                )
+                              : CachedNetworkImage(
+                                  width: double.infinity,
+                                  imageUrl: post.imageUrl!,
+                                  fit: BoxFit.fitHeight,
+                                ),
                     ),
                   ],
                   const SizedBox(
@@ -320,9 +333,11 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                             color: Colors.transparent,
                             child: widget.options.theme.likedIcon ??
                                 Icon(
-                                  Icons.thumb_up_rounded,
-                                  color: widget.options.theme.iconColor,
-                                  size: widget.options.iconSize,
+                                  widget.post.likedBy
+                                              ?.contains(widget.userId) ??
+                                          false
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_outline_outlined,
                                 ),
                           ),
                         ),
@@ -340,8 +355,11 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                             color: Colors.transparent,
                             child: widget.options.theme.likeIcon ??
                                 Icon(
-                                  Icons.thumb_up_alt_outlined,
-                                  color: widget.options.theme.iconColor,
+                                  widget.post.likedBy
+                                              ?.contains(widget.userId) ??
+                                          false
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_outline_outlined,
                                   size: widget.options.iconSize,
                                 ),
                           ),
@@ -423,7 +441,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                   const SizedBox(height: 20),
                   if (post.reactionEnabled) ...[
                     Text(
-                      widget.options.translations.commentsTitleOnPost,
+                      widget.options.translations.commentsTitleOnPost!,
                       style: theme.textTheme.titleMedium,
                     ),
                     for (var reaction
@@ -451,7 +469,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 PopupMenuItem<String>(
                                   value: 'delete',
                                   child: Text(
-                                    widget.options.translations.deleteReaction,
+                                    widget.options.translations.deleteReaction!,
                                   ),
                                 ),
                               ],
@@ -505,7 +523,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                               ?.call(post.creator) ??
                                           reaction.creator?.fullName ??
                                           widget.options.translations
-                                              .anonymousUser,
+                                              .anonymousUser!,
                                       style: theme.textTheme.titleSmall,
                                     ),
                                     Padding(
@@ -547,7 +565,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                     if (post.reactions?.isEmpty ?? true) ...[
                       const SizedBox(height: 16),
                       Text(
-                        widget.options.translations.firstComment,
+                        widget.options.translations.firstComment!,
                       ),
                     ],
                     const SizedBox(height: 120),
@@ -557,7 +575,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
             ),
           ),
         ),
-        if (post.reactionEnabled)
+        if (post.reactionEnabled && !widget.isOverviewScreen!)
           Align(
             alignment: Alignment.bottomCenter,
             child: ReactionBottom(
