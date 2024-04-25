@@ -10,47 +10,59 @@ class TimelinePostOverviewScreen extends StatelessWidget {
     required this.options,
     required this.service,
     required this.onPostSubmit,
+    this.isOverviewScreen,
     super.key,
   });
   final TimelinePost timelinePost;
   final TimelineOptions options;
   final TimelineService service;
   final void Function(TimelinePost) onPostSubmit;
+  final bool? isOverviewScreen;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(
-          options.translations.postOverview,
-          style: TextStyle(color: Theme.of(context).primaryColor),
-        ),
-      ),
-      body: Column(
-        children: [
-          Flexible(
-            child: TimelinePostScreen(
-              userId: timelinePost.creatorId,
-              options: options,
-              post: timelinePost,
-              onPostDelete: () async {},
-              service: service,
-            ),
+    return Column(
+      children: [
+        Flexible(
+          child: TimelinePostScreen(
+            userId: timelinePost.creatorId,
+            options: options,
+            post: timelinePost,
+            onPostDelete: () async {},
+            service: service,
+            isOverviewScreen: isOverviewScreen,
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            child: ElevatedButton(
-              onPressed: () {
+        ),
+        options.postOverviewButtonBuilder?.call(
+              context,
+              () {
                 onPostSubmit(timelinePost);
               },
-              child: Text(
-                '${options.translations.postIn} ${timelinePost.category}',
+              '${options.translations.postIn} ${timelinePost.category}',
+            ) ??
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30.0),
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Color(0xff71C6D1)),
+                ),
+                onPressed: () {
+                  onPostSubmit(timelinePost);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    '${options.translations.postIn} ${timelinePost.category}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

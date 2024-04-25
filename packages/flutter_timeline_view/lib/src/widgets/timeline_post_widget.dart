@@ -49,7 +49,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
     return InkWell(
       onTap: widget.onTap,
       child: SizedBox(
-        height: widget.post.imageUrl != null
+        height: widget.post.imageUrl != null || widget.post.image != null
             ? widget.options.postWidgetHeight
             : null,
         width: double.infinity,
@@ -94,7 +94,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                           widget.options.nameBuilder
                                   ?.call(widget.post.creator) ??
                               widget.post.creator?.fullName ??
-                              widget.options.translations.anonymousUser,
+                              widget.options.translations.anonymousUser!,
                           style: widget.options.theme.textStyles
                                   .postCreatorTitleStyle ??
                               theme.textTheme.titleMedium,
@@ -118,7 +118,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         child: Row(
                           children: [
                             Text(
-                              widget.options.translations.deletePost,
+                              widget.options.translations.deletePost!,
                               style: widget.options.theme.textStyles
                                       .deletePostStyle ??
                                   theme.textTheme.bodyMedium,
@@ -142,7 +142,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ],
             ),
             // image of the post
-            if (widget.post.imageUrl != null) ...[
+            if (widget.post.imageUrl != null || widget.post.image != null) ...[
               const SizedBox(height: 8),
               Flexible(
                 flex: widget.options.postWidgetHeight != null ? 1 : 0,
@@ -176,11 +176,17 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                             return result.likedBy?.contains(userId) ?? false;
                           },
                         )
-                      : CachedNetworkImage(
-                          width: double.infinity,
-                          imageUrl: widget.post.imageUrl!,
-                          fit: BoxFit.fitWidth,
-                        ),
+                      : widget.post.imageUrl != null
+                          ? CachedNetworkImage(
+                              width: double.infinity,
+                              imageUrl: widget.post.imageUrl!,
+                              fit: BoxFit.fitWidth,
+                            )
+                          : Image.memory(
+                              width: double.infinity,
+                              widget.post.image!,
+                              fit: BoxFit.fitWidth,
+                            ),
                 ),
               ),
             ],
@@ -312,7 +318,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
               const SizedBox(height: 4),
               Text(
-                widget.options.translations.viewPost,
+                widget.options.translations.viewPost!,
                 style: widget.options.theme.textStyles.viewPostStyle ??
                     theme.textTheme.bodySmall,
               ),
