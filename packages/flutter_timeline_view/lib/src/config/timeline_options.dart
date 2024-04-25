@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 class TimelineOptions {
   const TimelineOptions({
     this.theme = const TimelineTheme(),
-    this.translations = const TimelineTranslations.empty(),
+    this.translations = const TimelineTranslations(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.timelinePostHeight,
@@ -37,7 +37,8 @@ class TimelineOptions {
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
-    this.padding = const EdgeInsets.symmetric(vertical: 12.0),
+    this.padding =
+        const EdgeInsets.only(left: 12.0, top: 24.0, right: 12.0, bottom: 12.0),
     this.iconSize = 26,
     this.postWidgetHeight,
     this.postPadding =
@@ -49,6 +50,10 @@ class TimelineOptions {
     this.maxTitleLength,
     this.minContentLength,
     this.maxContentLength,
+    this.categorySelectorButtonBuilder,
+    this.postOverviewButtonBuilder,
+    this.titleInputDecoration,
+    this.contentInputDecoration,
   });
 
   /// Theming options for the timeline
@@ -142,11 +147,69 @@ class TimelineOptions {
 
   /// Maximum length of the post content
   final int? maxContentLength;
+
+  /// Builder for the category selector button
+  /// on the timeline category selection screen
+  final Widget Function(
+    BuildContext context,
+    Function() onPressed,
+    String text,
+  )? categorySelectorButtonBuilder;
+
+  /// Builder for the post overview button
+  /// on the timeline post overview screen
+  final Widget Function(
+    BuildContext context,
+    Function() onPressed,
+    String text,
+  )? postOverviewButtonBuilder;
+
+  /// inputdecoration for the title textfield
+  final InputDecoration? titleInputDecoration;
+
+  /// inputdecoration for the content textfield
+  final InputDecoration? contentInputDecoration;
 }
+
+List<TimelineCategory> _getDefaultCategories(context) => [
+      const TimelineCategory(
+        key: null,
+        title: 'All',
+        icon: Padding(
+          padding: EdgeInsets.only(right: 8.0),
+          child: Icon(
+            Icons.apps,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      const TimelineCategory(
+        key: 'Category',
+        title: 'Category',
+        icon: Padding(
+          padding: EdgeInsets.only(right: 8.0),
+          child: Icon(
+            Icons.category,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      const TimelineCategory(
+        key: 'Category with two lines',
+        title: 'Category with two lines',
+        icon: Padding(
+          padding: EdgeInsets.only(right: 8.0),
+          child: Icon(
+            Icons.category,
+            color: Colors.black,
+          ),
+        ),
+      ),
+    ];
 
 class CategoriesOptions {
   const CategoriesOptions({
-    this.categoriesBuilder,
+    this.categoriesBuilder = _getDefaultCategories,
     this.categoryButtonBuilder,
     this.categorySelectorHorizontalPadding,
   });
@@ -157,12 +220,14 @@ class CategoriesOptions {
       categoriesBuilder;
 
   /// Abilty to override the standard category selector
-  final Widget Function({
-    required String? categoryKey,
-    required String categoryName,
-    required Function onTap,
-    required bool selected,
-  })? categoryButtonBuilder;
+  final Widget Function(
+    String? categoryKey,
+    String categoryName,
+    Function() onTap,
+    // ignore: avoid_positional_boolean_parameters
+    bool selected,
+    bool isOnTop,
+  )? categoryButtonBuilder;
 
   /// Overides the standard horizontal padding of the whole category selector.
   final double? categorySelectorHorizontalPadding;

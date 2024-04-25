@@ -43,9 +43,9 @@ List<GoRoute> getTimelineStoryRoutes({
         );
 
         var button = FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () async => context.go(
-            TimelineUserStoryRoutes.timelinePostCreation,
+          backgroundColor: const Color(0xff71C6D1),
+          onPressed: () async => context.push(
+            TimelineUserStoryRoutes.timelineCategorySelection,
           ),
           shape: const CircleBorder(),
           child: const Icon(
@@ -62,14 +62,66 @@ List<GoRoute> getTimelineStoryRoutes({
                   ?.call(context, timelineScreen, button) ??
               Scaffold(
                 appBar: AppBar(
-                  backgroundColor: Colors.black,
+                  backgroundColor: const Color(0xff212121),
                   title: Text(
-                    'Iconinstagram',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    config
+                        .optionsBuilder(context)
+                        .translations
+                        .timeLineScreenTitle!,
+                    style: const TextStyle(
+                      color: Color(0xff71C6D1),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 body: timelineScreen,
                 floatingActionButton: button,
+              ),
+        );
+      },
+    ),
+    GoRoute(
+      path: TimelineUserStoryRoutes.timelineCategorySelection,
+      pageBuilder: (context, state) {
+        var timelineSelectionScreen = TimelineSelectionScreen(
+          options: config.optionsBuilder(context),
+          categories: config
+              .optionsBuilder(context)
+              .categoriesOptions
+              .categoriesBuilder!(context),
+          onCategorySelected: (category) async {
+            await context.push(
+              TimelineUserStoryRoutes.timelinepostCreation(category.title),
+            );
+          },
+        );
+
+        var backButton = IconButton(
+          color: Colors.white,
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => context.go(TimelineUserStoryRoutes.timelineHome),
+        );
+
+        return buildScreenWithoutTransition(
+          context: context,
+          state: state,
+          child: config.categorySelectionOpenPageBuilder
+                  ?.call(context, timelineSelectionScreen) ??
+              Scaffold(
+                appBar: AppBar(
+                  leading: backButton,
+                  backgroundColor: const Color(0xff212121),
+                  title: Text(
+                    config.optionsBuilder(context).translations.postCreation!,
+                    style: const TextStyle(
+                      color: Color(0xff71C6D1),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                body: timelineSelectionScreen,
               ),
         );
       },
@@ -103,10 +155,14 @@ List<GoRoute> getTimelineStoryRoutes({
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,
-                  backgroundColor: Colors.black,
+                  backgroundColor: const Color(0xff212121),
                   title: Text(
-                    'Category',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    post.category ?? 'Category',
+                    style: const TextStyle(
+                      color: Color(0xff71C6D1),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 body: timelinePostWidget,
@@ -117,6 +173,7 @@ List<GoRoute> getTimelineStoryRoutes({
     GoRoute(
       path: TimelineUserStoryRoutes.timelinePostCreation,
       pageBuilder: (context, state) {
+        var category = state.pathParameters['category'];
         var timelinePostCreationWidget = TimelinePostCreationScreen(
           userId: config.userId,
           options: config.optionsBuilder(context),
@@ -137,11 +194,16 @@ List<GoRoute> getTimelineStoryRoutes({
             extra: post,
           ),
           enablePostOverviewScreen: config.enablePostOverviewScreen,
+          postCategory: category,
         );
 
         var backButton = IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => context.go(TimelineUserStoryRoutes.timelineHome),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+          onPressed: () =>
+              context.go(TimelineUserStoryRoutes.timelineCategorySelection),
         );
 
         return buildScreenWithoutTransition(
@@ -151,12 +213,16 @@ List<GoRoute> getTimelineStoryRoutes({
                   ?.call(context, timelinePostCreationWidget, backButton) ??
               Scaffold(
                 appBar: AppBar(
-                  backgroundColor: Colors.black,
-                  title: Text(
-                    config.optionsBuilder(context).translations.postCreation,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  backgroundColor: const Color(0xff212121),
                   leading: backButton,
+                  title: Text(
+                    config.optionsBuilder(context).translations.postCreation!,
+                    style: const TextStyle(
+                      color: Color(0xff71C6D1),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ),
                 body: timelinePostCreationWidget,
               ),
@@ -179,6 +245,13 @@ List<GoRoute> getTimelineStoryRoutes({
             }
           },
         );
+        var backButton = IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+          onPressed: () async => context.pop(),
+        );
 
         return buildScreenWithoutTransition(
           context: context,
@@ -187,7 +260,21 @@ List<GoRoute> getTimelineStoryRoutes({
                 context,
                 timelinePostOverviewWidget,
               ) ??
-              timelinePostOverviewWidget,
+              Scaffold(
+                appBar: AppBar(
+                  leading: backButton,
+                  backgroundColor: const Color(0xff212121),
+                  title: Text(
+                    config.optionsBuilder(context).translations.postOverview!,
+                    style: const TextStyle(
+                      color: Color(0xff71C6D1),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                body: timelinePostOverviewWidget,
+              ),
         );
       },
     ),

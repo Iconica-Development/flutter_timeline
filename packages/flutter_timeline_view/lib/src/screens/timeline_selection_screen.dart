@@ -19,7 +19,6 @@ class TimelineSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    var theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: size.width * 0.05,
@@ -30,36 +29,55 @@ class TimelineSelectionScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.05, bottom: 8),
             child: Text(
-              options.translations.timelineSelectionDescription,
-              style:
-                  options.theme.textStyles.categorySelectionDescriptionStyle ??
-                      theme.textTheme.displayMedium,
+              options.translations.timelineSelectionDescription!,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+              ),
             ),
           ),
           const SizedBox(height: 4),
           for (var category in categories.where(
             (element) => element.canCreate,
           )) ...[
-            InkWell(
-              onTap: () => onCategorySelected.call(category),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 26,
-                  horizontal: 16,
-                ),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(
+            options.categorySelectorButtonBuilder?.call(
+                  context,
+                  () {
+                    onCategorySelected.call(category);
+                  },
                   category.title,
-                  style: options.theme.textStyles.categorySelectionTitleStyle ??
-                      theme.textTheme.displaySmall,
+                ) ??
+                InkWell(
+                  onTap: () => onCategorySelected.call(category),
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xff71C6D1),
+                        width: 2,
+                      ),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Text(
+                            category.title,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
           ],
         ],
       ),

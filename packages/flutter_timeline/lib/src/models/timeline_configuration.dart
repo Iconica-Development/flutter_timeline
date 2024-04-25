@@ -59,7 +59,8 @@ class TimelineUserStoryConfiguration {
     this.filterEnabled = false,
     this.postWidgetBuilder,
     this.afterPostCreationGoHome = false,
-    this.enablePostOverviewScreen = false,
+    this.enablePostOverviewScreen = true,
+    this.categorySelectionOpenPageBuilder,
   });
 
   /// The ID of the user associated with this user story configuration.
@@ -132,4 +133,11 @@ class TimelineUserStoryConfiguration {
   /// Boolean to enable redirect to home after post creation.
   /// If false, it will redirect to created post screen
   final bool afterPostCreationGoHome;
+
+  /// Open page builder function for the category selection page. This function
+  /// accepts a [BuildContext] and a child widget.
+  final Function(
+    BuildContext context,
+    Widget child,
+  )? categorySelectionOpenPageBuilder;
 }

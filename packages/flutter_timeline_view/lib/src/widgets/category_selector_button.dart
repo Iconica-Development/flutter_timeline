@@ -22,9 +22,8 @@ class CategorySelectorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
-    return AnimatedContainer(
+    return SizedBox(
       height: isOnTop ? 140 : 40,
-      duration: const Duration(milliseconds: 100),
       child: TextButton(
         onPressed: onTap,
         style: ButtonStyle(
@@ -37,41 +36,59 @@ class CategorySelectorButton extends StatelessWidget {
           ),
           fixedSize: MaterialStatePropertyAll(Size(140, isOnTop ? 140 : 20)),
           backgroundColor: MaterialStatePropertyAll(
-            selected ? theme.colorScheme.primary : Colors.transparent,
+            selected ? const Color(0xff71C6D1) : Colors.transparent,
           ),
-          shape: MaterialStatePropertyAll(
+          shape: const MaterialStatePropertyAll(
             RoundedRectangleBorder(
-              borderRadius: const BorderRadius.all(
+              borderRadius: BorderRadius.all(
                 Radius.circular(8),
               ),
               side: BorderSide(
-                color: theme.colorScheme.primary,
+                color: Color(0xff71C6D1),
                 width: 2,
               ),
             ),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Column(
-              mainAxisAlignment:
-                  isOnTop ? MainAxisAlignment.end : MainAxisAlignment.center,
-              children: [
-                Text(
-                  category.title,
-                  style: (options.theme.textStyles.categoryTitleStyle ??
-                          theme.textTheme.labelLarge)
-                      ?.copyWith(
-                    color: selected
-                        ? theme.colorScheme.onPrimary
-                        : theme.colorScheme.onSurface,
-                  ),
+        child: isOnTop
+            ? SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      category.title,
+                      style: (options.theme.textStyles.categoryTitleStyle ??
+                              theme.textTheme.labelLarge)
+                          ?.copyWith(
+                        color: selected
+                            ? theme.colorScheme.onPrimary
+                            : theme.colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
-        ),
+              )
+            : Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      category.title,
+                      style: (options.theme.textStyles.categoryTitleStyle ??
+                              theme.textTheme.labelLarge)
+                          ?.copyWith(
+                        color: selected
+                            ? theme.colorScheme.onPrimary
+                            : theme.colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
