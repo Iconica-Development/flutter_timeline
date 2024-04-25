@@ -41,10 +41,10 @@ class _CategorySelectorState extends State<CategorySelector> {
           ),
           for (var category in categories) ...[
             widget.options.categoriesOptions.categoryButtonBuilder?.call(
-                   category.key,
+                  category.key,
                   category.title,
                   () => widget.onTapCategory(category.key),
-                   widget.filter == category.key,
+                  widget.filter == category.key,
                   widget.isOnTop,
                 ) ??
                 Padding(
