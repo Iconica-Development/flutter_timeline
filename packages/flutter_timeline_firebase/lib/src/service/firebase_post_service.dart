@@ -107,7 +107,10 @@ class FirebaseTimelinePostService
         updatedReactions.add(reaction.copyWith(creator: user));
       }
     }
-    var updatedPost = post.copyWith(reactions: updatedReactions);
+    var updatedPost = post.copyWith(
+      reactions: updatedReactions,
+      creator: await _userService.getUser(post.creatorId),
+    );
     posts = posts.map((p) => (p.id == post.id) ? updatedPost : p).toList();
     notifyListeners();
     return updatedPost;

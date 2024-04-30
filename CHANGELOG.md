@@ -1,3 +1,7 @@
+## 3.0.1
+
+- Fixed postOverviewScreen not displaying the creators name.
+
 ## 3.0.0
 - Add default styling and default flow
 
