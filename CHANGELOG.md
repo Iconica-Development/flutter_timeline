@@ -1,7 +1,7 @@
 ## 4.0.0
 
 - Add a serviceBuilder to the userstory configuration
-
+- Add a listHeaderBuilder for showing a header at the top of the list of posts in the timeline
 
 ## 3.0.1
 

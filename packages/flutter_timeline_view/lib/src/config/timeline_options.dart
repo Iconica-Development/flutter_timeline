@@ -52,6 +52,7 @@ class TimelineOptions {
     this.maxContentLength,
     this.categorySelectorButtonBuilder,
     this.postOverviewButtonBuilder,
+    this.listHeaderBuilder,
     this.titleInputDecoration,
     this.contentInputDecoration,
   });
@@ -155,6 +156,11 @@ class TimelineOptions {
     Function() onPressed,
     String text,
   )? categorySelectorButtonBuilder;
+
+  /// This widgetbuilder is placed at the top of the list of posts and can be
+  ///  used to add custom elements
+  final Widget Function(BuildContext context, String? category)?
+      listHeaderBuilder;
 
   /// Builder for the post overview button
   /// on the timeline post overview screen

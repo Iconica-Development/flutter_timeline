@@ -223,6 +223,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    /// Add a optional custom header to the list of posts
+                    widget.options.listHeaderBuilder?.call(context, category) ??
+                        const SizedBox.shrink(),
                     ...posts.map(
                       (post) => Padding(
                         padding: widget.options.postPadding,
