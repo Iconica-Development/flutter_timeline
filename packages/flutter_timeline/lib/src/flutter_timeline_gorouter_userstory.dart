@@ -28,10 +28,11 @@ List<GoRoute> getTimelineStoryRoutes({
     GoRoute(
       path: TimelineUserStoryRoutes.timelineHome,
       pageBuilder: (context, state) {
+        var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelineScreen = TimelineScreen(
           userId: config.userId,
           onUserTap: (user) => config.onUserTap?.call(context, user),
-          service: config.service,
+          service: service,
           options: config.optionsBuilder(context),
           onPostTap: (post) async =>
               config.onPostTap?.call(context, post) ??
@@ -129,13 +130,13 @@ List<GoRoute> getTimelineStoryRoutes({
     GoRoute(
       path: TimelineUserStoryRoutes.timelineView,
       pageBuilder: (context, state) {
-        var post =
-            config.service.postService.getPost(state.pathParameters['post']!);
+        var service = config.serviceBuilder?.call(context) ?? config.service;
+        var post = service.postService.getPost(state.pathParameters['post']!);
 
         var timelinePostWidget = TimelinePostScreen(
           userId: config.userId,
           options: config.optionsBuilder(context),
-          service: config.service,
+          service: service,
           post: post!,
           onPostDelete: () => config.onPostDelete?.call(context, post),
           onUserTap: (user) => config.onUserTap?.call(context, user),
@@ -174,19 +175,19 @@ List<GoRoute> getTimelineStoryRoutes({
       path: TimelineUserStoryRoutes.timelinePostCreation,
       pageBuilder: (context, state) {
         var category = state.pathParameters['category'];
+        var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelinePostCreationWidget = TimelinePostCreationScreen(
           userId: config.userId,
           options: config.optionsBuilder(context),
-          service: config.service,
+          service: service,
           onPostCreated: (post) async {
-            var newPost = await config.service.postService.createPost(post);
-            if (context.mounted) {
-              if (config.afterPostCreationGoHome) {
-                context.go(TimelineUserStoryRoutes.timelineHome);
-              } else {
-                await context
-                    .push(TimelineUserStoryRoutes.timelineViewPath(newPost.id));
-              }
+            var newPost = await service.postService.createPost(post);
+            if (!context.mounted) return;
+            if (config.afterPostCreationGoHome) {
+              context.go(TimelineUserStoryRoutes.timelineHome);
+            } else {
+              await context
+                  .push(TimelineUserStoryRoutes.timelineViewPath(newPost.id));
             }
           },
           onPostOverview: (post) async => context.push(
@@ -233,16 +234,15 @@ List<GoRoute> getTimelineStoryRoutes({
       path: TimelineUserStoryRoutes.timelinePostOverview,
       pageBuilder: (context, state) {
         var post = state.extra! as TimelinePost;
-
+        var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelinePostOverviewWidget = TimelinePostOverviewScreen(
           options: config.optionsBuilder(context),
-          service: config.service,
+          service: service,
           timelinePost: post,
           onPostSubmit: (post) async {
-            await config.service.postService.createPost(post);
-            if (context.mounted) {
-              context.go(TimelineUserStoryRoutes.timelineHome);
-            }
+            await service.postService.createPost(post);
+            if (!context.mounted) return;
+            context.go(TimelineUserStoryRoutes.timelineHome);
           },
         );
         var backButton = IconButton(

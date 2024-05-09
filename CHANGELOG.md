@@ -1,3 +1,8 @@
+## 4.0.0
+
+- Add a serviceBuilder to the userstory configuration
+
+
 ## 3.0.1
 
 - Fixed postOverviewScreen not displaying the creators name.

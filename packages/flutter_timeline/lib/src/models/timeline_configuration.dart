@@ -48,6 +48,7 @@ class TimelineUserStoryConfiguration {
   const TimelineUserStoryConfiguration({
     required this.service,
     required this.optionsBuilder,
+    this.serviceBuilder,
     this.userId = 'test_user',
     this.homeOpenPageBuilder,
     this.postCreationOpenPageBuilder,
@@ -68,6 +69,9 @@ class TimelineUserStoryConfiguration {
 
   /// The TimelineService responsible for fetching user story data.
   final TimelineService service;
+
+  /// A function to get the timeline service only when needed and with a context
+  final TimelineService Function(BuildContext context)? serviceBuilder;
 
   /// A function that builds TimelineOptions based on the given BuildContext.
   final TimelineOptions Function(BuildContext context) optionsBuilder;
