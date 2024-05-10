@@ -30,7 +30,7 @@ List<GoRoute> getTimelineStoryRoutes({
       pageBuilder: (context, state) {
         var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelineScreen = TimelineScreen(
-          userId: config.userId,
+          userId: config.getUserId?.call(context) ?? config.userId,
           onUserTap: (user) => config.onUserTap?.call(context, user),
           service: service,
           options: config.optionsBuilder(context),
@@ -134,7 +134,7 @@ List<GoRoute> getTimelineStoryRoutes({
         var post = service.postService.getPost(state.pathParameters['post']!);
 
         var timelinePostWidget = TimelinePostScreen(
-          userId: config.userId,
+          userId: config.getUserId?.call(context) ?? config.userId,
           options: config.optionsBuilder(context),
           service: service,
           post: post!,
@@ -177,7 +177,7 @@ List<GoRoute> getTimelineStoryRoutes({
         var category = state.pathParameters['category'];
         var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelinePostCreationWidget = TimelinePostCreationScreen(
-          userId: config.userId,
+          userId: config.getUserId?.call(context) ?? config.userId,
           options: config.optionsBuilder(context),
           service: service,
           onPostCreated: (post) async {

@@ -48,6 +48,7 @@ class TimelineUserStoryConfiguration {
   const TimelineUserStoryConfiguration({
     required this.service,
     required this.optionsBuilder,
+    this.getUserId,
     this.serviceBuilder,
     this.userId = 'test_user',
     this.homeOpenPageBuilder,
@@ -66,6 +67,9 @@ class TimelineUserStoryConfiguration {
 
   /// The ID of the user associated with this user story configuration.
   final String userId;
+
+  /// A function to get the userId only when needed and with a context
+  final String Function(BuildContext context)? getUserId;
 
   /// The TimelineService responsible for fetching user story data.
   final TimelineService service;

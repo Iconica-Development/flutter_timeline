@@ -45,7 +45,7 @@ Widget _timelineScreenRoute({
       );
 
   var timelineScreen = TimelineScreen(
-    userId: config.userId,
+    userId: config.getUserId?.call(context) ?? config.userId,
     onUserTap: (user) => config.onUserTap?.call(context, user),
     service: config.service,
     options: config.optionsBuilder(context),
@@ -121,7 +121,7 @@ Widget _postDetailScreenRoute({
       );
 
   var timelinePostScreen = TimelinePostScreen(
-    userId: config.userId,
+    userId: config.getUserId?.call(context) ?? config.userId,
     options: config.optionsBuilder(context),
     service: config.service,
     post: post,
@@ -176,7 +176,7 @@ Widget _postCreationScreenRoute({
       );
 
   var timelinePostCreationScreen = TimelinePostCreationScreen(
-    userId: config.userId,
+    userId: config.getUserId?.call(context) ?? config.userId,
     options: config.optionsBuilder(context),
     service: config.service,
     onPostCreated: (post) async {
