@@ -3,6 +3,7 @@
 - Add a serviceBuilder to the userstory configuration
 - Add a listHeaderBuilder for showing a header at the top of the list of posts in the timeline
 - Add a getUserId function to retrieve the userId when needed in the userstory configuration
+- Fix the timelinecategory selection by removing the categories with key null
 
 ## 3.0.1
 

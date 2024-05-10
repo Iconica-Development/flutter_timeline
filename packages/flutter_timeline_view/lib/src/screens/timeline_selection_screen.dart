@@ -38,7 +38,7 @@ class TimelineSelectionScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           for (var category in categories.where(
-            (element) => element.canCreate,
+            (element) => element.canCreate && element.key != null,
           )) ...[
             options.categorySelectorButtonBuilder?.call(
                   context,
@@ -55,7 +55,8 @@ class TimelineSelectionScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: const Color(0xff71C6D1),
+                        color: options.theme.categorySelectionBorderColor ??
+                            const Color(0xff71C6D1),
                         width: 2,
                       ),
                     ),
