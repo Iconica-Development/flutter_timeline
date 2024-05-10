@@ -575,7 +575,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
             ),
           ),
         ),
-        if (post.reactionEnabled && !widget.isOverviewScreen!)
+        if (post.reactionEnabled && !(widget.isOverviewScreen ?? false))
           Align(
             alignment: Alignment.bottomCenter,
             child: ReactionBottom(
