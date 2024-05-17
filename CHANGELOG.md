@@ -5,6 +5,7 @@
 - Add a getUserId function to retrieve the userId when needed in the userstory configuration
 - Fix the timelinecategory selection by removing the categories with key null
 - Set an optional max length on the default post title input field
+- Add a postCreationFloatingActionButtonColor to the timeline theme to set the color of the floating action button
 
 ## 3.0.1
 

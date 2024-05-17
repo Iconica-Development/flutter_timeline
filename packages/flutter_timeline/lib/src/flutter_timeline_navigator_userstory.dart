@@ -65,7 +65,11 @@ Widget _timelineScreenRoute({
   );
 
   var button = FloatingActionButton(
-    backgroundColor: const Color(0xff71C6D1),
+    backgroundColor: config
+            .optionsBuilder(context)
+            .theme
+            .postCreationFloatingActionButtonColor ??
+        const Color(0xff71C6D1),
     onPressed: () async => Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => _postCategorySelectionScreen(

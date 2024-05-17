@@ -16,6 +16,7 @@ class TimelineTheme {
     this.moreIcon,
     this.deleteIcon,
     this.categorySelectionBorderColor,
+    this.postCreationFloatingActionButtonColor,
     this.textStyles = const TimelineTextStyles(),
   });
 
@@ -44,4 +45,7 @@ class TimelineTheme {
 
   /// The color of the border around the category in the selection screen
   final Color? categorySelectionBorderColor;
+
+  /// The color of the floating action button on the overview screen
+  final Color? postCreationFloatingActionButtonColor;
 }
