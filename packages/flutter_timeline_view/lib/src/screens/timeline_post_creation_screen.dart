@@ -140,6 +140,7 @@ class _TimelinePostCreationScreenState
                     '',
                   ) ??
                   TextField(
+                    maxLength: widget.options.maxTitleLength,
                     controller: titleController,
                     decoration: widget.options.contentInputDecoration ??
                         InputDecoration(

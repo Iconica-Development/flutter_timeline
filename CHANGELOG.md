@@ -4,6 +4,7 @@
 - Add a listHeaderBuilder for showing a header at the top of the list of posts in the timeline
 - Add a getUserId function to retrieve the userId when needed in the userstory configuration
 - Fix the timelinecategory selection by removing the categories with key null
+- Set an optional max length on the default post title input field
 
 ## 3.0.1
 
