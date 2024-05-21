@@ -108,6 +108,8 @@ class TimelineUserStoryConfiguration {
     BuildContext context,
     Widget child,
     IconButton? button,
+    TimelinePost post,
+    TimelineCategory? category,
   )? postViewOpenPageBuilder;
 
   /// Open page builder function for the post overview page. This function

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/src/go_router.dart';
@@ -136,6 +137,14 @@ List<GoRoute> getTimelineStoryRoutes({
       pageBuilder: (context, state) {
         var service = config.serviceBuilder?.call(context) ?? config.service;
         var post = service.postService.getPost(state.pathParameters['post']!);
+        var category = config.optionsBuilder
+            .call(context)
+            .categoriesOptions
+            .categoriesBuilder
+            ?.call(context)
+            .firstWhereOrNull(
+              (element) => element.key == post?.category,
+            );
 
         var timelinePostWidget = TimelinePostScreen(
           userId: config.getUserId?.call(context) ?? config.userId,
@@ -155,8 +164,8 @@ List<GoRoute> getTimelineStoryRoutes({
         return buildScreenWithoutTransition(
           context: context,
           state: state,
-          child: config.postViewOpenPageBuilder
-                  ?.call(context, timelinePostWidget, backButton) ??
+          child: config.postViewOpenPageBuilder?.call(
+                  context, timelinePostWidget, backButton, post, category) ??
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,

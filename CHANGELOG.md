@@ -6,6 +6,7 @@
 - Fix the timelinecategory selection by removing the categories with key null
 - Set an optional max length on the default post title input field
 - Add a postCreationFloatingActionButtonColor to the timeline theme to set the color of the floating action button
+- Add a post and a category to the postViewOpenPageBuilder function
 
 ## 3.0.1
 

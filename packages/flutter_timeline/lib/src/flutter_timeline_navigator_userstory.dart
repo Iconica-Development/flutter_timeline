@@ -135,6 +135,13 @@ Widget _postDetailScreenRoute({
     onUserTap: (user) => config.onUserTap?.call(context, user),
   );
 
+  var category = config
+      .optionsBuilder(context)
+      .categoriesOptions
+      .categoriesBuilder
+      ?.call(context)
+      .firstWhere((element) => element.key == post.category);
+
   var backButton = IconButton(
     color: Colors.white,
     icon: const Icon(Icons.arrow_back_ios),
@@ -142,7 +149,7 @@ Widget _postDetailScreenRoute({
   );
 
   return config.postViewOpenPageBuilder
-          ?.call(context, timelinePostScreen, backButton) ??
+          ?.call(context, timelinePostScreen, backButton, post, category) ??
       Scaffold(
         appBar: AppBar(
           leading: backButton,
