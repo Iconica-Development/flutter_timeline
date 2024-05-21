@@ -7,6 +7,7 @@
 - Set an optional max length on the default post title input field
 - Add a postCreationFloatingActionButtonColor to the timeline theme to set the color of the floating action button
 - Add a post and a category to the postViewOpenPageBuilder function
+- Add a refresh functionality to the timeline with a pull to refresh callback to allow additional functionality when refreshing the timeline
 
 ## 3.0.1
 

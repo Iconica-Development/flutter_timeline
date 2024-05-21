@@ -57,6 +57,7 @@ class TimelineUserStoryConfiguration {
     this.postOverviewOpenPageBuilder,
     this.onPostTap,
     this.onUserTap,
+    this.onRefresh,
     this.onPostDelete,
     this.filterEnabled = false,
     this.postWidgetBuilder,
@@ -126,6 +127,9 @@ class TimelineUserStoryConfiguration {
 
   /// A callback function invoked when the user's profile is tapped.
   final Function(BuildContext context, String userId)? onUserTap;
+
+  /// A callback function invoked when the timeline is refreshed by pulling down
+  final Function(BuildContext context, String? category)? onRefresh;
 
   /// A callback function invoked when a post deletion is requested.
   final Widget Function(BuildContext context, TimelinePost post)? onPostDelete;

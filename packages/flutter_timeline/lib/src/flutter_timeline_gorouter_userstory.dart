@@ -33,6 +33,7 @@ List<GoRoute> getTimelineStoryRoutes({
         var timelineScreen = TimelineScreen(
           userId: config.getUserId?.call(context) ?? config.userId,
           onUserTap: (user) => config.onUserTap?.call(context, user),
+          onRefresh: config.onRefresh,
           service: service,
           options: config.optionsBuilder(context),
           onPostTap: (post) async =>

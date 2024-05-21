@@ -60,6 +60,7 @@ Widget _timelineScreenRoute({
             ),
           ),
         ),
+    onRefresh: config.onRefresh,
     filterEnabled: config.filterEnabled,
     postWidgetBuilder: config.postWidgetBuilder,
   );
