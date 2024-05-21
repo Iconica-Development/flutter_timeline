@@ -146,7 +146,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
 
     if (isLoading) {
       const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator.adaptive(),
       );
     }
     if (this.post == null) {
@@ -166,7 +166,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
 
     return Stack(
       children: [
-        RefreshIndicator(
+        RefreshIndicator.adaptive(
           onRefresh: () async {
             updatePost(
               await widget.service.postService.fetchPostDetails(

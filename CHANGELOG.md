@@ -8,6 +8,7 @@
 - Add a postCreationFloatingActionButtonColor to the timeline theme to set the color of the floating action button
 - Add a post and a category to the postViewOpenPageBuilder function
 - Add a refresh functionality to the timeline with a pull to refresh callback to allow additional functionality when refreshing the timeline
+- Use the adaptive variants of the material elements in the timeline
 
 ## 3.0.1
 

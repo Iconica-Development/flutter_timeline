@@ -166,7 +166,12 @@ List<GoRoute> getTimelineStoryRoutes({
           context: context,
           state: state,
           child: config.postViewOpenPageBuilder?.call(
-                  context, timelinePostWidget, backButton, post, category) ??
+                context,
+                timelinePostWidget,
+                backButton,
+                post,
+                category,
+              ) ??
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,

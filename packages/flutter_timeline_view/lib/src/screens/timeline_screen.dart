@@ -108,7 +108,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading && widget.posts == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
 
     // Build the list of posts
@@ -222,7 +222,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
               height: 12,
             ),
             Expanded(
-              child: RefreshIndicator(
+              child: RefreshIndicator.adaptive(
                 onRefresh: () async {
                   await widget.onRefresh?.call(context, category);
                   await loadPosts();
