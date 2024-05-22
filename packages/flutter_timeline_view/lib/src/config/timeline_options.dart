@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
+import 'package:flutter_timeline_view/src/config/timeline_paddings.dart';
 import 'package:flutter_timeline_view/src/config/timeline_theme.dart';
 import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,7 @@ class TimelineOptions {
   const TimelineOptions({
     this.theme = const TimelineTheme(),
     this.translations = const TimelineTranslations.empty(),
+    this.paddings = const TimelinePaddingOptions(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.timelinePostHeight,
@@ -37,12 +39,8 @@ class TimelineOptions {
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
-    this.padding =
-        const EdgeInsets.only(left: 12.0, top: 24.0, right: 12.0, bottom: 12.0),
     this.iconSize = 26,
     this.postWidgetHeight,
-    this.postPadding =
-        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
     this.requireImageForPost = false,
@@ -79,7 +77,11 @@ class TimelineOptions {
   /// The height of a post in the timeline
   final double? timelinePostHeight;
 
+  /// Class that contains all the translations used in the timeline
   final TimelineTranslations translations;
+
+  /// Class that contains all the paddings used in the timeline
+  final TimelinePaddingOptions paddings;
 
   final ButtonBuilder? buttonBuilder;
 
@@ -116,17 +118,11 @@ class TimelineOptions {
   /// The builder for the divider
   final Widget Function()? dividerBuilder;
 
-  /// The padding between posts in the timeline
-  final EdgeInsets padding;
-
   /// Size of icons like the comment and like icons. Dafualts to 26
   final double iconSize;
 
   /// Sets a predefined height for the postWidget.
   final double? postWidgetHeight;
-
-  /// Padding of each post
-  final EdgeInsets postPadding;
 
   /// Options for filtering
   final FilterOptions filterOptions;

@@ -176,7 +176,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: widget.options.padding,
+              padding: widget.options.paddings.mainPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

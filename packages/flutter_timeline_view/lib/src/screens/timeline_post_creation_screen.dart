@@ -121,7 +121,7 @@ class _TimelinePostCreationScreenState
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Padding(
-        padding: widget.options.padding,
+        padding: widget.options.paddings.mainPadding,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.max,

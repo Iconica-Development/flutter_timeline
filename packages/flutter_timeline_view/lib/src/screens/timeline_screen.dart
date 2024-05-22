@@ -147,14 +147,14 @@ class _TimelineScreenState extends State<TimelineScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: widget.options.padding.top,
+              height: widget.options.paddings.mainPadding.top,
             ),
             if (widget.filterEnabled) ...[
               Padding(
                 padding: EdgeInsets.symmetric(
                   // left: widget.options.padding.left,
                   // right: widget.options.padding.right,
-                  horizontal: widget.options.padding.horizontal,
+                  horizontal: widget.options.paddings.mainPadding.horizontal,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -240,7 +240,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                           const SizedBox.shrink(),
                       ...posts.map(
                         (post) => Padding(
-                          padding: widget.options.postPadding,
+                          padding: widget.options.paddings.postPadding,
                           child: widget.postWidgetBuilder?.call(post) ??
                               TimelinePostWidget(
                                 service: service,
@@ -303,7 +303,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
               ),
             ),
             SizedBox(
-              height: widget.options.padding.bottom,
+              height: widget.options.paddings.mainPadding.bottom,
             ),
           ],
         );

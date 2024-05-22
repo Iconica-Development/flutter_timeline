@@ -12,7 +12,9 @@ TimelineUserStoryConfiguration getConfig(TimelineService service) {
 
 var options = TimelineOptions(
   textInputBuilder: null,
-  padding: const EdgeInsets.all(20).copyWith(top: 28),
+  paddings: TimelinePaddingOptions(
+    mainPadding: const EdgeInsets.all(20).copyWith(top: 28),
+  ),
   allowAllDeletion: true,
   categoriesOptions: CategoriesOptions(
     categoriesBuilder: (context) => [
