@@ -14,7 +14,7 @@ class CategorySelectorButton extends StatelessWidget {
 
   final TimelineCategory category;
   final bool selected;
-  final void Function() onTap;
+  final VoidCallback onTap;
   final TimelineOptions options;
   final bool isOnTop;
 
@@ -36,15 +36,15 @@ class CategorySelectorButton extends StatelessWidget {
           ),
           fixedSize: MaterialStatePropertyAll(Size(140, isOnTop ? 140 : 20)),
           backgroundColor: MaterialStatePropertyAll(
-            selected ? const Color(0xff71C6D1) : Colors.transparent,
+            selected ? theme.colorScheme.primary : Colors.transparent,
           ),
-          shape: const MaterialStatePropertyAll(
+          shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
               side: BorderSide(
-                color: Color(0xff71C6D1),
+                color: theme.colorScheme.primary,
                 width: 2,
               ),
             ),

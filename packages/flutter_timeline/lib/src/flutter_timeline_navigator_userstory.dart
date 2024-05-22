@@ -70,7 +70,7 @@ Widget _timelineScreenRoute({
             .optionsBuilder(context)
             .theme
             .postCreationFloatingActionButtonColor ??
-        const Color(0xff71C6D1),
+        Theme.of(context).primaryColor,
     onPressed: () async => Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => _postCategorySelectionScreen(
@@ -93,8 +93,8 @@ Widget _timelineScreenRoute({
           backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.timeLineScreenTitle!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -157,8 +157,8 @@ Widget _postDetailScreenRoute({
           backgroundColor: const Color(0xff212121),
           title: Text(
             post.category ?? 'Category',
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -247,8 +247,8 @@ Widget _postCreationScreenRoute({
           leading: backButton,
           title: Text(
             config.optionsBuilder(context).translations.postCreation!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -294,7 +294,6 @@ Widget _postOverviewScreenRoute({
         );
       }
     },
-    isOverviewScreen: true,
   );
 
   var backButton = IconButton(
@@ -315,8 +314,8 @@ Widget _postOverviewScreenRoute({
           backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.postOverview!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -374,8 +373,8 @@ Widget _postCategorySelectionScreen({
           backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.postCreation!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),

@@ -10,14 +10,12 @@ class TimelinePostOverviewScreen extends StatelessWidget {
     required this.options,
     required this.service,
     required this.onPostSubmit,
-    this.isOverviewScreen,
     super.key,
   });
   final TimelinePost timelinePost;
   final TimelineOptions options;
   final TimelineService service;
   final void Function(TimelinePost) onPostSubmit;
-  final bool? isOverviewScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +28,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
             post: timelinePost,
             onPostDelete: () async {},
             service: service,
-            isOverviewScreen: isOverviewScreen,
+            isOverviewScreen: true,
           ),
         ),
         options.postOverviewButtonBuilder?.call(
@@ -43,8 +41,9 @@ class TimelinePostOverviewScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 30.0),
               child: ElevatedButton(
-                style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Color(0xff71C6D1)),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Theme.of(context).primaryColor),
                 ),
                 onPressed: () {
                   onPostSubmit(timelinePost);

@@ -47,16 +47,14 @@ class TimelinePostScreen extends StatelessWidget {
   final bool? isOverviewScreen;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: _TimelinePostScreen(
-          userId: userId,
-          service: service,
-          options: options,
-          post: post,
-          onPostDelete: onPostDelete,
-          onUserTap: onUserTap,
-          isOverviewScreen: isOverviewScreen,
-        ),
+  Widget build(BuildContext context) => _TimelinePostScreen(
+        userId: userId,
+        service: service,
+        options: options,
+        post: post,
+        onPostDelete: onPostDelete,
+        onUserTap: onUserTap,
+        isOverviewScreen: isOverviewScreen,
       );
 }
 

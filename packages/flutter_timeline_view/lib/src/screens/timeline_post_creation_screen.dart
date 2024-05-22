@@ -285,7 +285,7 @@ class _TimelinePostCreationScreenState
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Checkbox(
-                    activeColor: const Color(0xff71C6D1),
+                    activeColor: theme.colorScheme.primary,
                     value: allowComments,
                     onChanged: (value) {
                       setState(() {
@@ -295,7 +295,7 @@ class _TimelinePostCreationScreenState
                   ),
                   Text(widget.options.translations.yes!),
                   Checkbox(
-                    activeColor: const Color(0xff71C6D1),
+                    activeColor: theme.colorScheme.primary,
                     value: !allowComments,
                     onChanged: (value) {
                       setState(() {
@@ -318,9 +318,10 @@ class _TimelinePostCreationScreenState
                         enabled: editingDone,
                       )
                     : ElevatedButton(
-                        style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Color(0xff71C6D1)),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                            theme.colorScheme.primary,
+                          ),
                         ),
                         onPressed: editingDone
                             ? () async {

@@ -152,6 +152,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
             if (widget.filterEnabled) ...[
               Padding(
                 padding: EdgeInsets.symmetric(
+                  // left: widget.options.padding.left,
+                  // right: widget.options.padding.right,
                   horizontal: widget.options.padding.horizontal,
                 ),
                 child: Row(

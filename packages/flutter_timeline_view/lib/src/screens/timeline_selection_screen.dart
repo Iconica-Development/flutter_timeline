@@ -56,9 +56,11 @@ class TimelineSelectionScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: options.theme.categorySelectionBorderColor ??
-                            const Color(0xff71C6D1),
+                            Theme.of(context).primaryColor,
                         width: 2,
                       ),
+                      color:
+                          options.theme.categorySelectionButtonBackgroundColor,
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     child: Column(
