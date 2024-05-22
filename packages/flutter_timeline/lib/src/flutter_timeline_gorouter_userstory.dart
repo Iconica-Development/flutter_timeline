@@ -74,7 +74,7 @@ List<GoRoute> getTimelineStoryRoutes({
                     config
                         .optionsBuilder(context)
                         .translations
-                        .timeLineScreenTitle!,
+                        .timeLineScreenTitle,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 24,
@@ -120,7 +120,7 @@ List<GoRoute> getTimelineStoryRoutes({
                   leading: backButton,
                   backgroundColor: const Color(0xff212121),
                   title: Text(
-                    config.optionsBuilder(context).translations.postCreation!,
+                    config.optionsBuilder(context).translations.postCreation,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 24,
@@ -236,7 +236,7 @@ List<GoRoute> getTimelineStoryRoutes({
                   backgroundColor: const Color(0xff212121),
                   leading: backButton,
                   title: Text(
-                    config.optionsBuilder(context).translations.postCreation!,
+                    config.optionsBuilder(context).translations.postCreation,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 24,
@@ -284,7 +284,7 @@ List<GoRoute> getTimelineStoryRoutes({
                   leading: backButton,
                   backgroundColor: const Color(0xff212121),
                   title: Text(
-                    config.optionsBuilder(context).translations.postOverview!,
+                    config.optionsBuilder(context).translations.postOverview,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 24,

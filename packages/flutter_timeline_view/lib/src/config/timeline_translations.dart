@@ -5,8 +5,50 @@
 import 'package:flutter/material.dart';
 
 @immutable
+
+/// Class that holds all the translations for the timeline component view and
+///  the corresponding userstory
 class TimelineTranslations {
+  /// TimelineTranslations constructor where everything is required use this
+  /// if you want to be sure to have all translations specified
+  /// If you just want the default values use the empty constructor
+  /// and optionally override the values with the copyWith method
   const TimelineTranslations({
+    required this.anonymousUser,
+    required this.noPosts,
+    required this.noPostsWithFilter,
+    required this.title,
+    required this.titleHintText,
+    required this.content,
+    required this.contentHintText,
+    required this.contentDescription,
+    required this.uploadImage,
+    required this.uploadImageDescription,
+    required this.allowComments,
+    required this.allowCommentsDescription,
+    required this.commentsTitleOnPost,
+    required this.checkPost,
+    required this.postAt,
+    required this.deletePost,
+    required this.deleteReaction,
+    required this.viewPost,
+    required this.likesTitle,
+    required this.commentsTitle,
+    required this.firstComment,
+    required this.writeComment,
+    required this.postLoadingError,
+    required this.timelineSelectionDescription,
+    required this.searchHint,
+    required this.postOverview,
+    required this.postIn,
+    required this.postCreation,
+    required this.yes,
+    required this.no,
+    required this.timeLineScreenTitle,
+  });
+
+  /// Default translations for the timeline component view
+  const TimelineTranslations.empty({
     this.anonymousUser = 'Anonymous user',
     this.noPosts = 'No posts yet',
     this.noPostsWithFilter = 'No posts with this filter',
@@ -41,45 +83,46 @@ class TimelineTranslations {
     this.timeLineScreenTitle = 'iconinstagram',
   });
 
-  final String? noPosts;
-  final String? noPostsWithFilter;
-  final String? anonymousUser;
+  final String noPosts;
+  final String noPostsWithFilter;
+  final String anonymousUser;
 
-  final String? title;
-  final String? content;
-  final String? contentDescription;
-  final String? uploadImage;
-  final String? uploadImageDescription;
-  final String? allowComments;
-  final String? allowCommentsDescription;
-  final String? checkPost;
-  final String? postAt;
+  final String title;
+  final String content;
+  final String contentDescription;
+  final String uploadImage;
+  final String uploadImageDescription;
+  final String allowComments;
+  final String allowCommentsDescription;
+  final String checkPost;
+  final String postAt;
 
-  final String? titleHintText;
-  final String? contentHintText;
+  final String titleHintText;
+  final String contentHintText;
 
-  final String? deletePost;
-  final String? deleteReaction;
-  final String? viewPost;
-  final String? likesTitle;
-  final String? commentsTitle;
-  final String? commentsTitleOnPost;
-  final String? writeComment;
-  final String? firstComment;
-  final String? postLoadingError;
+  final String deletePost;
+  final String deleteReaction;
+  final String viewPost;
+  final String likesTitle;
+  final String commentsTitle;
+  final String commentsTitleOnPost;
+  final String writeComment;
+  final String firstComment;
+  final String postLoadingError;
 
-  final String? timelineSelectionDescription;
+  final String timelineSelectionDescription;
 
-  final String? searchHint;
+  final String searchHint;
 
-  final String? postOverview;
-  final String? postIn;
-  final String? postCreation;
+  final String postOverview;
+  final String postIn;
+  final String postCreation;
 
-  final String? yes;
-  final String? no;
-  final String? timeLineScreenTitle;
+  final String yes;
+  final String no;
+  final String timeLineScreenTitle;
 
+  /// Method to override the default values of the translations
   TimelineTranslations copyWith({
     String? noPosts,
     String? noPostsWithFilter,

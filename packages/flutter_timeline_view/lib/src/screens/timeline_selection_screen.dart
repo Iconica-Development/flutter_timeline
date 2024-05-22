@@ -29,7 +29,7 @@ class TimelineSelectionScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.05, bottom: 8),
             child: Text(
-              options.translations.timelineSelectionDescription!,
+              options.translations.timelineSelectionDescription,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 20,

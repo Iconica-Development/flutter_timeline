@@ -10,6 +10,7 @@
 - Add a refresh functionality to the timeline with a pull to refresh callback to allow additional functionality when refreshing the timeline
 - Use the adaptive variants of the material elements in the timeline
 - Change the default blue color to the primary color of the Theme.of(context) in the timeline
+- Change the TimelineTranslations constructor to require all translations or use the TimelineTranslations.empty constructor if you don't want to specify all translations
 
 ## 3.0.1
 

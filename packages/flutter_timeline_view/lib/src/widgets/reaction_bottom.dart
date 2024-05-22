@@ -65,7 +65,7 @@ class _ReactionBottomState extends State<ReactionBottom> {
                   ],
                 ),
               ),
-              widget.translations.writeComment!,
+              widget.translations.writeComment,
             ),
           ),
         ),

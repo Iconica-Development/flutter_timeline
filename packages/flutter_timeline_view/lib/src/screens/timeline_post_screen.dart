@@ -150,7 +150,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
     if (this.post == null) {
       return Center(
         child: Text(
-          widget.options.translations.postLoadingError!,
+          widget.options.translations.postLoadingError,
           style: widget.options.theme.textStyles.errorTextStyle,
         ),
       );
@@ -219,7 +219,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 widget.options.nameBuilder
                                         ?.call(post.creator) ??
                                     post.creator?.fullName ??
-                                    widget.options.translations.anonymousUser!,
+                                    widget.options.translations.anonymousUser,
                                 style: widget.options.theme.textStyles
                                         .postCreatorTitleStyle ??
                                     theme.textTheme.titleMedium,
@@ -239,7 +239,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    widget.options.translations.deletePost!,
+                                    widget.options.translations.deletePost,
                                     style: widget.options.theme.textStyles
                                             .deletePostStyle ??
                                         theme.textTheme.bodyMedium,
@@ -439,7 +439,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                   const SizedBox(height: 20),
                   if (post.reactionEnabled) ...[
                     Text(
-                      widget.options.translations.commentsTitleOnPost!,
+                      widget.options.translations.commentsTitleOnPost,
                       style: theme.textTheme.titleMedium,
                     ),
                     for (var reaction
@@ -467,7 +467,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 PopupMenuItem<String>(
                                   value: 'delete',
                                   child: Text(
-                                    widget.options.translations.deleteReaction!,
+                                    widget.options.translations.deleteReaction,
                                   ),
                                 ),
                               ],
@@ -521,7 +521,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                               ?.call(post.creator) ??
                                           reaction.creator?.fullName ??
                                           widget.options.translations
-                                              .anonymousUser!,
+                                              .anonymousUser,
                                       style: theme.textTheme.titleSmall,
                                     ),
                                     Padding(
@@ -563,7 +563,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                     if (post.reactions?.isEmpty ?? true) ...[
                       const SizedBox(height: 16),
                       Text(
-                        widget.options.translations.firstComment!,
+                        widget.options.translations.firstComment,
                       ),
                     ],
                     const SizedBox(height: 120),

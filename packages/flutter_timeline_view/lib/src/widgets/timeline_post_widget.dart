@@ -94,7 +94,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                           widget.options.nameBuilder
                                   ?.call(widget.post.creator) ??
                               widget.post.creator?.fullName ??
-                              widget.options.translations.anonymousUser!,
+                              widget.options.translations.anonymousUser,
                           style: widget.options.theme.textStyles
                                   .postCreatorTitleStyle ??
                               theme.textTheme.titleMedium,
@@ -118,7 +118,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         child: Row(
                           children: [
                             Text(
-                              widget.options.translations.deletePost!,
+                              widget.options.translations.deletePost,
                               style: widget.options.theme.textStyles
                                       .deletePostStyle ??
                                   theme.textTheme.bodyMedium,
@@ -318,7 +318,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
               const SizedBox(height: 4),
               Text(
-                widget.options.translations.viewPost!,
+                widget.options.translations.viewPost,
                 style: widget.options.theme.textStyles.viewPostStyle ??
                     theme.textTheme.bodySmall,
               ),

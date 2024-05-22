@@ -289,9 +289,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               category == null
-                                  ? widget.options.translations.noPosts!
+                                  ? widget.options.translations.noPosts
                                   : widget
-                                      .options.translations.noPostsWithFilter!,
+                                      .options.translations.noPostsWithFilter,
                               style:
                                   widget.options.theme.textStyles.noPostsStyle,
                             ),

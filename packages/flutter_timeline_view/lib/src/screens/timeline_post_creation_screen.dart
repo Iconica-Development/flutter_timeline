@@ -128,7 +128,7 @@ class _TimelinePostCreationScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.options.translations.title!,
+                widget.options.translations.title,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
@@ -149,7 +149,7 @@ class _TimelinePostCreationScreenState
                   ),
               const SizedBox(height: 16),
               Text(
-                widget.options.translations.content!,
+                widget.options.translations.content,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
@@ -157,7 +157,7 @@ class _TimelinePostCreationScreenState
               ),
               const SizedBox(height: 4),
               Text(
-                widget.options.translations.contentDescription!,
+                widget.options.translations.contentDescription,
                 style: theme.textTheme.bodyMedium,
               ),
               // input field for the content
@@ -177,14 +177,14 @@ class _TimelinePostCreationScreenState
               ),
               // input field for the content
               Text(
-                widget.options.translations.uploadImage!,
+                widget.options.translations.uploadImage,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
                 ),
               ),
               Text(
-                widget.options.translations.uploadImageDescription!,
+                widget.options.translations.uploadImageDescription,
                 style: theme.textTheme.bodyMedium,
               ),
               // image picker field
@@ -271,14 +271,14 @@ class _TimelinePostCreationScreenState
               const SizedBox(height: 16),
 
               Text(
-                widget.options.translations.commentsTitle!,
+                widget.options.translations.commentsTitle,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
                 ),
               ),
               Text(
-                widget.options.translations.allowCommentsDescription!,
+                widget.options.translations.allowCommentsDescription,
                 style: theme.textTheme.bodyMedium,
               ),
               Row(
@@ -293,7 +293,7 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.yes!),
+                  Text(widget.options.translations.yes),
                   Checkbox(
                     activeColor: theme.colorScheme.primary,
                     value: !allowComments,
@@ -303,7 +303,7 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.no!),
+                  Text(widget.options.translations.no),
                 ],
               ),
               const SizedBox(height: 120),
@@ -314,7 +314,7 @@ class _TimelinePostCreationScreenState
                     ? widget.options.buttonBuilder!(
                         context,
                         onPostCreated,
-                        widget.options.translations.checkPost!,
+                        widget.options.translations.checkPost,
                         enabled: editingDone,
                       )
                     : ElevatedButton(
@@ -334,8 +334,8 @@ class _TimelinePostCreationScreenState
                           padding: const EdgeInsets.all(12.0),
                           child: Text(
                             widget.enablePostOverviewScreen
-                                ? widget.options.translations.checkPost!
-                                : widget.options.translations.postCreation!,
+                                ? widget.options.translations.checkPost
+                                : widget.options.translations.postCreation,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
