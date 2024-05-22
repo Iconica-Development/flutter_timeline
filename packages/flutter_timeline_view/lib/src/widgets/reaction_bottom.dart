@@ -49,6 +49,18 @@ class _ReactionBottomState extends State<ReactionBottom> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (widget.onPressSelectImage != null) ...[
+                      IconButton(
+                        onPressed: () async {
+                          _textEditingController.clear();
+                          widget.onPressSelectImage?.call();
+                        },
+                        icon: Icon(
+                          Icons.image,
+                          color: widget.iconColor,
+                        ),
+                      ),
+                    ],
                     IconButton(
                       onPressed: () async {
                         var value = _textEditingController.text;
