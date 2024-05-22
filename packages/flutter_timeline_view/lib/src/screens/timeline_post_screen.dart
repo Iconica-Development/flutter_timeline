@@ -196,7 +196,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                       28,
                                     ) ??
                                     CircleAvatar(
-                                      radius: 20,
+                                      radius: 14,
                                       backgroundImage:
                                           CachedNetworkImageProvider(
                                         post.creator!.imageUrl!,
@@ -208,7 +208,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                       28,
                                     ) ??
                                     const CircleAvatar(
-                                      radius: 20,
+                                      radius: 14,
                                       child: Icon(
                                         Icons.person,
                                       ),
@@ -493,7 +493,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                     28,
                                   ) ??
                                   CircleAvatar(
-                                    radius: 20,
+                                    radius: 14,
                                     backgroundImage: CachedNetworkImageProvider(
                                       reaction.creator!.imageUrl!,
                                     ),
@@ -504,7 +504,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                     28,
                                   ) ??
                                   const CircleAvatar(
-                                    radius: 20,
+                                    radius: 14,
                                     child: Icon(
                                       Icons.person,
                                     ),

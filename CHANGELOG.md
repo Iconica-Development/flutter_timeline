@@ -12,6 +12,7 @@
 - Change the default blue color to the primary color of the Theme.of(context) in the timeline
 - Change the TimelineTranslations constructor to require all translations or use the TimelineTranslations.empty constructor if you don't want to specify all translations
 - Add a TimelinePaddingOptions class to store the padding options for the timeline
+- fix the avatar size to match the new design
 
 ## 3.0.1
 

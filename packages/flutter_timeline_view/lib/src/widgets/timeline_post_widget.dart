@@ -72,7 +72,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                                 28,
                               ) ??
                               CircleAvatar(
-                                radius: 20,
+                                radius: 14,
                                 backgroundImage: CachedNetworkImageProvider(
                                   widget.post.creator!.imageUrl!,
                                 ),
@@ -80,10 +80,10 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         ] else ...[
                           widget.options.anonymousAvatarBuilder?.call(
                                 widget.post.creator!,
-                                40,
+                                28,
                               ) ??
                               const CircleAvatar(
-                                radius: 20,
+                                radius: 14,
                                 child: Icon(
                                   Icons.person,
                                 ),
