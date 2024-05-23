@@ -257,7 +257,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                       onTap: widget.onTapLike,
                       child: Container(
                         color: Colors.transparent,
-                        child: widget.options.theme.likedIcon ??
+                        child: widget.options.theme.likeIcon ??
                             Icon(
                               Icons.favorite_outline,
                               color: widget.options.theme.iconColor,
