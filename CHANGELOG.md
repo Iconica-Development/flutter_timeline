@@ -14,6 +14,7 @@
 - Add a TimelinePaddingOptions class to store the padding options for the timeline
 - fix the avatar size to match the new design
 - Add the iconbutton for image uploading back to the ReactionBottom
+- Fix category key is correctly used for saving timeline posts and category title is shown everywhere
 
 ## 3.0.1
 

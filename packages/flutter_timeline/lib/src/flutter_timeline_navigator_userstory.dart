@@ -156,7 +156,7 @@ Widget _postDetailScreenRoute({
           leading: backButton,
           backgroundColor: const Color(0xff212121),
           title: Text(
-            post.category ?? 'Category',
+            category?.title ?? post.category ?? 'Category',
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 24,
@@ -193,29 +193,28 @@ Widget _postCreationScreenRoute({
     service: config.service,
     onPostCreated: (post) async {
       var newPost = await config.service.postService.createPost(post);
-      if (context.mounted) {
-        if (config.afterPostCreationGoHome) {
-          await Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _timelineScreenRoute(
-                configuration: config,
-                context: context,
-              ),
+      if (!context.mounted) return;
+      if (config.afterPostCreationGoHome) {
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => _timelineScreenRoute(
+              configuration: config,
+              context: context,
             ),
-          );
-        } else {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _postOverviewScreenRoute(
-                configuration: config,
-                context: context,
-                post: newPost,
-              ),
+          ),
+        );
+      } else {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => _postOverviewScreenRoute(
+              configuration: config,
+              context: context,
+              post: newPost,
             ),
-          );
-        }
+          ),
+        );
       }
     },
     onPostOverview: (post) async => Navigator.of(context).push(
@@ -228,7 +227,7 @@ Widget _postCreationScreenRoute({
       ),
     ),
     enablePostOverviewScreen: config.enablePostOverviewScreen,
-    postCategory: category.title,
+    postCategory: category.key,
   );
 
   var backButton = IconButton(
@@ -341,9 +340,11 @@ Widget _postCategorySelectionScreen({
   var timelineSelectionScreen = TimelineSelectionScreen(
     options: config.optionsBuilder(context),
     categories: config
-        .optionsBuilder(context)
-        .categoriesOptions
-        .categoriesBuilder!(context),
+            .optionsBuilder(context)
+            .categoriesOptions
+            .categoriesBuilder
+            ?.call(context) ??
+        [],
     onCategorySelected: (category) async {
       await Navigator.of(context).push(
         MaterialPageRoute(

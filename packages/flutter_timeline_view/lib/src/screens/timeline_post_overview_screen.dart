@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_expression_function_bodies
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
@@ -19,7 +20,13 @@ class TimelinePostOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var buttonText = '${options.translations.postIn} ${timelinePost.category}';
+    // the timelinePost.category is a key so we need to get the category object
+    var timelineCategoryName = options.categoriesOptions.categoriesBuilder
+            ?.call(context)
+            .firstWhereOrNull((element) => element.key == timelinePost.category)
+            ?.title ??
+        timelinePost.category;
+    var buttonText = '${options.translations.postIn} $timelineCategoryName';
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [

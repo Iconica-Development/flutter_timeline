@@ -94,12 +94,14 @@ List<GoRoute> getTimelineStoryRoutes({
         var timelineSelectionScreen = TimelineSelectionScreen(
           options: config.optionsBuilder(context),
           categories: config
-              .optionsBuilder(context)
-              .categoriesOptions
-              .categoriesBuilder!(context),
+                  .optionsBuilder(context)
+                  .categoriesOptions
+                  .categoriesBuilder
+                  ?.call(context) ??
+              [],
           onCategorySelected: (category) async {
             await context.push(
-              TimelineUserStoryRoutes.timelinepostCreation(category.title),
+              TimelineUserStoryRoutes.timelinepostCreation(category.key ?? ''),
             );
           },
         );
@@ -177,7 +179,7 @@ List<GoRoute> getTimelineStoryRoutes({
                   leading: backButton,
                   backgroundColor: const Color(0xff212121),
                   title: Text(
-                    post.category ?? 'Category',
+                    category?.title ?? post.category ?? 'Category',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 24,
