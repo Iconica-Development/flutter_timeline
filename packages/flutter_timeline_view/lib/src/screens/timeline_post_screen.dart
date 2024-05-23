@@ -191,8 +191,9 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                           ),
                         ),
                       const Spacer(),
-                      if (widget.options.allowAllDeletion ||
-                          post.creator?.userId == widget.userId)
+                      if (!(widget.isOverviewScreen ?? false) &&
+                          (widget.options.allowAllDeletion ||
+                              post.creator?.userId == widget.userId))
                         PopupMenuButton(
                           onSelected: (value) => widget.onPostDelete.call(),
                           itemBuilder: (BuildContext context) =>
@@ -305,6 +306,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       ] else ...[
                         InkWell(
                           onTap: () async {
+                            if (widget.isOverviewScreen ?? false) return;
                             updatePost(
                               await widget.service.postService.likePost(
                                 widget.userId,

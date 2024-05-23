@@ -254,7 +254,7 @@ class FirebaseTimelinePostService
     // update the post with the new like
     var updatedPost = post.copyWith(
       likes: post.likes + 1,
-      likedBy: post.likedBy?..add(userId),
+      likedBy: [...post.likedBy ?? [], userId],
     );
     posts = posts
         .map(

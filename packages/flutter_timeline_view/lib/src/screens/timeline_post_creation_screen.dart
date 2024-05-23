@@ -104,6 +104,7 @@ class _TimelinePostCreationScreenState
         category: widget.postCategory,
         content: contentController.text,
         likes: 0,
+        likedBy: const [],
         reaction: 0,
         createdAt: DateTime.now(),
         reactionEnabled: allowComments,
