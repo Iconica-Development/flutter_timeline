@@ -18,6 +18,7 @@
 - Fix when clicking on post delete in the post screen of the userstory it will now navigate back to the timeline and delete the post
 - Fix like icon being used for both like and unliked posts
 - Fix post creator can only like the post once and after it is actually created
+- Change the CategorySelectorButton to use more styling options and allow for an icon to be shown
 
 ## 3.0.1
 

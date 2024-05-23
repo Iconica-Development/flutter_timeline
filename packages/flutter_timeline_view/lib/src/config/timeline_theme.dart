@@ -15,7 +15,7 @@ class TimelineTheme {
     this.sendIcon,
     this.moreIcon,
     this.deleteIcon,
-    this.categorySelectionBorderColor,
+    this.categorySelectionButtonBorderColor,
     this.categorySelectionButtonBackgroundColor,
     this.postCreationFloatingActionButtonColor,
     this.textStyles = const TimelineTextStyles(),
@@ -45,7 +45,7 @@ class TimelineTheme {
   final TimelineTextStyles textStyles;
 
   /// The color of the border around the category in the selection screen
-  final Color? categorySelectionBorderColor;
+  final Color? categorySelectionButtonBorderColor;
 
   /// The color of the background of the category selection button in the
   /// selection screen

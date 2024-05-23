@@ -8,6 +8,7 @@ class TimelinePaddingOptions {
     this.postPadding =
         const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
     this.postOverviewButtonBottomPadding = 30.0,
+    this.categoryButtonTextPadding,
   });
 
   /// The padding between posts in the timeline
@@ -18,4 +19,7 @@ class TimelinePaddingOptions {
 
   /// The bottom padding of the button on the post overview screen
   final double postOverviewButtonBottomPadding;
+
+  /// The padding between the icon and the text in the category button
+  final double? categoryButtonTextPadding;
 }

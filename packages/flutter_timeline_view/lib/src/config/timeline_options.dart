@@ -223,8 +223,7 @@ class CategoriesOptions {
 
   /// Abilty to override the standard category selector
   final Widget Function(
-    String? categoryKey,
-    String categoryName,
+    TimelineCategory category,
     Function() onTap,
     // ignore: avoid_positional_boolean_parameters
     bool selected,

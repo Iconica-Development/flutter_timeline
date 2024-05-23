@@ -36,7 +36,10 @@ class CategorySelectorButton extends StatelessWidget {
           ),
           fixedSize: MaterialStatePropertyAll(Size(140, isOnTop ? 140 : 20)),
           backgroundColor: MaterialStatePropertyAll(
-            selected ? theme.colorScheme.primary : Colors.transparent,
+            selected
+                ? theme.colorScheme.primary
+                : options.theme.categorySelectionButtonBackgroundColor ??
+                    Colors.transparent,
           ),
           shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
@@ -44,7 +47,8 @@ class CategorySelectorButton extends StatelessWidget {
                 Radius.circular(8),
               ),
               side: BorderSide(
-                color: theme.colorScheme.primary,
+                color: options.theme.categorySelectionButtonBorderColor ??
+                    theme.colorScheme.primary,
                 width: 2,
               ),
             ),
@@ -53,38 +57,55 @@ class CategorySelectorButton extends StatelessWidget {
         child: isOnTop
             ? SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    Text(
-                      category.title,
-                      style: (options.theme.textStyles.categoryTitleStyle ??
-                              theme.textTheme.labelLarge)
-                          ?.copyWith(
-                        color: selected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.start,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.title,
+                          style: (options.theme.textStyles.categoryTitleStyle ??
+                                  theme.textTheme.labelLarge)
+                              ?.copyWith(
+                            color: selected
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.onSurface,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
                     ),
+                    Center(child: category.icon),
                   ],
                 ),
               )
             : Row(
                 children: [
                   Flexible(
-                    child: Text(
-                      category.title,
-                      style: (options.theme.textStyles.categoryTitleStyle ??
-                              theme.textTheme.labelLarge)
-                          ?.copyWith(
-                        color: selected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
+                    child: Row(
+                      children: [
+                        category.icon,
+                        SizedBox(
+                          width:
+                              options.paddings.categoryButtonTextPadding ?? 8,
+                        ),
+                        Expanded(
+                          child: Text(
+                            category.title,
+                            style:
+                                (options.theme.textStyles.categoryTitleStyle ??
+                                        theme.textTheme.labelLarge)
+                                    ?.copyWith(
+                              color: selected
+                                  ? theme.colorScheme.onPrimary
+                                  : theme.colorScheme.onSurface,
+                            ),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
