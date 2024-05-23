@@ -15,7 +15,7 @@ import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
 import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
 import 'package:intl/intl.dart';
 
-class TimelinePostScreen extends StatelessWidget {
+class TimelinePostScreen extends StatefulWidget {
   const TimelinePostScreen({
     required this.userId,
     required this.service,
@@ -47,47 +47,10 @@ class TimelinePostScreen extends StatelessWidget {
   final bool? isOverviewScreen;
 
   @override
-  Widget build(BuildContext context) => _TimelinePostScreen(
-        userId: userId,
-        service: service,
-        options: options,
-        post: post,
-        onPostDelete: onPostDelete,
-        onUserTap: onUserTap,
-        isOverviewScreen: isOverviewScreen,
-      );
+  State<TimelinePostScreen> createState() => _TimelinePostScreenState();
 }
 
-class _TimelinePostScreen extends StatefulWidget {
-  const _TimelinePostScreen({
-    required this.userId,
-    required this.service,
-    required this.options,
-    required this.post,
-    required this.onPostDelete,
-    this.onUserTap,
-    this.isOverviewScreen,
-  });
-
-  final String userId;
-
-  final TimelineService service;
-
-  final TimelineOptions options;
-
-  final TimelinePost post;
-
-  final Function(String userId)? onUserTap;
-
-  final VoidCallback onPostDelete;
-
-  final bool? isOverviewScreen;
-
-  @override
-  State<_TimelinePostScreen> createState() => _TimelinePostScreenState();
-}
-
-class _TimelinePostScreenState extends State<_TimelinePostScreen> {
+class _TimelinePostScreenState extends State<TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
 
@@ -231,7 +194,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                       if (widget.options.allowAllDeletion ||
                           post.creator?.userId == widget.userId)
                         PopupMenuButton(
-                          onSelected: (value) => widget.onPostDelete(),
+                          onSelected: (value) => widget.onPostDelete.call(),
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(

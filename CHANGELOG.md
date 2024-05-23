@@ -15,6 +15,7 @@
 - fix the avatar size to match the new design
 - Add the iconbutton for image uploading back to the ReactionBottom
 - Fix category key is correctly used for saving timeline posts and category title is shown everywhere
+- Fix when clicking on post delete in the post screen of the userstory it will now navigate back to the timeline and delete the post
 
 ## 3.0.1
 

@@ -154,7 +154,13 @@ List<GoRoute> getTimelineStoryRoutes({
           options: config.optionsBuilder(context),
           service: service,
           post: post!,
-          onPostDelete: () => config.onPostDelete?.call(context, post),
+          onPostDelete: () async =>
+              config.onPostDelete?.call(context, post) ??
+              () async {
+                await service.postService.deletePost(post);
+                if (!context.mounted) return;
+                context.go(TimelineUserStoryRoutes.timelineHome);
+              }.call(),
           onUserTap: (user) => config.onUserTap?.call(context, user),
         );
 

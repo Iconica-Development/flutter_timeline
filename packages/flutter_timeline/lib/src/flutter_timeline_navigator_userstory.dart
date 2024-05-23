@@ -132,7 +132,12 @@ Widget _postDetailScreenRoute({
     post: post,
     onPostDelete: () async =>
         config.onPostDelete?.call(context, post) ??
-        await config.service.postService.deletePost(post),
+        () async {
+          await config.service.postService.deletePost(post);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }.call(),
     onUserTap: (user) => config.onUserTap?.call(context, user),
   );
 
