@@ -50,6 +50,7 @@ class TimelineOptions {
     this.maxContentLength,
     this.categorySelectorButtonBuilder,
     this.postOverviewButtonBuilder,
+    this.deletionDialogBuilder,
     this.listHeaderBuilder,
     this.titleInputDecoration,
     this.contentInputDecoration,
@@ -165,6 +166,11 @@ class TimelineOptions {
     Function() onPressed,
     String text,
   )? postOverviewButtonBuilder;
+
+  /// Optional builder to override the default alertdialog for post deletion
+  /// It should pop the navigator with true to delete the post and
+  /// false to cancel deletion
+  final WidgetBuilder? deletionDialogBuilder;
 
   /// inputdecoration for the title textfield
   final InputDecoration? titleInputDecoration;

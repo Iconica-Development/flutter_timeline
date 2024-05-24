@@ -13,6 +13,7 @@ import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
 import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
+import 'package:flutter_timeline_view/src/widgets/timeline_post_widget.dart';
 import 'package:intl/intl.dart';
 
 class TimelinePostScreen extends StatefulWidget {
@@ -195,7 +196,15 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                           (widget.options.allowAllDeletion ||
                               post.creator?.userId == widget.userId))
                         PopupMenuButton(
-                          onSelected: (value) => widget.onPostDelete.call(),
+                          onSelected: (value) async {
+                            if (value == 'delete') {
+                              await showPostDeletionConfirmationDialog(
+                                widget.options,
+                                context,
+                                widget.onPostDelete,
+                              );
+                            }
+                          },
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(

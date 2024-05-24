@@ -31,6 +31,10 @@ class TimelineTranslations {
     required this.postAt,
     required this.deletePost,
     required this.deleteReaction,
+    required this.deleteConfirmationMessage,
+    required this.deleteConfirmationTitle,
+    required this.deleteCancelButton,
+    required this.deleteButton,
     required this.viewPost,
     required this.likesTitle,
     required this.commentsTitle,
@@ -65,6 +69,11 @@ class TimelineTranslations {
     this.commentsTitleOnPost = 'Comments',
     this.checkPost = 'Check post overview',
     this.deletePost = 'Delete post',
+    this.deleteConfirmationTitle = 'Delete Post',
+    this.deleteConfirmationMessage =
+        'Are you sure you want to delete this post?',
+    this.deleteButton = 'Delete',
+    this.deleteCancelButton = 'Cancel',
     this.deleteReaction = 'Delete Reaction',
     this.viewPost = 'View post',
     this.likesTitle = 'Likes',
@@ -101,6 +110,11 @@ class TimelineTranslations {
   final String contentHintText;
 
   final String deletePost;
+  final String deleteConfirmationTitle;
+  final String deleteConfirmationMessage;
+  final String deleteButton;
+  final String deleteCancelButton;
+
   final String deleteReaction;
   final String viewPost;
   final String likesTitle;
@@ -138,6 +152,10 @@ class TimelineTranslations {
     String? checkPost,
     String? postAt,
     String? deletePost,
+    String? deleteConfirmationTitle,
+    String? deleteConfirmationMessage,
+    String? deleteButton,
+    String? deleteCancelButton,
     String? deleteReaction,
     String? viewPost,
     String? likesTitle,
@@ -173,6 +191,12 @@ class TimelineTranslations {
         checkPost: checkPost ?? this.checkPost,
         postAt: postAt ?? this.postAt,
         deletePost: deletePost ?? this.deletePost,
+        deleteConfirmationTitle:
+            deleteConfirmationTitle ?? this.deleteConfirmationTitle,
+        deleteConfirmationMessage:
+            deleteConfirmationMessage ?? this.deleteConfirmationMessage,
+        deleteButton: deleteButton ?? this.deleteButton,
+        deleteCancelButton: deleteCancelButton ?? this.deleteCancelButton,
         deleteReaction: deleteReaction ?? this.deleteReaction,
         viewPost: viewPost ?? this.viewPost,
         likesTitle: likesTitle ?? this.likesTitle,

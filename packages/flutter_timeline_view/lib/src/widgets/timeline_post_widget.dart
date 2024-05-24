@@ -106,9 +106,13 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                 if (widget.options.allowAllDeletion ||
                     widget.post.creator?.userId == widget.userId)
                   PopupMenuButton(
-                    onSelected: (value) {
+                    onSelected: (value) async {
                       if (value == 'delete') {
-                        widget.onPostDelete();
+                        await showPostDeletionConfirmationDialog(
+                          widget.options,
+                          context,
+                          widget.onPostDelete,
+                        );
                       }
                     },
                     itemBuilder: (BuildContext context) =>
@@ -329,5 +333,41 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
         ),
       ),
     );
+  }
+}
+
+Future<void> showPostDeletionConfirmationDialog(
+  TimelineOptions options,
+  BuildContext context,
+  Function() onPostDelete,
+) async {
+  var result = await showDialog(
+    context: context,
+    builder: (BuildContext context) =>
+        options.deletionDialogBuilder?.call(context) ??
+        AlertDialog(
+          title: Text(options.translations.deleteConfirmationTitle),
+          content: Text(options.translations.deleteConfirmationMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(options.translations.deleteCancelButton),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(
+                options.translations.deleteButton,
+              ),
+            ),
+          ],
+        ),
+  );
+
+  if (result == true) {
+    onPostDelete();
   }
 }

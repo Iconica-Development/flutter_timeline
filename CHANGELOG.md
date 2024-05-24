@@ -20,6 +20,7 @@
 - Fix post creator can only like the post once and after it is actually created
 - Change the CategorySelectorButton to use more styling options and allow for an icon to be shown
 - Fix incorrect timeline reaction name
+- Add a dialog for post deletion confirmation
 
 ## 3.0.1
 
