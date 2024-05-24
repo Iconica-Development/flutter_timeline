@@ -483,7 +483,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                   children: [
                                     Text(
                                       widget.options.nameBuilder
-                                              ?.call(post.creator) ??
+                                              ?.call(reaction.creator) ??
                                           reaction.creator?.fullName ??
                                           widget.options.translations
                                               .anonymousUser,
@@ -504,7 +504,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                 child: Text.rich(
                                   TextSpan(
                                     text: widget.options.nameBuilder
-                                            ?.call(post.creator) ??
+                                            ?.call(reaction.creator) ??
                                         reaction.creator?.fullName ??
                                         widget
                                             .options.translations.anonymousUser,
