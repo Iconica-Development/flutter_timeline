@@ -33,6 +33,7 @@ List<GoRoute> getTimelineStoryRoutes({
         var timelineScreen = TimelineScreen(
           userId: config.getUserId?.call(context) ?? config.userId,
           onUserTap: (user) => config.onUserTap?.call(context, user),
+          allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
           onRefresh: config.onRefresh,
           service: service,
           options: config.optionsBuilder(context),
@@ -151,6 +152,7 @@ List<GoRoute> getTimelineStoryRoutes({
 
         var timelinePostWidget = TimelinePostScreen(
           userId: config.getUserId?.call(context) ?? config.userId,
+          allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
           options: config.optionsBuilder(context),
           service: service,
           post: post!,

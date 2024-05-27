@@ -46,6 +46,7 @@ Widget _timelineScreenRoute({
 
   var timelineScreen = TimelineScreen(
     userId: config.getUserId?.call(context) ?? config.userId,
+    allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
     onUserTap: (user) => config.onUserTap?.call(context, user),
     service: config.service,
     options: config.optionsBuilder(context),
@@ -127,6 +128,7 @@ Widget _postDetailScreenRoute({
 
   var timelinePostScreen = TimelinePostScreen(
     userId: config.getUserId?.call(context) ?? config.userId,
+    allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
     options: config.optionsBuilder(context),
     service: config.service,
     post: post,

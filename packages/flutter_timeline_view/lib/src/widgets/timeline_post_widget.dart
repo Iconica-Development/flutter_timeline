@@ -18,12 +18,18 @@ class TimelinePostWidget extends StatefulWidget {
     required this.onTapUnlike,
     required this.onPostDelete,
     required this.service,
+    required this.allowAllDeletion,
     this.onUserTap,
     super.key,
   });
 
   /// The user id of the current user
   final String userId;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
+
   final TimelineOptions options;
 
   final TimelinePost post;
@@ -103,7 +109,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                     ),
                   ),
                 const Spacer(),
-                if (widget.options.allowAllDeletion ||
+                if (widget.allowAllDeletion ||
                     widget.post.creator?.userId == widget.userId)
                   PopupMenuButton(
                     onSelected: (value) async {

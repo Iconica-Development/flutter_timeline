@@ -21,6 +21,7 @@
 - Change the CategorySelectorButton to use more styling options and allow for an icon to be shown
 - Fix incorrect timeline reaction name
 - Add a dialog for post deletion confirmation
+- Add a callback method to determine if a user can delete posts that gets called when needed
 
 ## 3.0.1
 

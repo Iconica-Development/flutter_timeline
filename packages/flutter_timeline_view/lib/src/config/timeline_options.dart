@@ -18,7 +18,6 @@ class TimelineOptions {
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.timelinePostHeight,
-    this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
     this.sortPostsAscending,
     this.doubleTapTolike = false,
@@ -70,10 +69,6 @@ class TimelineOptions {
 
   /// Whether to sort posts ascending or descending
   final bool? sortPostsAscending;
-
-  /// Allow all posts to be deleted instead of
-  ///  only the posts of the current user
-  final bool allowAllDeletion;
 
   /// The height of a post in the timeline
   final double? timelinePostHeight;

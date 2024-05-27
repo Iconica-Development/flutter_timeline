@@ -50,6 +50,7 @@ class TimelineUserStoryConfiguration {
     required this.optionsBuilder,
     this.getUserId,
     this.serviceBuilder,
+    this.canDeleteAllPosts,
     this.userId = 'test_user',
     this.homeOpenPageBuilder,
     this.postCreationOpenPageBuilder,
@@ -71,6 +72,10 @@ class TimelineUserStoryConfiguration {
 
   /// A function to get the userId only when needed and with a context
   final String Function(BuildContext context)? getUserId;
+
+  /// A function to determine if a user can delete posts that is called
+  /// when needed
+  final bool Function(BuildContext context)? canDeleteAllPosts;
 
   /// The TimelineService responsible for fetching user story data.
   final TimelineService service;

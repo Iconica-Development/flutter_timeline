@@ -23,6 +23,7 @@ class TimelinePostScreen extends StatefulWidget {
     required this.options,
     required this.post,
     required this.onPostDelete,
+    this.allowAllDeletion = false,
     this.isOverviewScreen = false,
     this.onUserTap,
     super.key,
@@ -30,6 +31,10 @@ class TimelinePostScreen extends StatefulWidget {
 
   /// The user id of the current user
   final String userId;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
 
   /// The timeline service to fetch the post details
   final TimelineService service;
@@ -193,7 +198,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                         ),
                       const Spacer(),
                       if (!(widget.isOverviewScreen ?? false) &&
-                          (widget.options.allowAllDeletion ||
+                          (widget.allowAllDeletion ||
                               post.creator?.userId == widget.userId))
                         PopupMenuButton(
                           onSelected: (value) async {
@@ -422,7 +427,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       GestureDetector(
                         onLongPressStart: (details) async {
                           if (reaction.creatorId == widget.userId ||
-                              widget.options.allowAllDeletion) {
+                              widget.allowAllDeletion) {
                             var overlay = Overlay.of(context)
                                 .context
                                 .findRenderObject()! as RenderBox;

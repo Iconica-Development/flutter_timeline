@@ -21,11 +21,16 @@ class TimelineScreen extends StatefulWidget {
     this.timelineCategory,
     this.postWidgetBuilder,
     this.filterEnabled = false,
+    this.allowAllDeletion = false,
     super.key,
   });
 
   /// The user id of the current user
   final String userId;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
 
   /// The service to use for fetching and manipulating posts
   final TimelineService? service;
@@ -151,10 +156,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
             ),
             if (widget.filterEnabled) ...[
               Padding(
-                padding: EdgeInsets.symmetric(
-                  // left: widget.options.padding.left,
-                  // right: widget.options.padding.right,
-                  horizontal: widget.options.paddings.mainPadding.horizontal,
+                padding: EdgeInsets.only(
+                  left: widget.options.paddings.mainPadding.left,
+                  right: widget.options.paddings.mainPadding.right,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -246,6 +250,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                                 service: service,
                                 userId: widget.userId,
                                 options: widget.options,
+                                allowAllDeletion: widget.allowAllDeletion,
                                 post: post,
                                 onTap: () async {
                                   if (widget.onPostTap != null) {
