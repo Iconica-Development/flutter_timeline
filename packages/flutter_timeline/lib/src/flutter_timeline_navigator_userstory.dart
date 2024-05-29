@@ -45,7 +45,8 @@ Widget _timelineScreenRoute({
       );
 
   var timelineScreen = TimelineScreen(
-    userId: config.userId,
+    userId: config.getUserId?.call(context) ?? config.userId,
+    allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
     onUserTap: (user) => config.onUserTap?.call(context, user),
     service: config.service,
     options: config.optionsBuilder(context),
@@ -60,12 +61,17 @@ Widget _timelineScreenRoute({
             ),
           ),
         ),
+    onRefresh: config.onRefresh,
     filterEnabled: config.filterEnabled,
     postWidgetBuilder: config.postWidgetBuilder,
   );
 
   var button = FloatingActionButton(
-    backgroundColor: const Color(0xff71C6D1),
+    backgroundColor: config
+            .optionsBuilder(context)
+            .theme
+            .postCreationFloatingActionButtonColor ??
+        Theme.of(context).primaryColor,
     onPressed: () async => Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => _postCategorySelectionScreen(
@@ -87,9 +93,9 @@ Widget _timelineScreenRoute({
         appBar: AppBar(
           backgroundColor: const Color(0xff212121),
           title: Text(
-            config.optionsBuilder(context).translations.timeLineScreenTitle!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            config.optionsBuilder(context).translations.timeLineScreenTitle,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -121,15 +127,28 @@ Widget _postDetailScreenRoute({
       );
 
   var timelinePostScreen = TimelinePostScreen(
-    userId: config.userId,
+    userId: config.getUserId?.call(context) ?? config.userId,
+    allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
     options: config.optionsBuilder(context),
     service: config.service,
     post: post,
     onPostDelete: () async =>
         config.onPostDelete?.call(context, post) ??
-        await config.service.postService.deletePost(post),
+        () async {
+          await config.service.postService.deletePost(post);
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }.call(),
     onUserTap: (user) => config.onUserTap?.call(context, user),
   );
+
+  var category = config
+      .optionsBuilder(context)
+      .categoriesOptions
+      .categoriesBuilder
+      ?.call(context)
+      .firstWhere((element) => element.key == post.category);
 
   var backButton = IconButton(
     color: Colors.white,
@@ -138,15 +157,15 @@ Widget _postDetailScreenRoute({
   );
 
   return config.postViewOpenPageBuilder
-          ?.call(context, timelinePostScreen, backButton) ??
+          ?.call(context, timelinePostScreen, backButton, post, category) ??
       Scaffold(
         appBar: AppBar(
           leading: backButton,
           backgroundColor: const Color(0xff212121),
           title: Text(
-            post.category ?? 'Category',
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            category?.title ?? post.category ?? 'Category',
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -176,34 +195,33 @@ Widget _postCreationScreenRoute({
       );
 
   var timelinePostCreationScreen = TimelinePostCreationScreen(
-    userId: config.userId,
+    userId: config.getUserId?.call(context) ?? config.userId,
     options: config.optionsBuilder(context),
     service: config.service,
     onPostCreated: (post) async {
       var newPost = await config.service.postService.createPost(post);
-      if (context.mounted) {
-        if (config.afterPostCreationGoHome) {
-          await Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _timelineScreenRoute(
-                configuration: config,
-                context: context,
-              ),
+      if (!context.mounted) return;
+      if (config.afterPostCreationGoHome) {
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => _timelineScreenRoute(
+              configuration: config,
+              context: context,
             ),
-          );
-        } else {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _postOverviewScreenRoute(
-                configuration: config,
-                context: context,
-                post: newPost,
-              ),
+          ),
+        );
+      } else {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => _postOverviewScreenRoute(
+              configuration: config,
+              context: context,
+              post: newPost,
             ),
-          );
-        }
+          ),
+        );
       }
     },
     onPostOverview: (post) async => Navigator.of(context).push(
@@ -216,7 +234,7 @@ Widget _postCreationScreenRoute({
       ),
     ),
     enablePostOverviewScreen: config.enablePostOverviewScreen,
-    postCategory: category.title,
+    postCategory: category.key,
   );
 
   var backButton = IconButton(
@@ -234,9 +252,9 @@ Widget _postCreationScreenRoute({
           backgroundColor: const Color(0xff212121),
           leading: backButton,
           title: Text(
-            config.optionsBuilder(context).translations.postCreation!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            config.optionsBuilder(context).translations.postCreation,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -282,7 +300,6 @@ Widget _postOverviewScreenRoute({
         );
       }
     },
-    isOverviewScreen: true,
   );
 
   var backButton = IconButton(
@@ -302,9 +319,9 @@ Widget _postOverviewScreenRoute({
           leading: backButton,
           backgroundColor: const Color(0xff212121),
           title: Text(
-            config.optionsBuilder(context).translations.postOverview!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            config.optionsBuilder(context).translations.postOverview,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -330,9 +347,11 @@ Widget _postCategorySelectionScreen({
   var timelineSelectionScreen = TimelineSelectionScreen(
     options: config.optionsBuilder(context),
     categories: config
-        .optionsBuilder(context)
-        .categoriesOptions
-        .categoriesBuilder!(context),
+            .optionsBuilder(context)
+            .categoriesOptions
+            .categoriesBuilder
+            ?.call(context) ??
+        [],
     onCategorySelected: (category) async {
       await Navigator.of(context).push(
         MaterialPageRoute(
@@ -361,9 +380,9 @@ Widget _postCategorySelectionScreen({
           leading: backButton,
           backgroundColor: const Color(0xff212121),
           title: Text(
-            config.optionsBuilder(context).translations.postCreation!,
-            style: const TextStyle(
-              color: Color(0xff71C6D1),
+            config.optionsBuilder(context).translations.postCreation,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),

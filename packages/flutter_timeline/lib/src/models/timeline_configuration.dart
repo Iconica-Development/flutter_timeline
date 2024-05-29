@@ -48,6 +48,9 @@ class TimelineUserStoryConfiguration {
   const TimelineUserStoryConfiguration({
     required this.service,
     required this.optionsBuilder,
+    this.getUserId,
+    this.serviceBuilder,
+    this.canDeleteAllPosts,
     this.userId = 'test_user',
     this.homeOpenPageBuilder,
     this.postCreationOpenPageBuilder,
@@ -55,6 +58,7 @@ class TimelineUserStoryConfiguration {
     this.postOverviewOpenPageBuilder,
     this.onPostTap,
     this.onUserTap,
+    this.onRefresh,
     this.onPostDelete,
     this.filterEnabled = false,
     this.postWidgetBuilder,
@@ -66,8 +70,18 @@ class TimelineUserStoryConfiguration {
   /// The ID of the user associated with this user story configuration.
   final String userId;
 
+  /// A function to get the userId only when needed and with a context
+  final String Function(BuildContext context)? getUserId;
+
+  /// A function to determine if a user can delete posts that is called
+  /// when needed
+  final bool Function(BuildContext context)? canDeleteAllPosts;
+
   /// The TimelineService responsible for fetching user story data.
   final TimelineService service;
+
+  /// A function to get the timeline service only when needed and with a context
+  final TimelineService Function(BuildContext context)? serviceBuilder;
 
   /// A function that builds TimelineOptions based on the given BuildContext.
   final TimelineOptions Function(BuildContext context) optionsBuilder;
@@ -100,6 +114,8 @@ class TimelineUserStoryConfiguration {
     BuildContext context,
     Widget child,
     IconButton? button,
+    TimelinePost post,
+    TimelineCategory? category,
   )? postViewOpenPageBuilder;
 
   /// Open page builder function for the post overview page. This function
@@ -116,6 +132,9 @@ class TimelineUserStoryConfiguration {
 
   /// A callback function invoked when the user's profile is tapped.
   final Function(BuildContext context, String userId)? onUserTap;
+
+  /// A callback function invoked when the timeline is refreshed by pulling down
+  final Function(BuildContext context, String? category)? onRefresh;
 
   /// A callback function invoked when a post deletion is requested.
   final Widget Function(BuildContext context, TimelinePost post)? onPostDelete;

@@ -5,6 +5,7 @@
 library flutter_timeline_view;
 
 export 'src/config/timeline_options.dart';
+export 'src/config/timeline_paddings.dart';
 export 'src/config/timeline_styles.dart';
 export 'src/config/timeline_theme.dart';
 export 'src/config/timeline_translations.dart';

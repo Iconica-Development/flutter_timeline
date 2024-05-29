@@ -1,3 +1,28 @@
+## 4.0.0
+
+- Add a serviceBuilder to the userstory configuration
+- Add a listHeaderBuilder for showing a header at the top of the list of posts in the timeline
+- Add a getUserId function to retrieve the userId when needed in the userstory configuration
+- Fix the timelinecategory selection by removing the categories with key null
+- Set an optional max length on the default post title input field
+- Add a postCreationFloatingActionButtonColor to the timeline theme to set the color of the floating action button
+- Add a post and a category to the postViewOpenPageBuilder function
+- Add a refresh functionality to the timeline with a pull to refresh callback to allow additional functionality when refreshing the timeline
+- Use the adaptive variants of the material elements in the timeline
+- Change the default blue color to the primary color of the Theme.of(context) in the timeline
+- Change the TimelineTranslations constructor to require all translations or use the TimelineTranslations.empty constructor if you don't want to specify all translations
+- Add a TimelinePaddingOptions class to store the padding options for the timeline
+- fix the avatar size to match the new design
+- Add the iconbutton for image uploading back to the ReactionBottom
+- Fix category key is correctly used for saving timeline posts and category title is shown everywhere
+- Fix when clicking on post delete in the post screen of the userstory it will now navigate back to the timeline and delete the post
+- Fix like icon being used for both like and unliked posts
+- Fix post creator can only like the post once and after it is actually created
+- Change the CategorySelectorButton to use more styling options and allow for an icon to be shown
+- Fix incorrect timeline reaction name
+- Add a dialog for post deletion confirmation
+- Add a callback method to determine if a user can delete posts that gets called when needed
+
 ## 3.0.1
 
 - Fixed postOverviewScreen not displaying the creators name.

@@ -29,7 +29,7 @@ class TimelineSelectionScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: size.height * 0.05, bottom: 8),
             child: Text(
-              options.translations.timelineSelectionDescription!,
+              options.translations.timelineSelectionDescription,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 20,
@@ -38,7 +38,7 @@ class TimelineSelectionScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           for (var category in categories.where(
-            (element) => element.canCreate,
+            (element) => element.canCreate && element.key != null,
           )) ...[
             options.categorySelectorButtonBuilder?.call(
                   context,
@@ -55,9 +55,13 @@ class TimelineSelectionScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: const Color(0xff71C6D1),
+                        color:
+                            options.theme.categorySelectionButtonBorderColor ??
+                                Theme.of(context).primaryColor,
                         width: 2,
                       ),
+                      color:
+                          options.theme.categorySelectionButtonBackgroundColor,
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     child: Column(

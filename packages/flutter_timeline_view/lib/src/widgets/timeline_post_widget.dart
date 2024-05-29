@@ -18,12 +18,18 @@ class TimelinePostWidget extends StatefulWidget {
     required this.onTapUnlike,
     required this.onPostDelete,
     required this.service,
+    required this.allowAllDeletion,
     this.onUserTap,
     super.key,
   });
 
   /// The user id of the current user
   final String userId;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
+
   final TimelineOptions options;
 
   final TimelinePost post;
@@ -72,7 +78,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                                 28,
                               ) ??
                               CircleAvatar(
-                                radius: 20,
+                                radius: 14,
                                 backgroundImage: CachedNetworkImageProvider(
                                   widget.post.creator!.imageUrl!,
                                 ),
@@ -80,10 +86,10 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         ] else ...[
                           widget.options.anonymousAvatarBuilder?.call(
                                 widget.post.creator!,
-                                40,
+                                28,
                               ) ??
                               const CircleAvatar(
-                                radius: 20,
+                                radius: 14,
                                 child: Icon(
                                   Icons.person,
                                 ),
@@ -94,7 +100,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                           widget.options.nameBuilder
                                   ?.call(widget.post.creator) ??
                               widget.post.creator?.fullName ??
-                              widget.options.translations.anonymousUser!,
+                              widget.options.translations.anonymousUser,
                           style: widget.options.theme.textStyles
                                   .postCreatorTitleStyle ??
                               theme.textTheme.titleMedium,
@@ -103,12 +109,16 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                     ),
                   ),
                 const Spacer(),
-                if (widget.options.allowAllDeletion ||
+                if (widget.allowAllDeletion ||
                     widget.post.creator?.userId == widget.userId)
                   PopupMenuButton(
-                    onSelected: (value) {
+                    onSelected: (value) async {
                       if (value == 'delete') {
-                        widget.onPostDelete();
+                        await showPostDeletionConfirmationDialog(
+                          widget.options,
+                          context,
+                          widget.onPostDelete,
+                        );
                       }
                     },
                     itemBuilder: (BuildContext context) =>
@@ -118,7 +128,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         child: Row(
                           children: [
                             Text(
-                              widget.options.translations.deletePost!,
+                              widget.options.translations.deletePost,
                               style: widget.options.theme.textStyles
                                       .deletePostStyle ??
                                   theme.textTheme.bodyMedium,
@@ -257,7 +267,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                       onTap: widget.onTapLike,
                       child: Container(
                         color: Colors.transparent,
-                        child: widget.options.theme.likedIcon ??
+                        child: widget.options.theme.likeIcon ??
                             Icon(
                               Icons.favorite_outline,
                               color: widget.options.theme.iconColor,
@@ -318,7 +328,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
               const SizedBox(height: 4),
               Text(
-                widget.options.translations.viewPost!,
+                widget.options.translations.viewPost,
                 style: widget.options.theme.textStyles.viewPostStyle ??
                     theme.textTheme.bodySmall,
               ),
@@ -329,5 +339,41 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
         ),
       ),
     );
+  }
+}
+
+Future<void> showPostDeletionConfirmationDialog(
+  TimelineOptions options,
+  BuildContext context,
+  Function() onPostDelete,
+) async {
+  var result = await showDialog(
+    context: context,
+    builder: (BuildContext context) =>
+        options.deletionDialogBuilder?.call(context) ??
+        AlertDialog(
+          title: Text(options.translations.deleteConfirmationTitle),
+          content: Text(options.translations.deleteConfirmationMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(options.translations.deleteCancelButton),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(
+                options.translations.deleteButton,
+              ),
+            ),
+          ],
+        ),
+  );
+
+  if (result == true) {
+    onPostDelete();
   }
 }

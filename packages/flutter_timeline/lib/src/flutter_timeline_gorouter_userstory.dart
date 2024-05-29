@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline/flutter_timeline.dart';
 import 'package:flutter_timeline/src/go_router.dart';
@@ -28,10 +29,13 @@ List<GoRoute> getTimelineStoryRoutes({
     GoRoute(
       path: TimelineUserStoryRoutes.timelineHome,
       pageBuilder: (context, state) {
+        var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelineScreen = TimelineScreen(
-          userId: config.userId,
+          userId: config.getUserId?.call(context) ?? config.userId,
           onUserTap: (user) => config.onUserTap?.call(context, user),
-          service: config.service,
+          allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
+          onRefresh: config.onRefresh,
+          service: service,
           options: config.optionsBuilder(context),
           onPostTap: (post) async =>
               config.onPostTap?.call(context, post) ??
@@ -43,7 +47,11 @@ List<GoRoute> getTimelineStoryRoutes({
         );
 
         var button = FloatingActionButton(
-          backgroundColor: const Color(0xff71C6D1),
+          backgroundColor: config
+                  .optionsBuilder(context)
+                  .theme
+                  .postCreationFloatingActionButtonColor ??
+              Theme.of(context).primaryColor,
           onPressed: () async => context.push(
             TimelineUserStoryRoutes.timelineCategorySelection,
           ),
@@ -67,9 +75,9 @@ List<GoRoute> getTimelineStoryRoutes({
                     config
                         .optionsBuilder(context)
                         .translations
-                        .timeLineScreenTitle!,
-                    style: const TextStyle(
-                      color: Color(0xff71C6D1),
+                        .timeLineScreenTitle,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
                     ),
@@ -87,12 +95,14 @@ List<GoRoute> getTimelineStoryRoutes({
         var timelineSelectionScreen = TimelineSelectionScreen(
           options: config.optionsBuilder(context),
           categories: config
-              .optionsBuilder(context)
-              .categoriesOptions
-              .categoriesBuilder!(context),
+                  .optionsBuilder(context)
+                  .categoriesOptions
+                  .categoriesBuilder
+                  ?.call(context) ??
+              [],
           onCategorySelected: (category) async {
             await context.push(
-              TimelineUserStoryRoutes.timelinepostCreation(category.title),
+              TimelineUserStoryRoutes.timelinepostCreation(category.key ?? ''),
             );
           },
         );
@@ -113,9 +123,9 @@ List<GoRoute> getTimelineStoryRoutes({
                   leading: backButton,
                   backgroundColor: const Color(0xff212121),
                   title: Text(
-                    config.optionsBuilder(context).translations.postCreation!,
-                    style: const TextStyle(
-                      color: Color(0xff71C6D1),
+                    config.optionsBuilder(context).translations.postCreation,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
                     ),
@@ -129,15 +139,30 @@ List<GoRoute> getTimelineStoryRoutes({
     GoRoute(
       path: TimelineUserStoryRoutes.timelineView,
       pageBuilder: (context, state) {
-        var post =
-            config.service.postService.getPost(state.pathParameters['post']!);
+        var service = config.serviceBuilder?.call(context) ?? config.service;
+        var post = service.postService.getPost(state.pathParameters['post']!);
+        var category = config.optionsBuilder
+            .call(context)
+            .categoriesOptions
+            .categoriesBuilder
+            ?.call(context)
+            .firstWhereOrNull(
+              (element) => element.key == post?.category,
+            );
 
         var timelinePostWidget = TimelinePostScreen(
-          userId: config.userId,
+          userId: config.getUserId?.call(context) ?? config.userId,
+          allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
           options: config.optionsBuilder(context),
-          service: config.service,
+          service: service,
           post: post!,
-          onPostDelete: () => config.onPostDelete?.call(context, post),
+          onPostDelete: () async =>
+              config.onPostDelete?.call(context, post) ??
+              () async {
+                await service.postService.deletePost(post);
+                if (!context.mounted) return;
+                context.go(TimelineUserStoryRoutes.timelineHome);
+              }.call(),
           onUserTap: (user) => config.onUserTap?.call(context, user),
         );
 
@@ -150,16 +175,21 @@ List<GoRoute> getTimelineStoryRoutes({
         return buildScreenWithoutTransition(
           context: context,
           state: state,
-          child: config.postViewOpenPageBuilder
-                  ?.call(context, timelinePostWidget, backButton) ??
+          child: config.postViewOpenPageBuilder?.call(
+                context,
+                timelinePostWidget,
+                backButton,
+                post,
+                category,
+              ) ??
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,
                   backgroundColor: const Color(0xff212121),
                   title: Text(
-                    post.category ?? 'Category',
-                    style: const TextStyle(
-                      color: Color(0xff71C6D1),
+                    category?.title ?? post.category ?? 'Category',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
                     ),
@@ -174,19 +204,19 @@ List<GoRoute> getTimelineStoryRoutes({
       path: TimelineUserStoryRoutes.timelinePostCreation,
       pageBuilder: (context, state) {
         var category = state.pathParameters['category'];
+        var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelinePostCreationWidget = TimelinePostCreationScreen(
-          userId: config.userId,
+          userId: config.getUserId?.call(context) ?? config.userId,
           options: config.optionsBuilder(context),
-          service: config.service,
+          service: service,
           onPostCreated: (post) async {
-            var newPost = await config.service.postService.createPost(post);
-            if (context.mounted) {
-              if (config.afterPostCreationGoHome) {
-                context.go(TimelineUserStoryRoutes.timelineHome);
-              } else {
-                await context
-                    .push(TimelineUserStoryRoutes.timelineViewPath(newPost.id));
-              }
+            var newPost = await service.postService.createPost(post);
+            if (!context.mounted) return;
+            if (config.afterPostCreationGoHome) {
+              context.go(TimelineUserStoryRoutes.timelineHome);
+            } else {
+              await context
+                  .push(TimelineUserStoryRoutes.timelineViewPath(newPost.id));
             }
           },
           onPostOverview: (post) async => context.push(
@@ -216,9 +246,9 @@ List<GoRoute> getTimelineStoryRoutes({
                   backgroundColor: const Color(0xff212121),
                   leading: backButton,
                   title: Text(
-                    config.optionsBuilder(context).translations.postCreation!,
-                    style: const TextStyle(
-                      color: Color(0xff71C6D1),
+                    config.optionsBuilder(context).translations.postCreation,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
                     ),
@@ -233,16 +263,15 @@ List<GoRoute> getTimelineStoryRoutes({
       path: TimelineUserStoryRoutes.timelinePostOverview,
       pageBuilder: (context, state) {
         var post = state.extra! as TimelinePost;
-
+        var service = config.serviceBuilder?.call(context) ?? config.service;
         var timelinePostOverviewWidget = TimelinePostOverviewScreen(
           options: config.optionsBuilder(context),
-          service: config.service,
+          service: service,
           timelinePost: post,
           onPostSubmit: (post) async {
-            await config.service.postService.createPost(post);
-            if (context.mounted) {
-              context.go(TimelineUserStoryRoutes.timelineHome);
-            }
+            await service.postService.createPost(post);
+            if (!context.mounted) return;
+            context.go(TimelineUserStoryRoutes.timelineHome);
           },
         );
         var backButton = IconButton(
@@ -265,9 +294,9 @@ List<GoRoute> getTimelineStoryRoutes({
                   leading: backButton,
                   backgroundColor: const Color(0xff212121),
                   title: Text(
-                    config.optionsBuilder(context).translations.postOverview!,
-                    style: const TextStyle(
-                      color: Color(0xff71C6D1),
+                    config.optionsBuilder(context).translations.postOverview,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
                     ),

@@ -15,6 +15,9 @@ class TimelineTheme {
     this.sendIcon,
     this.moreIcon,
     this.deleteIcon,
+    this.categorySelectionButtonBorderColor,
+    this.categorySelectionButtonBackgroundColor,
+    this.postCreationFloatingActionButtonColor,
     this.textStyles = const TimelineTextStyles(),
   });
 
@@ -38,5 +41,16 @@ class TimelineTheme {
   /// The icon for delete action (delete post)
   final Widget? deleteIcon;
 
+  /// The text style overrides for all the texts in the timeline
   final TimelineTextStyles textStyles;
+
+  /// The color of the border around the category in the selection screen
+  final Color? categorySelectionButtonBorderColor;
+
+  /// The color of the background of the category selection button in the
+  /// selection screen
+  final Color? categorySelectionButtonBackgroundColor;
+
+  /// The color of the floating action button on the overview screen
+  final Color? postCreationFloatingActionButtonColor;
 }

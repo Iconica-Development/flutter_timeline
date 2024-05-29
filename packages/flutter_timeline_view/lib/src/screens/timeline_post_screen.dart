@@ -13,15 +13,17 @@ import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
 import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
+import 'package:flutter_timeline_view/src/widgets/timeline_post_widget.dart';
 import 'package:intl/intl.dart';
 
-class TimelinePostScreen extends StatelessWidget {
+class TimelinePostScreen extends StatefulWidget {
   const TimelinePostScreen({
     required this.userId,
     required this.service,
     required this.options,
     required this.post,
     required this.onPostDelete,
+    this.allowAllDeletion = false,
     this.isOverviewScreen = false,
     this.onUserTap,
     super.key,
@@ -29,6 +31,10 @@ class TimelinePostScreen extends StatelessWidget {
 
   /// The user id of the current user
   final String userId;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
 
   /// The timeline service to fetch the post details
   final TimelineService service;
@@ -47,49 +53,10 @@ class TimelinePostScreen extends StatelessWidget {
   final bool? isOverviewScreen;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: _TimelinePostScreen(
-          userId: userId,
-          service: service,
-          options: options,
-          post: post,
-          onPostDelete: onPostDelete,
-          onUserTap: onUserTap,
-          isOverviewScreen: isOverviewScreen,
-        ),
-      );
+  State<TimelinePostScreen> createState() => _TimelinePostScreenState();
 }
 
-class _TimelinePostScreen extends StatefulWidget {
-  const _TimelinePostScreen({
-    required this.userId,
-    required this.service,
-    required this.options,
-    required this.post,
-    required this.onPostDelete,
-    this.onUserTap,
-    this.isOverviewScreen,
-  });
-
-  final String userId;
-
-  final TimelineService service;
-
-  final TimelineOptions options;
-
-  final TimelinePost post;
-
-  final Function(String userId)? onUserTap;
-
-  final VoidCallback onPostDelete;
-
-  final bool? isOverviewScreen;
-
-  @override
-  State<_TimelinePostScreen> createState() => _TimelinePostScreenState();
-}
-
-class _TimelinePostScreenState extends State<_TimelinePostScreen> {
+class _TimelinePostScreenState extends State<TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
 
@@ -146,13 +113,13 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
 
     if (isLoading) {
       const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator.adaptive(),
       );
     }
     if (this.post == null) {
       return Center(
         child: Text(
-          widget.options.translations.postLoadingError!,
+          widget.options.translations.postLoadingError,
           style: widget.options.theme.textStyles.errorTextStyle,
         ),
       );
@@ -166,7 +133,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
 
     return Stack(
       children: [
-        RefreshIndicator(
+        RefreshIndicator.adaptive(
           onRefresh: () async {
             updatePost(
               await widget.service.postService.fetchPostDetails(
@@ -178,7 +145,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: widget.options.padding,
+              padding: widget.options.paddings.mainPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -198,7 +165,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                       28,
                                     ) ??
                                     CircleAvatar(
-                                      radius: 20,
+                                      radius: 14,
                                       backgroundImage:
                                           CachedNetworkImageProvider(
                                         post.creator!.imageUrl!,
@@ -210,7 +177,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                       28,
                                     ) ??
                                     const CircleAvatar(
-                                      radius: 20,
+                                      radius: 14,
                                       child: Icon(
                                         Icons.person,
                                       ),
@@ -221,7 +188,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 widget.options.nameBuilder
                                         ?.call(post.creator) ??
                                     post.creator?.fullName ??
-                                    widget.options.translations.anonymousUser!,
+                                    widget.options.translations.anonymousUser,
                                 style: widget.options.theme.textStyles
                                         .postCreatorTitleStyle ??
                                     theme.textTheme.titleMedium,
@@ -230,10 +197,19 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                           ),
                         ),
                       const Spacer(),
-                      if (widget.options.allowAllDeletion ||
-                          post.creator?.userId == widget.userId)
+                      if (!(widget.isOverviewScreen ?? false) &&
+                          (widget.allowAllDeletion ||
+                              post.creator?.userId == widget.userId))
                         PopupMenuButton(
-                          onSelected: (value) => widget.onPostDelete(),
+                          onSelected: (value) async {
+                            if (value == 'delete') {
+                              await showPostDeletionConfirmationDialog(
+                                widget.options,
+                                context,
+                                widget.onPostDelete,
+                              );
+                            }
+                          },
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             PopupMenuItem<String>(
@@ -241,7 +217,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    widget.options.translations.deletePost!,
+                                    widget.options.translations.deletePost,
                                     style: widget.options.theme.textStyles
                                             .deletePostStyle ??
                                         theme.textTheme.bodyMedium,
@@ -344,6 +320,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                       ] else ...[
                         InkWell(
                           onTap: () async {
+                            if (widget.isOverviewScreen ?? false) return;
                             updatePost(
                               await widget.service.postService.likePost(
                                 widget.userId,
@@ -441,7 +418,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                   const SizedBox(height: 20),
                   if (post.reactionEnabled) ...[
                     Text(
-                      widget.options.translations.commentsTitleOnPost!,
+                      widget.options.translations.commentsTitleOnPost,
                       style: theme.textTheme.titleMedium,
                     ),
                     for (var reaction
@@ -450,7 +427,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                       GestureDetector(
                         onLongPressStart: (details) async {
                           if (reaction.creatorId == widget.userId ||
-                              widget.options.allowAllDeletion) {
+                              widget.allowAllDeletion) {
                             var overlay = Overlay.of(context)
                                 .context
                                 .findRenderObject()! as RenderBox;
@@ -469,7 +446,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 PopupMenuItem<String>(
                                   value: 'delete',
                                   child: Text(
-                                    widget.options.translations.deleteReaction!,
+                                    widget.options.translations.deleteReaction,
                                   ),
                                 ),
                               ],
@@ -495,7 +472,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                     28,
                                   ) ??
                                   CircleAvatar(
-                                    radius: 20,
+                                    radius: 14,
                                     backgroundImage: CachedNetworkImageProvider(
                                       reaction.creator!.imageUrl!,
                                     ),
@@ -506,7 +483,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                     28,
                                   ) ??
                                   const CircleAvatar(
-                                    radius: 20,
+                                    radius: 14,
                                     child: Icon(
                                       Icons.person,
                                     ),
@@ -520,10 +497,10 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                   children: [
                                     Text(
                                       widget.options.nameBuilder
-                                              ?.call(post.creator) ??
+                                              ?.call(reaction.creator) ??
                                           reaction.creator?.fullName ??
                                           widget.options.translations
-                                              .anonymousUser!,
+                                              .anonymousUser,
                                       style: theme.textTheme.titleSmall,
                                     ),
                                     Padding(
@@ -541,7 +518,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                                 child: Text.rich(
                                   TextSpan(
                                     text: widget.options.nameBuilder
-                                            ?.call(post.creator) ??
+                                            ?.call(reaction.creator) ??
                                         reaction.creator?.fullName ??
                                         widget
                                             .options.translations.anonymousUser,
@@ -565,7 +542,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
                     if (post.reactions?.isEmpty ?? true) ...[
                       const SizedBox(height: 16),
                       Text(
-                        widget.options.translations.firstComment!,
+                        widget.options.translations.firstComment,
                       ),
                     ],
                     const SizedBox(height: 120),
@@ -575,7 +552,7 @@ class _TimelinePostScreenState extends State<_TimelinePostScreen> {
             ),
           ),
         ),
-        if (post.reactionEnabled && !widget.isOverviewScreen!)
+        if (post.reactionEnabled && !(widget.isOverviewScreen ?? false))
           Align(
             alignment: Alignment.bottomCenter,
             child: ReactionBottom(

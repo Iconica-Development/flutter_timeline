@@ -16,15 +16,21 @@ class TimelineScreen extends StatefulWidget {
     this.onPostTap,
     this.scrollController,
     this.onUserTap,
+    this.onRefresh,
     this.posts,
     this.timelineCategory,
     this.postWidgetBuilder,
     this.filterEnabled = false,
+    this.allowAllDeletion = false,
     super.key,
   });
 
   /// The user id of the current user
   final String userId;
+
+  /// Allow all posts to be deleted instead of
+  ///  only the posts of the current user
+  final bool allowAllDeletion;
 
   /// The service to use for fetching and manipulating posts
   final TimelineService? service;
@@ -44,6 +50,9 @@ class TimelineScreen extends StatefulWidget {
 
   /// Called when a post is tapped
   final Function(TimelinePost)? onPostTap;
+
+  /// Called when the timeline is refreshed by pulling down
+  final Function(BuildContext context, String? category)? onRefresh;
 
   /// If this is not null, the user can tap on the user avatar or name
   final Function(String userId)? onUserTap;
@@ -104,7 +113,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading && widget.posts == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
 
     // Build the list of posts
@@ -143,12 +152,13 @@ class _TimelineScreenState extends State<TimelineScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: widget.options.padding.top,
+              height: widget.options.paddings.mainPadding.top,
             ),
             if (widget.filterEnabled) ...[
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: widget.options.padding.horizontal,
+                padding: EdgeInsets.only(
+                  left: widget.options.paddings.mainPadding.left,
+                  right: widget.options.paddings.mainPadding.right,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -218,74 +228,87 @@ class _TimelineScreenState extends State<TimelineScreen> {
               height: 12,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                controller: controller,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...posts.map(
-                      (post) => Padding(
-                        padding: widget.options.postPadding,
-                        child: widget.postWidgetBuilder?.call(post) ??
-                            TimelinePostWidget(
-                              service: service,
-                              userId: widget.userId,
-                              options: widget.options,
-                              post: post,
-                              onTap: () async {
-                                if (widget.onPostTap != null) {
-                                  widget.onPostTap!.call(post);
+              child: RefreshIndicator.adaptive(
+                onRefresh: () async {
+                  await widget.onRefresh?.call(context, category);
+                  await loadPosts();
+                },
+                child: SingleChildScrollView(
+                  controller: controller,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// Add a optional custom header to the list of posts
+                      widget.options.listHeaderBuilder
+                              ?.call(context, category) ??
+                          const SizedBox.shrink(),
+                      ...posts.map(
+                        (post) => Padding(
+                          padding: widget.options.paddings.postPadding,
+                          child: widget.postWidgetBuilder?.call(post) ??
+                              TimelinePostWidget(
+                                service: service,
+                                userId: widget.userId,
+                                options: widget.options,
+                                allowAllDeletion: widget.allowAllDeletion,
+                                post: post,
+                                onTap: () async {
+                                  if (widget.onPostTap != null) {
+                                    widget.onPostTap!.call(post);
 
-                                  return;
-                                }
+                                    return;
+                                  }
 
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Scaffold(
-                                      body: TimelinePostScreen(
-                                        userId: 'test_user',
-                                        service: service,
-                                        options: widget.options,
-                                        post: post,
-                                        onPostDelete: () {
-                                          service.postService.deletePost(post);
-                                          Navigator.of(context).pop();
-                                        },
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                        body: TimelinePostScreen(
+                                          userId: 'test_user',
+                                          service: service,
+                                          options: widget.options,
+                                          post: post,
+                                          onPostDelete: () {
+                                            service.postService
+                                                .deletePost(post);
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                              onTapLike: () async => service.postService
-                                  .likePost(widget.userId, post),
-                              onTapUnlike: () async => service.postService
-                                  .unlikePost(widget.userId, post),
-                              onPostDelete: () async =>
-                                  service.postService.deletePost(post),
-                              onUserTap: widget.onUserTap,
-                            ),
-                      ),
-                    ),
-                    if (posts.isEmpty)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            category == null
-                                ? widget.options.translations.noPosts!
-                                : widget
-                                    .options.translations.noPostsWithFilter!,
-                            style: widget.options.theme.textStyles.noPostsStyle,
-                          ),
+                                  );
+                                },
+                                onTapLike: () async => service.postService
+                                    .likePost(widget.userId, post),
+                                onTapUnlike: () async => service.postService
+                                    .unlikePost(widget.userId, post),
+                                onPostDelete: () async =>
+                                    service.postService.deletePost(post),
+                                onUserTap: widget.onUserTap,
+                              ),
                         ),
                       ),
-                  ],
+                      if (posts.isEmpty)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              category == null
+                                  ? widget.options.translations.noPosts
+                                  : widget
+                                      .options.translations.noPostsWithFilter,
+                              style:
+                                  widget.options.theme.textStyles.noPostsStyle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
             SizedBox(
-              height: widget.options.padding.bottom,
+              height: widget.options.paddings.mainPadding.bottom,
             ),
           ],
         );

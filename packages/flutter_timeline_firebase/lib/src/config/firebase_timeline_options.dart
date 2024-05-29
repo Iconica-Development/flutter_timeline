@@ -9,10 +9,8 @@ class FirebaseTimelineOptions {
   const FirebaseTimelineOptions({
     this.usersCollectionName = 'users',
     this.timelineCollectionName = 'timeline',
-    this.allTimelineCategories = const [],
   });
 
   final String usersCollectionName;
   final String timelineCollectionName;
-  final List<String> allTimelineCategories;
 }

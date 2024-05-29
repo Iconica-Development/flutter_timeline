@@ -14,7 +14,7 @@ class CategorySelectorButton extends StatelessWidget {
 
   final TimelineCategory category;
   final bool selected;
-  final void Function() onTap;
+  final VoidCallback onTap;
   final TimelineOptions options;
   final bool isOnTop;
 
@@ -36,15 +36,19 @@ class CategorySelectorButton extends StatelessWidget {
           ),
           fixedSize: MaterialStatePropertyAll(Size(140, isOnTop ? 140 : 20)),
           backgroundColor: MaterialStatePropertyAll(
-            selected ? const Color(0xff71C6D1) : Colors.transparent,
+            selected
+                ? theme.colorScheme.primary
+                : options.theme.categorySelectionButtonBackgroundColor ??
+                    Colors.transparent,
           ),
-          shape: const MaterialStatePropertyAll(
+          shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
               side: BorderSide(
-                color: Color(0xff71C6D1),
+                color: options.theme.categorySelectionButtonBorderColor ??
+                    theme.colorScheme.primary,
                 width: 2,
               ),
             ),
@@ -53,38 +57,55 @@ class CategorySelectorButton extends StatelessWidget {
         child: isOnTop
             ? SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    Text(
-                      category.title,
-                      style: (options.theme.textStyles.categoryTitleStyle ??
-                              theme.textTheme.labelLarge)
-                          ?.copyWith(
-                        color: selected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.start,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.title,
+                          style: (options.theme.textStyles.categoryTitleStyle ??
+                                  theme.textTheme.labelLarge)
+                              ?.copyWith(
+                            color: selected
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.onSurface,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
                     ),
+                    Center(child: category.icon),
                   ],
                 ),
               )
             : Row(
                 children: [
                   Flexible(
-                    child: Text(
-                      category.title,
-                      style: (options.theme.textStyles.categoryTitleStyle ??
-                              theme.textTheme.labelLarge)
-                          ?.copyWith(
-                        color: selected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
+                    child: Row(
+                      children: [
+                        category.icon,
+                        SizedBox(
+                          width:
+                              options.paddings.categoryButtonTextPadding ?? 8,
+                        ),
+                        Expanded(
+                          child: Text(
+                            category.title,
+                            style:
+                                (options.theme.textStyles.categoryTitleStyle ??
+                                        theme.textTheme.labelLarge)
+                                    ?.copyWith(
+                              color: selected
+                                  ? theme.colorScheme.onPrimary
+                                  : theme.colorScheme.onSurface,
+                            ),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
+import 'package:flutter_timeline_view/src/config/timeline_paddings.dart';
 import 'package:flutter_timeline_view/src/config/timeline_theme.dart';
 import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 import 'package:intl/intl.dart';
@@ -12,11 +13,11 @@ import 'package:intl/intl.dart';
 class TimelineOptions {
   const TimelineOptions({
     this.theme = const TimelineTheme(),
-    this.translations = const TimelineTranslations(),
+    this.translations = const TimelineTranslations.empty(),
+    this.paddings = const TimelinePaddingOptions(),
     this.imagePickerConfig = const ImagePickerConfig(),
     this.imagePickerTheme = const ImagePickerTheme(),
     this.timelinePostHeight,
-    this.allowAllDeletion = false,
     this.sortCommentsAscending = true,
     this.sortPostsAscending,
     this.doubleTapTolike = false,
@@ -37,12 +38,8 @@ class TimelineOptions {
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
-    this.padding =
-        const EdgeInsets.only(left: 12.0, top: 24.0, right: 12.0, bottom: 12.0),
     this.iconSize = 26,
     this.postWidgetHeight,
-    this.postPadding =
-        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
     this.requireImageForPost = false,
@@ -52,6 +49,8 @@ class TimelineOptions {
     this.maxContentLength,
     this.categorySelectorButtonBuilder,
     this.postOverviewButtonBuilder,
+    this.deletionDialogBuilder,
+    this.listHeaderBuilder,
     this.titleInputDecoration,
     this.contentInputDecoration,
   });
@@ -71,14 +70,14 @@ class TimelineOptions {
   /// Whether to sort posts ascending or descending
   final bool? sortPostsAscending;
 
-  /// Allow all posts to be deleted instead of
-  ///  only the posts of the current user
-  final bool allowAllDeletion;
-
   /// The height of a post in the timeline
   final double? timelinePostHeight;
 
+  /// Class that contains all the translations used in the timeline
   final TimelineTranslations translations;
+
+  /// Class that contains all the paddings used in the timeline
+  final TimelinePaddingOptions paddings;
 
   final ButtonBuilder? buttonBuilder;
 
@@ -115,17 +114,11 @@ class TimelineOptions {
   /// The builder for the divider
   final Widget Function()? dividerBuilder;
 
-  /// The padding between posts in the timeline
-  final EdgeInsets padding;
-
   /// Size of icons like the comment and like icons. Dafualts to 26
   final double iconSize;
 
   /// Sets a predefined height for the postWidget.
   final double? postWidgetHeight;
-
-  /// Padding of each post
-  final EdgeInsets postPadding;
 
   /// Options for filtering
   final FilterOptions filterOptions;
@@ -156,6 +149,11 @@ class TimelineOptions {
     String text,
   )? categorySelectorButtonBuilder;
 
+  /// This widgetbuilder is placed at the top of the list of posts and can be
+  ///  used to add custom elements
+  final Widget Function(BuildContext context, String? category)?
+      listHeaderBuilder;
+
   /// Builder for the post overview button
   /// on the timeline post overview screen
   final Widget Function(
@@ -163,6 +161,11 @@ class TimelineOptions {
     Function() onPressed,
     String text,
   )? postOverviewButtonBuilder;
+
+  /// Optional builder to override the default alertdialog for post deletion
+  /// It should pop the navigator with true to delete the post and
+  /// false to cancel deletion
+  final WidgetBuilder? deletionDialogBuilder;
 
   /// inputdecoration for the title textfield
   final InputDecoration? titleInputDecoration;
@@ -221,8 +224,7 @@ class CategoriesOptions {
 
   /// Abilty to override the standard category selector
   final Widget Function(
-    String? categoryKey,
-    String categoryName,
+    TimelineCategory category,
     Function() onTap,
     // ignore: avoid_positional_boolean_parameters
     bool selected,

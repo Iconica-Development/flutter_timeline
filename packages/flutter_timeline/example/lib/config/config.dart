@@ -7,13 +7,15 @@ TimelineUserStoryConfiguration getConfig(TimelineService service) {
     userId: 'test_user',
     optionsBuilder: (context) => options,
     enablePostOverviewScreen: false,
+    canDeleteAllPosts: (_) => true,
   );
 }
 
 var options = TimelineOptions(
   textInputBuilder: null,
-  padding: const EdgeInsets.all(20).copyWith(top: 28),
-  allowAllDeletion: true,
+  paddings: TimelinePaddingOptions(
+    mainPadding: const EdgeInsets.all(20).copyWith(top: 28),
+  ),
   categoriesOptions: CategoriesOptions(
     categoriesBuilder: (context) => [
       const TimelineCategory(

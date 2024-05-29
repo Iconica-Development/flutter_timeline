@@ -37,12 +37,11 @@ class _CategorySelectorState extends State<CategorySelector> {
           SizedBox(
             width: widget.options.categoriesOptions
                     .categorySelectorHorizontalPadding ??
-                max(widget.options.padding.horizontal - 20, 0),
+                max(widget.options.paddings.mainPadding.left - 20, 0),
           ),
           for (var category in categories) ...[
             widget.options.categoriesOptions.categoryButtonBuilder?.call(
-                  category.key,
-                  category.title,
+                  category,
                   () => widget.onTapCategory(category.key),
                   widget.filter == category.key,
                   widget.isOnTop,
@@ -61,7 +60,7 @@ class _CategorySelectorState extends State<CategorySelector> {
           SizedBox(
             width: widget.options.categoriesOptions
                     .categorySelectorHorizontalPadding ??
-                max(widget.options.padding.horizontal - 4, 0),
+                max(widget.options.paddings.mainPadding.right - 4, 0),
           ),
         ],
       ),

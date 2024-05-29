@@ -104,6 +104,7 @@ class _TimelinePostCreationScreenState
         category: widget.postCategory,
         content: contentController.text,
         likes: 0,
+        likedBy: const [],
         reaction: 0,
         createdAt: DateTime.now(),
         reactionEnabled: allowComments,
@@ -121,14 +122,14 @@ class _TimelinePostCreationScreenState
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Padding(
-        padding: widget.options.padding,
+        padding: widget.options.paddings.mainPadding,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.options.translations.title!,
+                widget.options.translations.title,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
@@ -140,6 +141,7 @@ class _TimelinePostCreationScreenState
                     '',
                   ) ??
                   TextField(
+                    maxLength: widget.options.maxTitleLength,
                     controller: titleController,
                     decoration: widget.options.contentInputDecoration ??
                         InputDecoration(
@@ -148,7 +150,7 @@ class _TimelinePostCreationScreenState
                   ),
               const SizedBox(height: 16),
               Text(
-                widget.options.translations.content!,
+                widget.options.translations.content,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
@@ -156,7 +158,7 @@ class _TimelinePostCreationScreenState
               ),
               const SizedBox(height: 4),
               Text(
-                widget.options.translations.contentDescription!,
+                widget.options.translations.contentDescription,
                 style: theme.textTheme.bodyMedium,
               ),
               // input field for the content
@@ -176,14 +178,14 @@ class _TimelinePostCreationScreenState
               ),
               // input field for the content
               Text(
-                widget.options.translations.uploadImage!,
+                widget.options.translations.uploadImage,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
                 ),
               ),
               Text(
-                widget.options.translations.uploadImageDescription!,
+                widget.options.translations.uploadImageDescription,
                 style: theme.textTheme.bodyMedium,
               ),
               // image picker field
@@ -270,21 +272,21 @@ class _TimelinePostCreationScreenState
               const SizedBox(height: 16),
 
               Text(
-                widget.options.translations.commentsTitle!,
+                widget.options.translations.commentsTitle,
                 style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
                 ),
               ),
               Text(
-                widget.options.translations.allowCommentsDescription!,
+                widget.options.translations.allowCommentsDescription,
                 style: theme.textTheme.bodyMedium,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Checkbox(
-                    activeColor: const Color(0xff71C6D1),
+                    activeColor: theme.colorScheme.primary,
                     value: allowComments,
                     onChanged: (value) {
                       setState(() {
@@ -292,9 +294,9 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.yes!),
+                  Text(widget.options.translations.yes),
                   Checkbox(
-                    activeColor: const Color(0xff71C6D1),
+                    activeColor: theme.colorScheme.primary,
                     value: !allowComments,
                     onChanged: (value) {
                       setState(() {
@@ -302,7 +304,7 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.no!),
+                  Text(widget.options.translations.no),
                 ],
               ),
               const SizedBox(height: 120),
@@ -313,13 +315,14 @@ class _TimelinePostCreationScreenState
                     ? widget.options.buttonBuilder!(
                         context,
                         onPostCreated,
-                        widget.options.translations.checkPost!,
+                        widget.options.translations.checkPost,
                         enabled: editingDone,
                       )
                     : ElevatedButton(
-                        style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Color(0xff71C6D1)),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                            theme.colorScheme.primary,
+                          ),
                         ),
                         onPressed: editingDone
                             ? () async {
@@ -332,8 +335,8 @@ class _TimelinePostCreationScreenState
                           padding: const EdgeInsets.all(12.0),
                           child: Text(
                             widget.enablePostOverviewScreen
-                                ? widget.options.translations.checkPost!
-                                : widget.options.translations.postCreation!,
+                                ? widget.options.translations.checkPost
+                                : widget.options.translations.postCreation,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
