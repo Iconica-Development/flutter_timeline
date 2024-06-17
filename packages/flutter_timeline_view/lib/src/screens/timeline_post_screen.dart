@@ -112,7 +112,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
     var timeFormat = widget.options.timeFormat ?? DateFormat('HH:mm');
 
     if (isLoading) {
-      const Center(
+      return const Center(
         child: CircularProgressIndicator.adaptive(),
       );
     }
