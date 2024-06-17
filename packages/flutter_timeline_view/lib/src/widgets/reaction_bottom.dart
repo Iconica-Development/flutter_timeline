@@ -33,7 +33,7 @@ class _ReactionBottomState extends State<ReactionBottom> {
   Widget build(BuildContext context) => SafeArea(
         bottom: true,
         child: Container(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           child: Container(
             margin: const EdgeInsets.symmetric(
               horizontal: 12,

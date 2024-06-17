@@ -1,3 +1,6 @@
+## 4.1.0
+- Migrate to flutter 3.22 which deprecates the background and onBackground properties in the ThemeData and also removes MaterialStatePropertyAll
+
 ## 4.0.0
 
 - Add a serviceBuilder to the userstory configuration

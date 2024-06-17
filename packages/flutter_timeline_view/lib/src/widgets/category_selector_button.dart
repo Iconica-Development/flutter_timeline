@@ -28,20 +28,20 @@ class CategorySelectorButton extends StatelessWidget {
         onPressed: onTap,
         style: ButtonStyle(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          padding: const MaterialStatePropertyAll(
+          padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(
               vertical: 5,
               horizontal: 12,
             ),
           ),
-          fixedSize: MaterialStatePropertyAll(Size(140, isOnTop ? 140 : 20)),
-          backgroundColor: MaterialStatePropertyAll(
+          fixedSize: WidgetStatePropertyAll(Size(140, isOnTop ? 140 : 20)),
+          backgroundColor: WidgetStatePropertyAll(
             selected
                 ? theme.colorScheme.primary
                 : options.theme.categorySelectionButtonBackgroundColor ??
                     Colors.transparent,
           ),
-          shape: MaterialStatePropertyAll(
+          shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: const BorderRadius.all(
                 Radius.circular(8),

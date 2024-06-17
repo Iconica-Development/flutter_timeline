@@ -563,7 +563,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   context: context,
                   builder: (context) => Container(
                     padding: const EdgeInsets.all(8.0),
-                    color: theme.colorScheme.background,
+                    color: theme.colorScheme.surface,
                     child: ImagePicker(
                       imagePickerConfig: widget.options.imagePickerConfig,
                       imagePickerTheme: widget.options.imagePickerTheme,

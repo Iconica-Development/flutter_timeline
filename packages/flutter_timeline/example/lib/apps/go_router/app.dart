@@ -32,7 +32,7 @@ class GoRouterApp extends StatelessWidget {
           seedColor: const Color(0xFFB8E2E8),
           primary: const Color(0xffb71c6d),
         ).copyWith(
-          background: const Color(0XFFFAF9F6),
+          surface: const Color(0XFFFAF9F6),
         ),
         useMaterial3: true,
       ),

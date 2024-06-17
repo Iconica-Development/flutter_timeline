@@ -58,7 +58,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStatePropertyAll(Theme.of(context).primaryColor),
+                    WidgetStatePropertyAll(Theme.of(context).primaryColor),
               ),
               onPressed: () {
                 onPostSubmit(timelinePost);

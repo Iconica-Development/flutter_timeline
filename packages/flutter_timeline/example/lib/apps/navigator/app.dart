@@ -12,7 +12,7 @@ class NavigatorApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme:
             ColorScheme.fromSeed(seedColor: Colors.deepPurple).copyWith(
-          background: const Color(0xFFB8E2E8),
+          surface: const Color(0xFFB8E2E8),
         ),
         useMaterial3: true,
       ),
