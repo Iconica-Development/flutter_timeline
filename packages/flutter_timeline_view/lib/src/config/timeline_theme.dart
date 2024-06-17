@@ -17,6 +17,8 @@ class TimelineTheme {
     this.deleteIcon,
     this.categorySelectionButtonBorderColor,
     this.categorySelectionButtonBackgroundColor,
+    this.categorySelectionButtonSelectedTextColor,
+    this.categorySelectionButtonUnselectedTextColor,
     this.postCreationFloatingActionButtonColor,
     this.textStyles = const TimelineTextStyles(),
   });
@@ -50,6 +52,13 @@ class TimelineTheme {
   /// The color of the background of the category selection button in the
   /// selection screen
   final Color? categorySelectionButtonBackgroundColor;
+
+  /// The color of the text of the category selection button when it is selected
+  final Color? categorySelectionButtonSelectedTextColor;
+
+  /// The color of the text of the category selection button when
+  /// it is not selected
+  final Color? categorySelectionButtonUnselectedTextColor;
 
   /// The color of the floating action button on the overview screen
   final Color? postCreationFloatingActionButtonColor;

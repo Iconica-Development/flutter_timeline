@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 name: flutter_timeline
 description: Visual elements and interface combined into one package
-version: 4.0.0
+version: 4.1.0
 
 publish_to: none
 
@@ -21,13 +21,13 @@ dependencies:
     git: 
        url: https://github.com/Iconica-Development/flutter_timeline
        path: packages/flutter_timeline_view
-       ref: 4.0.0
+       ref: 4.1.0
 
   flutter_timeline_interface:
     git:
       url: https://github.com/Iconica-Development/flutter_timeline
       path: packages/flutter_timeline_interface
-      ref: 4.0.0
+      ref: 4.1.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

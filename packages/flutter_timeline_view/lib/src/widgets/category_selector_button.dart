@@ -21,6 +21,7 @@ class CategorySelectorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var size = MediaQuery.of(context).size;
 
     return SizedBox(
       height: isOnTop ? 140 : 40,
@@ -56,23 +57,18 @@ class CategorySelectorButton extends StatelessWidget {
         ),
         child: isOnTop
             ? SizedBox(
-                width: MediaQuery.of(context).size.width,
+                width: size.width,
                 child: Stack(
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          category.title,
-                          style: (options.theme.textStyles.categoryTitleStyle ??
-                                  theme.textTheme.labelLarge)
-                              ?.copyWith(
-                            color: selected
-                                ? theme.colorScheme.onPrimary
-                                : theme.colorScheme.onSurface,
-                          ),
-                          textAlign: TextAlign.start,
+                        _CategoryButtonText(
+                          category: category,
+                          options: options,
+                          theme: theme,
+                          selected: selected,
                         ),
                       ],
                     ),
@@ -91,17 +87,11 @@ class CategorySelectorButton extends StatelessWidget {
                               options.paddings.categoryButtonTextPadding ?? 8,
                         ),
                         Expanded(
-                          child: Text(
-                            category.title,
-                            style:
-                                (options.theme.textStyles.categoryTitleStyle ??
-                                        theme.textTheme.labelLarge)
-                                    ?.copyWith(
-                              color: selected
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSurface,
-                            ),
-                            textAlign: TextAlign.start,
+                          child: _CategoryButtonText(
+                            category: category,
+                            options: options,
+                            theme: theme,
+                            selected: selected,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -113,4 +103,36 @@ class CategorySelectorButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CategoryButtonText extends StatelessWidget {
+  const _CategoryButtonText({
+    required this.category,
+    required this.options,
+    required this.theme,
+    required this.selected,
+    this.overflow,
+  });
+
+  final TimelineCategory category;
+  final TimelineOptions options;
+  final ThemeData theme;
+  final bool selected;
+  final TextOverflow? overflow;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        category.title,
+        style: (options.theme.textStyles.categoryTitleStyle ??
+                theme.textTheme.labelLarge)
+            ?.copyWith(
+          color: selected
+              ? options.theme.categorySelectionButtonSelectedTextColor ??
+                  theme.colorScheme.onPrimary
+              : options.theme.categorySelectionButtonUnselectedTextColor ??
+                  theme.colorScheme.onSurface,
+        ),
+        textAlign: TextAlign.start,
+        overflow: overflow,
+      );
 }
