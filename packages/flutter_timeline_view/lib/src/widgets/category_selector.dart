@@ -32,37 +32,40 @@ class _CategorySelectorState extends State<CategorySelector> {
         widget.options.categoriesOptions.categoriesBuilder!(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          SizedBox(
-            width: widget.options.categoriesOptions
-                    .categorySelectorHorizontalPadding ??
-                max(widget.options.paddings.mainPadding.left - 20, 0),
-          ),
-          for (var category in categories) ...[
-            widget.options.categoriesOptions.categoryButtonBuilder?.call(
-                  category,
-                  () => widget.onTapCategory(category.key),
-                  widget.filter == category.key,
-                  widget.isOnTop,
-                ) ??
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: CategorySelectorButton(
-                    isOnTop: widget.isOnTop,
-                    category: category,
-                    selected: widget.filter == category.key,
-                    onTap: () => widget.onTapCategory(category.key),
-                    options: widget.options,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            SizedBox(
+              width: widget.options.categoriesOptions
+                      .categorySelectorHorizontalPadding ??
+                  max(widget.options.paddings.mainPadding.left - 20, 0),
+            ),
+            for (var category in categories) ...[
+              widget.options.categoriesOptions.categoryButtonBuilder?.call(
+                    category,
+                    () => widget.onTapCategory(category.key),
+                    widget.filter == category.key,
+                    widget.isOnTop,
+                  ) ??
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: CategorySelectorButton(
+                      isOnTop: widget.isOnTop,
+                      category: category,
+                      selected: widget.filter == category.key,
+                      onTap: () => widget.onTapCategory(category.key),
+                      options: widget.options,
+                    ),
                   ),
-                ),
+            ],
+            SizedBox(
+              width: widget.options.categoriesOptions
+                      .categorySelectorHorizontalPadding ??
+                  max(widget.options.paddings.mainPadding.right - 4, 0),
+            ),
           ],
-          SizedBox(
-            width: widget.options.categoriesOptions
-                    .categorySelectorHorizontalPadding ??
-                max(widget.options.paddings.mainPadding.right - 4, 0),
-          ),
-        ],
+        ),
       ),
     );
   }

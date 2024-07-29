@@ -76,7 +76,7 @@ class TimelineTranslations {
     this.deleteCancelButton = 'Cancel',
     this.deleteReaction = 'Delete Reaction',
     this.viewPost = 'View post',
-    this.likesTitle = 'Likes',
+    this.likesTitle = 'likes',
     this.commentsTitle = 'Are people allowed to comment?',
     this.firstComment = 'Be the first to comment',
     this.writeComment = 'Write your comment here...',

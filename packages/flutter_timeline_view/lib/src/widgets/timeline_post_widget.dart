@@ -52,6 +52,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var isLikedByUser = widget.post.likedBy?.contains(widget.userId) ?? false;
     return InkWell(
       onTap: widget.onTap,
       child: SizedBox(
@@ -103,7 +104,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                               widget.options.translations.anonymousUser,
                           style: widget.options.theme.textStyles
                                   .postCreatorTitleStyle ??
-                              theme.textTheme.titleMedium,
+                              theme.textTheme.titleSmall!.copyWith(
+                                color: Colors.black,
+                              ),
                         ),
                       ],
                     ),
@@ -204,17 +207,16 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               height: 8,
             ),
             // post information
-            if (widget.options.iconsWithValues)
+            if (widget.options.iconsWithValues) ...[
               Row(
                 children: [
-                  TextButton.icon(
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                     onPressed: () async {
                       var userId = widget.userId;
 
-                      var liked =
-                          widget.post.likedBy?.contains(userId) ?? false;
-
-                      if (!liked) {
+                      if (!isLikedByUser) {
                         await widget.service.postService.likePost(
                           userId,
                           widget.post,
@@ -228,61 +230,67 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                     },
                     icon: widget.options.theme.likeIcon ??
                         Icon(
-                          widget.post.likedBy?.contains(widget.userId) ?? false
+                          isLikedByUser
                               ? Icons.favorite_rounded
                               : Icons.favorite_outline_outlined,
+                          color: widget.options.theme.iconColor,
+                          size: widget.options.iconSize,
                         ),
-                    label: Text('${widget.post.likes}'),
                   ),
-                  if (widget.post.reactionEnabled)
-                    TextButton.icon(
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  Text('${widget.post.likes}'),
+                  if (widget.post.reactionEnabled) ...[
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                       onPressed: widget.onTap,
                       icon: widget.options.theme.commentIcon ??
-                          const Icon(
+                          Icon(
                             Icons.chat_bubble_outline_outlined,
+                            color: widget.options.theme.iconColor,
+                            size: widget.options.iconSize,
                           ),
-                      label: Text('${widget.post.reaction}'),
                     ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text('${widget.post.reaction}'),
+                  ],
                 ],
-              )
-            else
+              ),
+            ] else ...[
               Row(
                 children: [
-                  if (widget.post.likedBy?.contains(widget.userId) ??
-                      false) ...[
-                    InkWell(
-                      onTap: widget.onTapUnlike,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: widget.options.theme.likedIcon ??
-                            Icon(
-                              Icons.favorite_rounded,
-                              color: widget.options.theme.iconColor,
-                              size: widget.options.iconSize,
-                            ),
-                      ),
-                    ),
-                  ] else ...[
-                    InkWell(
-                      onTap: widget.onTapLike,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: widget.options.theme.likeIcon ??
-                            Icon(
-                              Icons.favorite_outline,
-                              color: widget.options.theme.iconColor,
-                              size: widget.options.iconSize,
-                            ),
-                      ),
-                    ),
-                  ],
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed:
+                        isLikedByUser ? widget.onTapUnlike : widget.onTapLike,
+                    icon: (isLikedByUser
+                            ? widget.options.theme.likedIcon
+                            : widget.options.theme.likeIcon) ??
+                        Icon(
+                          isLikedByUser
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_outline,
+                          color: widget.options.theme.iconColor,
+                          size: widget.options.iconSize,
+                        ),
+                  ),
                   const SizedBox(width: 8),
                   if (widget.post.reactionEnabled) ...[
-                    Container(
-                      color: Colors.transparent,
-                      child: widget.options.theme.commentIcon ??
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: widget.onTap,
+                      icon: widget.options.theme.commentIcon ??
                           Icon(
-                            Icons.chat_bubble_outline_rounded,
+                            Icons.chat_bubble_outline_outlined,
                             color: widget.options.theme.iconColor,
                             size: widget.options.iconSize,
                           ),
@@ -290,6 +298,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                   ],
                 ],
               ),
+            ],
 
             const SizedBox(
               height: 8,
@@ -305,23 +314,25 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                 '${widget.options.translations.likesTitle}',
                 style: widget
                         .options.theme.textStyles.listPostLikeTitleAndAmount ??
-                    theme.textTheme.titleSmall,
+                    theme.textTheme.titleSmall!.copyWith(
+                      color: Colors.black,
+                    ),
               ),
-              const SizedBox(height: 4),
               Text.rich(
                 TextSpan(
                   text: widget.options.nameBuilder?.call(widget.post.creator) ??
                       widget.post.creator?.fullName ??
                       widget.options.translations.anonymousUser,
                   style: widget.options.theme.textStyles.listCreatorNameStyle ??
-                      theme.textTheme.titleSmall,
+                      theme.textTheme.titleSmall!.copyWith(
+                        color: Colors.black,
+                      ),
                   children: [
-                    const TextSpan(text: ' '),
                     TextSpan(
                       text: widget.post.title,
                       style:
                           widget.options.theme.textStyles.listPostTitleStyle ??
-                              theme.textTheme.bodyMedium,
+                              theme.textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -330,7 +341,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               Text(
                 widget.options.translations.viewPost,
                 style: widget.options.theme.textStyles.viewPostStyle ??
-                    theme.textTheme.bodySmall,
+                    theme.textTheme.titleSmall!.copyWith(
+                      color: const Color(0xFF8D8D8D),
+                    ),
               ),
             ],
             if (widget.options.dividerBuilder != null)

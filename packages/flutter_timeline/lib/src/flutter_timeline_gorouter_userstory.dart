@@ -45,13 +45,13 @@ List<GoRoute> getTimelineStoryRoutes({
           filterEnabled: config.filterEnabled,
           postWidgetBuilder: config.postWidgetBuilder,
         );
-
+        var theme = Theme.of(context);
         var button = FloatingActionButton(
           backgroundColor: config
                   .optionsBuilder(context)
                   .theme
                   .postCreationFloatingActionButtonColor ??
-              Theme.of(context).primaryColor,
+              theme.colorScheme.primary,
           onPressed: () async => context.push(
             TimelineUserStoryRoutes.timelineCategorySelection,
           ),
@@ -59,7 +59,7 @@ List<GoRoute> getTimelineStoryRoutes({
           child: const Icon(
             Icons.add,
             color: Colors.white,
-            size: 30,
+            size: 24,
           ),
         );
 
@@ -70,17 +70,12 @@ List<GoRoute> getTimelineStoryRoutes({
                   ?.call(context, timelineScreen, button) ??
               Scaffold(
                 appBar: AppBar(
-                  backgroundColor: const Color(0xff212121),
                   title: Text(
                     config
                         .optionsBuilder(context)
                         .translations
                         .timeLineScreenTitle,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: theme.textTheme.headlineLarge,
                   ),
                 ),
                 body: timelineScreen,

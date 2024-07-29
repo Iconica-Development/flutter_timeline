@@ -65,13 +65,13 @@ Widget _timelineScreenRoute({
     filterEnabled: config.filterEnabled,
     postWidgetBuilder: config.postWidgetBuilder,
   );
-
+  var theme = Theme.of(context);
   var button = FloatingActionButton(
     backgroundColor: config
             .optionsBuilder(context)
             .theme
             .postCreationFloatingActionButtonColor ??
-        Theme.of(context).primaryColor,
+        theme.colorScheme.primary,
     onPressed: () async => Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => _postCategorySelectionScreen(
@@ -84,21 +84,16 @@ Widget _timelineScreenRoute({
     child: const Icon(
       Icons.add,
       color: Colors.white,
-      size: 30,
+      size: 24,
     ),
   );
 
   return config.homeOpenPageBuilder?.call(context, timelineScreen, button) ??
       Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.timeLineScreenTitle,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-            ),
+            style: theme.textTheme.headlineLarge,
           ),
         ),
         body: timelineScreen,

@@ -19,7 +19,7 @@ class TimelineOptions {
     this.imagePickerTheme = const ImagePickerTheme(),
     this.timelinePostHeight,
     this.sortCommentsAscending = true,
-    this.sortPostsAscending,
+    this.sortPostsAscending = false,
     this.doubleTapTolike = false,
     this.iconsWithValues = false,
     this.likeAndDislikeIconsForDoubleTap = const (
@@ -38,7 +38,7 @@ class TimelineOptions {
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
-    this.iconSize = 26,
+    this.iconSize = 24,
     this.postWidgetHeight,
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
@@ -178,35 +178,14 @@ List<TimelineCategory> _getDefaultCategories(context) => [
       const TimelineCategory(
         key: null,
         title: 'All',
-        icon: Padding(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Icon(
-            Icons.apps,
-            color: Colors.black,
-          ),
-        ),
       ),
       const TimelineCategory(
         key: 'Category',
         title: 'Category',
-        icon: Padding(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Icon(
-            Icons.category,
-            color: Colors.black,
-          ),
-        ),
       ),
       const TimelineCategory(
         key: 'Category with two lines',
         title: 'Category with two lines',
-        icon: Padding(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Icon(
-            Icons.category,
-            color: Colors.black,
-          ),
-        ),
       ),
     ];
 

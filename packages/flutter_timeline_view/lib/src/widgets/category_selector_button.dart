@@ -23,7 +23,8 @@ class CategorySelectorButton extends StatelessWidget {
     var theme = Theme.of(context);
     var size = MediaQuery.of(context).size;
 
-    return SizedBox(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
       height: isOnTop ? 140 : 40,
       child: TextButton(
         onPressed: onTap,
@@ -81,11 +82,13 @@ class CategorySelectorButton extends StatelessWidget {
                   Flexible(
                     child: Row(
                       children: [
-                        category.icon,
-                        SizedBox(
-                          width:
-                              options.paddings.categoryButtonTextPadding ?? 8,
-                        ),
+                        if (category.icon != null) ...[
+                          category.icon!,
+                          SizedBox(
+                            width:
+                                options.paddings.categoryButtonTextPadding ?? 8,
+                          ),
+                        ],
                         Expanded(
                           child: _CategoryButtonText(
                             category: category,
@@ -124,7 +127,9 @@ class _CategoryButtonText extends StatelessWidget {
   Widget build(BuildContext context) => Text(
         category.title,
         style: (options.theme.textStyles.categoryTitleStyle ??
-                theme.textTheme.labelLarge)
+                (selected
+                    ? theme.textTheme.titleMedium
+                    : theme.textTheme.bodyMedium))
             ?.copyWith(
           color: selected
               ? options.theme.categorySelectionButtonSelectedTextColor ??

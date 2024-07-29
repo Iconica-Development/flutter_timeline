@@ -6,7 +6,7 @@ class TimelinePaddingOptions {
     this.mainPadding =
         const EdgeInsets.only(left: 12.0, top: 24.0, right: 12.0, bottom: 12.0),
     this.postPadding =
-        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+        const EdgeInsets.only(left: 12.0, top: 6, right: 12.0, bottom: 8),
     this.postOverviewButtonBottomPadding = 30.0,
     this.categoryButtonTextPadding,
   });

@@ -9,7 +9,7 @@ version: 4.1.0
 publish_to: none
 
 environment:
-  sdk: '>=3.1.3 <4.0.0'
+  sdk: ">=3.1.3 <4.0.0"
 
 dependencies:
   flutter:
@@ -18,17 +18,21 @@ dependencies:
   cached_network_image: ^3.2.2
   dotted_border: ^2.1.0
   flutter_html: ^3.0.0-beta.2
-  
+
   flutter_timeline_interface:
-    git: 
-       url: https://github.com/Iconica-Development/flutter_timeline
-       path: packages/flutter_timeline_interface
-       ref: 4.1.0
+    git:
+      url: https://github.com/Iconica-Development/flutter_timeline
+      path: packages/flutter_timeline_interface
+      ref: 4.1.0
   flutter_image_picker:
     git:
       url: https://github.com/Iconica-Development/flutter_image_picker
       ref: 1.0.5
   collection: any
+
+dependency_overrides:
+  flutter_timeline_interface:
+    path: packages/flutter_timeline_interface
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -38,4 +42,3 @@ dev_dependencies:
       ref: 6.0.0
 
 flutter:
-
