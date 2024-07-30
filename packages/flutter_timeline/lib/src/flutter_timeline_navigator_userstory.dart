@@ -156,7 +156,6 @@ Widget _postDetailScreenRoute({
       Scaffold(
         appBar: AppBar(
           leading: backButton,
-          backgroundColor: const Color(0xff212121),
           title: Text(
             category?.title.toLowerCase() ??
                 post.category?.toLowerCase() ??
@@ -246,7 +245,6 @@ Widget _postCreationScreenRoute({
           ?.call(context, timelinePostCreationScreen, backButton) ??
       Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xff212121),
           leading: backButton,
           title: Text(
             config.optionsBuilder(context).translations.postCreation,
@@ -314,7 +312,6 @@ Widget _postOverviewScreenRoute({
       Scaffold(
         appBar: AppBar(
           leading: backButton,
-          backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.postOverview,
             style: TextStyle(
@@ -375,7 +372,6 @@ Widget _postCategorySelectionScreen({
       Scaffold(
         appBar: AppBar(
           leading: backButton,
-          backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.postCreation,
             style: TextStyle(

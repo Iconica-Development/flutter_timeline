@@ -19,6 +19,7 @@ class TimelineSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: size.width * 0.05,
@@ -27,16 +28,12 @@ class TimelineSelectionScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: size.height * 0.05, bottom: 8),
+            padding: const EdgeInsets.only(top: 20, bottom: 12),
             child: Text(
               options.translations.timelineSelectionDescription,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 20,
-              ),
+              style: theme.textTheme.titleLarge,
             ),
           ),
-          const SizedBox(height: 4),
           for (var category in categories.where(
             (element) => element.canCreate && element.key != null,
           )) ...[
@@ -72,10 +69,7 @@ class TimelineSelectionScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Text(
                             category.title,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
+                            style: theme.textTheme.titleMedium,
                           ),
                         ),
                       ],
