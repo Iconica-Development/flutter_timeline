@@ -3,12 +3,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
@@ -60,20 +58,6 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
   TimelinePost? post;
   bool isLoading = true;
 
-  late var textInputBuilder = widget.options.textInputBuilder ??
-      (controller, suffixIcon, hintText) => TextField(
-            textCapitalization: TextCapitalization.sentences,
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: hintText,
-              suffixIcon: suffixIcon,
-              border: OutlineInputBorder(
-                borderRadius:
-                    BorderRadius.circular(20.0), // Adjust the value as needed
-              ),
-            ),
-          );
-
   @override
   void initState() {
     super.initState();
@@ -108,9 +92,10 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var dateFormat = widget.options.dateFormat ??
-        DateFormat('dd/MM/yyyy', Localizations.localeOf(context).languageCode);
-    var timeFormat = widget.options.timeFormat ?? DateFormat('HH:mm');
-
+        DateFormat(
+          "dd/MM/yyyy 'at' HH:mm",
+          Localizations.localeOf(context).languageCode,
+        );
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator.adaptive(),
@@ -130,6 +115,45 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           ? a.createdAt.compareTo(b.createdAt)
           : b.createdAt.compareTo(a.createdAt),
     );
+    var isLikedByUser = post.likedBy?.contains(widget.userId) ?? false;
+
+    var textInputBuilder = widget.options.textInputBuilder ??
+        (controller, suffixIcon, hintText) => TextField(
+              style: theme.textTheme.bodyMedium,
+              textCapitalization: TextCapitalization.sentences,
+              controller: controller,
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: const BorderSide(
+                    color: Colors.black,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: const BorderSide(
+                    color: Colors.black,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 16,
+                ),
+                hintText: widget.options.translations.writeComment,
+                hintStyle: theme.textTheme.bodyMedium!.copyWith(
+                  color: theme.textTheme.bodyMedium!.color!.withOpacity(0.5),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(25),
+                  ),
+                  borderSide: BorderSide.none,
+                ),
+                suffixIcon: suffixIcon,
+              ),
+            );
 
     return Stack(
       children: [
@@ -191,7 +215,9 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                     widget.options.translations.anonymousUser,
                                 style: widget.options.theme.textStyles
                                         .postCreatorTitleStyle ??
-                                    theme.textTheme.titleMedium,
+                                    theme.textTheme.titleSmall!.copyWith(
+                                      color: Colors.black,
+                                    ),
                               ),
                             ],
                           ),
@@ -199,7 +225,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       const Spacer(),
                       if (!(widget.isOverviewScreen ?? false) &&
                           (widget.allowAllDeletion ||
-                              post.creator?.userId == widget.userId))
+                              post.creator?.userId == widget.userId)) ...[
                         PopupMenuButton(
                           onSelected: (value) async {
                             if (value == 'delete') {
@@ -238,6 +264,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                 color: widget.options.theme.iconColor,
                               ),
                         ),
+                      ],
                     ],
                   ),
                   // image of the posts
@@ -295,53 +322,37 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   // post information
                   Row(
                     children: [
-                      if (post.likedBy?.contains(widget.userId) ?? false) ...[
-                        InkWell(
-                          onTap: () async {
+                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () async {
+                          if (widget.isOverviewScreen ?? false) return;
+                          if (isLikedByUser) {
                             updatePost(
                               await widget.service.postService.unlikePost(
                                 widget.userId,
                                 post,
                               ),
                             );
-                          },
-                          child: Container(
-                            color: Colors.transparent,
-                            child: widget.options.theme.likedIcon ??
-                                Icon(
-                                  widget.post.likedBy
-                                              ?.contains(widget.userId) ??
-                                          false
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_outline_outlined,
-                                ),
-                          ),
-                        ),
-                      ] else ...[
-                        InkWell(
-                          onTap: () async {
-                            if (widget.isOverviewScreen ?? false) return;
+                            setState(() {});
+                          } else {
                             updatePost(
                               await widget.service.postService.likePost(
                                 widget.userId,
                                 post,
                               ),
                             );
-                          },
-                          child: Container(
-                            color: Colors.transparent,
-                            child: widget.options.theme.likeIcon ??
-                                Icon(
-                                  widget.post.likedBy
-                                              ?.contains(widget.userId) ??
-                                          false
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_outline_outlined,
-                                  size: widget.options.iconSize,
-                                ),
-                          ),
+                            setState(() {});
+                          }
+                        },
+                        icon: Icon(
+                          isLikedByUser
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_outline_outlined,
+                          color: widget.options.theme.iconColor,
+                          size: widget.options.iconSize,
                         ),
-                      ],
+                      ),
                       const SizedBox(width: 8),
                       if (post.reactionEnabled)
                         widget.options.theme.commentIcon ??
@@ -360,7 +371,6 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                         theme.textTheme.titleSmall
                             ?.copyWith(color: Colors.black),
                   ),
-                  const SizedBox(height: 4),
                   Text.rich(
                     TextSpan(
                       text: widget.options.nameBuilder?.call(post.creator) ??
@@ -368,14 +378,17 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                           widget.options.translations.anonymousUser,
                       style: widget
                               .options.theme.textStyles.postCreatorNameStyle ??
-                          theme.textTheme.titleSmall,
+                          theme.textTheme.titleSmall!
+                              .copyWith(color: Colors.black),
                       children: [
-                        const TextSpan(text: ' '),
                         TextSpan(
                           text: post.title,
                           style:
                               widget.options.theme.textStyles.postTitleStyle ??
-                                  theme.textTheme.bodyMedium,
+                                  theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                         ),
                       ],
                     ),
@@ -387,6 +400,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       'body': Style(
                         padding: HtmlPaddings.zero,
                         margin: Margins.zero,
+                        fontFamily: theme.textTheme.titleSmall?.fontFamily,
                       ),
                       '#': Style(
                         maxLines: 3,
@@ -410,20 +424,19 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${dateFormat.format(post.createdAt)} '
-                    '${widget.options.translations.postAt} '
-                    '${timeFormat.format(post.createdAt)}',
-                    style: theme.textTheme.bodySmall,
+                    '${dateFormat.format(post.createdAt)} ',
+                    style: theme.textTheme.labelSmall,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   if (post.reactionEnabled) ...[
                     Text(
                       widget.options.translations.commentsTitleOnPost,
-                      style: theme.textTheme.titleMedium,
+                      style: theme.textTheme.titleSmall!
+                          .copyWith(color: Colors.black),
                     ),
                     for (var reaction
                         in post.reactions ?? <TimelinePostReaction>[]) ...[
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 4),
                       GestureDetector(
                         onLongPressStart: (details) async {
                           if (reaction.creatorId == widget.userId ||
@@ -469,7 +482,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                 reaction.creator!.imageUrl!.isNotEmpty) ...[
                               widget.options.userAvatarBuilder?.call(
                                     reaction.creator!,
-                                    28,
+                                    14,
                                   ) ??
                                   CircleAvatar(
                                     radius: 14,
@@ -480,7 +493,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                             ] else ...[
                               widget.options.anonymousAvatarBuilder?.call(
                                     reaction.creator!,
-                                    28,
+                                    14,
                                   ) ??
                                   const CircleAvatar(
                                     radius: 14,
@@ -501,7 +514,8 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                           reaction.creator?.fullName ??
                                           widget.options.translations
                                               .anonymousUser,
-                                      style: theme.textTheme.titleSmall,
+                                      style: theme.textTheme.titleSmall!
+                                          .copyWith(color: Colors.black),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -522,12 +536,13 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                         reaction.creator?.fullName ??
                                         widget
                                             .options.translations.anonymousUser,
-                                    style: theme.textTheme.titleSmall,
+                                    style: theme.textTheme.titleSmall!
+                                        .copyWith(color: Colors.black),
                                     children: [
-                                      const TextSpan(text: '  '),
+                                      const TextSpan(text: ' '),
                                       TextSpan(
                                         text: reaction.reaction ?? '',
-                                        style: theme.textTheme.bodyMedium,
+                                        style: theme.textTheme.bodySmall,
                                       ),
                                       // text should go to new line
                                     ],
@@ -538,11 +553,12 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 4),
                     ],
                     if (post.reactions?.isEmpty ?? true) ...[
-                      const SizedBox(height: 16),
                       Text(
                         widget.options.translations.firstComment,
+                        style: theme.textTheme.bodySmall,
                       ),
                     ],
                     const SizedBox(height: 120),
@@ -553,52 +569,67 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           ),
         ),
         if (post.reactionEnabled && !(widget.isOverviewScreen ?? false))
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ReactionBottom(
-              messageInputBuilder: textInputBuilder,
-              onPressSelectImage: () async {
-                // open the image picker
-                var result = await showModalBottomSheet<Uint8List?>(
-                  context: context,
-                  builder: (context) => Container(
-                    padding: const EdgeInsets.all(8.0),
-                    color: theme.colorScheme.surface,
-                    child: ImagePicker(
-                      imagePickerConfig: widget.options.imagePickerConfig,
-                      imagePickerTheme: widget.options.imagePickerTheme,
+          SafeArea(
+            bottom: true,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: post.creator!.imageUrl != null
+                          ? widget.options.userAvatarBuilder?.call(
+                                post.creator!,
+                                28,
+                              ) ??
+                              CircleAvatar(
+                                radius: 14,
+                                backgroundImage: CachedNetworkImageProvider(
+                                  post.creator!.imageUrl!,
+                                ),
+                              )
+                          : widget.options.anonymousAvatarBuilder?.call(
+                                post.creator!,
+                                28,
+                              ) ??
+                              const CircleAvatar(
+                                radius: 14,
+                                child: Icon(
+                                  Icons.person,
+                                ),
+                              ),
                     ),
-                  ),
-                );
-                if (result != null) {
-                  updatePost(
-                    await widget.service.postService.reactToPost(
-                      post,
-                      TimelinePostReaction(
-                        id: '',
-                        postId: post.id,
-                        creatorId: widget.userId,
-                        createdAt: DateTime.now(),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8, right: 16),
+                        child: ReactionBottom(
+                          messageInputBuilder: textInputBuilder,
+                          onReactionSubmit: (reaction) async => updatePost(
+                            await widget.service.postService.reactToPost(
+                              post,
+                              TimelinePostReaction(
+                                id: '',
+                                postId: post.id,
+                                reaction: reaction,
+                                creatorId: widget.userId,
+                                createdAt: DateTime.now(),
+                              ),
+                            ),
+                          ),
+                          translations: widget.options.translations,
+                          iconColor: widget.options.theme.iconColor,
+                        ),
                       ),
-                      image: result,
                     ),
-                  );
-                }
-              },
-              onReactionSubmit: (reaction) async => updatePost(
-                await widget.service.postService.reactToPost(
-                  post,
-                  TimelinePostReaction(
-                    id: '',
-                    postId: post.id,
-                    reaction: reaction,
-                    creatorId: widget.userId,
-                    createdAt: DateTime.now(),
-                  ),
+                  ],
                 ),
               ),
-              translations: widget.options.translations,
-              iconColor: widget.options.theme.iconColor,
             ),
           ),
       ],

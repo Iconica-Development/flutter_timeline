@@ -28,7 +28,6 @@ class TimelineTranslations {
     required this.allowCommentsDescription,
     required this.commentsTitleOnPost,
     required this.checkPost,
-    required this.postAt,
     required this.deletePost,
     required this.deleteReaction,
     required this.deleteConfirmationMessage,
@@ -80,7 +79,6 @@ class TimelineTranslations {
     this.commentsTitle = 'Are people allowed to comment?',
     this.firstComment = 'Be the first to comment',
     this.writeComment = 'Write your comment here...',
-    this.postAt = 'at',
     this.postLoadingError = 'Something went wrong while loading the post',
     this.timelineSelectionDescription = 'Choose a category',
     this.searchHint = 'Search...',
@@ -104,7 +102,6 @@ class TimelineTranslations {
   final String allowComments;
   final String allowCommentsDescription;
   final String checkPost;
-  final String postAt;
 
   final String titleHintText;
   final String contentHintText;
@@ -150,7 +147,6 @@ class TimelineTranslations {
     String? allowCommentsDescription,
     String? commentsTitleOnPost,
     String? checkPost,
-    String? postAt,
     String? deletePost,
     String? deleteConfirmationTitle,
     String? deleteConfirmationMessage,
@@ -189,7 +185,6 @@ class TimelineTranslations {
             allowCommentsDescription ?? this.allowCommentsDescription,
         commentsTitleOnPost: commentsTitleOnPost ?? this.commentsTitleOnPost,
         checkPost: checkPost ?? this.checkPost,
-        postAt: postAt ?? this.postAt,
         deletePost: deletePost ?? this.deletePost,
         deleteConfirmationTitle:
             deleteConfirmationTitle ?? this.deleteConfirmationTitle,

@@ -158,7 +158,9 @@ Widget _postDetailScreenRoute({
           leading: backButton,
           backgroundColor: const Color(0xff212121),
           title: Text(
-            category?.title ?? post.category ?? 'Category',
+            category?.title.toLowerCase() ??
+                post.category?.toLowerCase() ??
+                'category',
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 24,
