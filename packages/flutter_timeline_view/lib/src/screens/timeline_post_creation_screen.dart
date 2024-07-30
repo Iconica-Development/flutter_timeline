@@ -217,6 +217,17 @@ class _TimelinePostCreationScreenState
                                     Icons.insert_drive_file,
                                   ),
                                 ),
+                            customButton: TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Cancel',
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       );
