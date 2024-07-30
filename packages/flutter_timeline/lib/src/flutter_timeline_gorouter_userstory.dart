@@ -116,7 +116,6 @@ List<GoRoute> getTimelineStoryRoutes({
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,
-                  backgroundColor: const Color(0xff212121),
                   title: Text(
                     config.optionsBuilder(context).translations.postCreation,
                     style: TextStyle(
@@ -180,7 +179,6 @@ List<GoRoute> getTimelineStoryRoutes({
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,
-                  backgroundColor: const Color(0xff212121),
                   title: Text(
                     category?.title ?? post.category ?? 'Category',
                     style: TextStyle(
@@ -238,7 +236,6 @@ List<GoRoute> getTimelineStoryRoutes({
                   ?.call(context, timelinePostCreationWidget, backButton) ??
               Scaffold(
                 appBar: AppBar(
-                  backgroundColor: const Color(0xff212121),
                   leading: backButton,
                   title: Text(
                     config.optionsBuilder(context).translations.postCreation,
@@ -287,7 +284,6 @@ List<GoRoute> getTimelineStoryRoutes({
               Scaffold(
                 appBar: AppBar(
                   leading: backButton,
-                  backgroundColor: const Color(0xff212121),
                   title: Text(
                     config.optionsBuilder(context).translations.postOverview,
                     style: TextStyle(

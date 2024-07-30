@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
@@ -364,6 +363,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
+                  // ignore: avoid_bool_literals_in_conditional_expressions
                   if (widget.isOverviewScreen != null
                       ? !widget.isOverviewScreen!
                       : false) ...[
@@ -549,14 +549,15 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
           ),
         ),
         if (post.reactionEnabled && !(widget.isOverviewScreen ?? false))
-          SafeArea(
-            bottom: true,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width,
-                ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              color: theme.scaffoldBackgroundColor,
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width,
+              ),
+              child: SafeArea(
+                bottom: true,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,

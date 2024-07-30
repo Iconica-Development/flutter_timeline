@@ -302,13 +302,13 @@ class _TimelineScreenState extends State<TimelineScreen> {
                             ),
                           ),
                         ),
+                      SizedBox(
+                        height: widget.options.paddings.mainPadding.bottom,
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: widget.options.paddings.mainPadding.bottom,
             ),
           ],
         );

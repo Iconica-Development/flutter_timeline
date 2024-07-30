@@ -11,6 +11,7 @@ import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
+import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
 import 'package:flutter_timeline_view/src/widgets/post_creation_textfield.dart';
 
 class TimelinePostCreationScreen extends StatefulWidget {
@@ -123,9 +124,9 @@ class _TimelinePostCreationScreenState
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Padding(
-        padding: widget.options.paddings.mainPadding,
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: widget.options.paddings.mainPadding,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +200,23 @@ class _TimelinePostCreationScreenState
                           color: theme.colorScheme.surface,
                           child: ImagePicker(
                             imagePickerConfig: widget.options.imagePickerConfig,
-                            imagePickerTheme: widget.options.imagePickerTheme,
+                            imagePickerTheme: widget.options.imagePickerTheme ??
+                                ImagePickerTheme(
+                                  titleAlignment: TextAlign.center,
+                                  title: '    Do you want to upload a file'
+                                      ' or take a picture?    ',
+                                  titleTextSize:
+                                      theme.textTheme.titleMedium!.fontSize!,
+                                  font:
+                                      theme.textTheme.titleMedium!.fontFamily!,
+                                  iconSize: 40,
+                                  selectImageText: 'UPLOAD FILE',
+                                  makePhotoText: 'TAKE PICTURE',
+                                  selectImageIcon: const Icon(
+                                    size: 40,
+                                    Icons.insert_drive_file,
+                                  ),
+                                ),
                           ),
                         ),
                       );
@@ -263,9 +280,7 @@ class _TimelinePostCreationScreenState
                   ],
                 ],
               ),
-
               const SizedBox(height: 16),
-
               Text(
                 widget.options.translations.commentsTitle,
                 style: theme.textTheme.titleMedium,
@@ -318,41 +333,28 @@ class _TimelinePostCreationScreenState
                 ],
               ),
               const SizedBox(height: 120),
-
               SafeArea(
                 bottom: true,
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: (widget.options.buttonBuilder != null)
-                      ? widget.options.buttonBuilder!(
-                          context,
-                          onPostCreated,
-                          widget.options.translations.checkPost,
-                          enabled: editingDone,
-                        )
-                      : FilledButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(
-                              theme.colorScheme.primary,
-                            ),
-                          ),
-                          onPressed: editingDone
-                              ? () async {
-                                  await onPostCreated();
-                                  await widget.service.postService
-                                      .fetchPosts(null);
-                                }
-                              : null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              widget.enablePostOverviewScreen
-                                  ? widget.options.translations.checkPost
-                                  : widget.options.translations.postCreation,
-                              style: theme.textTheme.displayLarge,
-                            ),
-                          ),
-                        ),
+                  child: widget.options.buttonBuilder?.call(
+                        context,
+                        onPostCreated,
+                        widget.options.translations.checkPost,
+                        enabled: editingDone,
+                      ) ??
+                      DefaultFilledButton(
+                        onPressed: editingDone
+                            ? () async {
+                                await onPostCreated();
+                                await widget.service.postService
+                                    .fetchPosts(null);
+                              }
+                            : null,
+                        buttonText: widget.enablePostOverviewScreen
+                            ? widget.options.translations.checkPost
+                            : widget.options.translations.postCreation,
+                      ),
                 ),
               ),
             ],

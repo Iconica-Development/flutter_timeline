@@ -313,7 +313,7 @@ Widget _postOverviewScreenRoute({
         appBar: AppBar(
           leading: backButton,
           title: Text(
-            config.optionsBuilder(context).translations.postOverview,
+            config.optionsBuilder(context).translations.postCreation,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 24,

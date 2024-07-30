@@ -28,26 +28,28 @@ class _ReactionBottomState extends State<ReactionBottom> {
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) => widget.messageInputBuilder(
-        _textEditingController,
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-          ),
-          child: IconButton(
-            onPressed: () async {
-              var value = _textEditingController.text;
-              if (value.isNotEmpty) {
-                await widget.onReactionSubmit(value);
-                _textEditingController.clear();
-              }
-            },
-            icon: Icon(
-              Icons.send,
-              color: widget.iconColor,
+  Widget build(BuildContext context) => Container(
+        child: widget.messageInputBuilder(
+          _textEditingController,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
+            child: IconButton(
+              onPressed: () async {
+                var value = _textEditingController.text;
+                if (value.isNotEmpty) {
+                  await widget.onReactionSubmit(value);
+                  _textEditingController.clear();
+                }
+              },
+              icon: Icon(
+                Icons.send,
+                color: widget.iconColor,
+              ),
             ),
           ),
+          widget.translations.writeComment,
         ),
-        widget.translations.writeComment,
       );
 }

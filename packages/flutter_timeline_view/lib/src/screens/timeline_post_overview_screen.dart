@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
+import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
 
 class TimelinePostOverviewScreen extends StatelessWidget {
   const TimelinePostOverviewScreen({
@@ -20,8 +21,6 @@ class TimelinePostOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    // the timelinePost.category is a key so we need to get the category object
     var timelineCategoryName = options.categoriesOptions.categoriesBuilder
             ?.call(context)
             .firstWhereOrNull((element) => element.key == timelinePost.category)
@@ -56,21 +55,9 @@ class TimelinePostOverviewScreen extends StatelessWidget {
               buttonText,
               enabled: true,
             ) ??
-            FilledButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    WidgetStatePropertyAll(Theme.of(context).primaryColor),
-              ),
-              onPressed: () {
-                onPostSubmit(timelinePost);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  buttonText,
-                  style: theme.textTheme.displayLarge,
-                ),
-              ),
+            DefaultFilledButton(
+              onPressed: () async => onPostSubmit(timelinePost),
+              buttonText: buttonText,
             ),
         SizedBox(height: options.paddings.postOverviewButtonBottomPadding),
       ],

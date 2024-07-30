@@ -16,7 +16,7 @@ class TimelineOptions {
     this.translations = const TimelineTranslations.empty(),
     this.paddings = const TimelinePaddingOptions(),
     this.imagePickerConfig = const ImagePickerConfig(),
-    this.imagePickerTheme = const ImagePickerTheme(),
+    this.imagePickerTheme,
     this.timelinePostHeight,
     this.sortCommentsAscending = true,
     this.sortPostsAscending = false,
@@ -93,7 +93,7 @@ class TimelineOptions {
 
   /// ImagePickerTheme can be used to change the UI of the
   /// Image Picker Widget to change the text/icons to your liking.
-  final ImagePickerTheme imagePickerTheme;
+  final ImagePickerTheme? imagePickerTheme;
 
   /// ImagePickerConfig can be used to define the
   /// size and quality for the uploaded image.
