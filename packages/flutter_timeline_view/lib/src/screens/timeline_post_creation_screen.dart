@@ -177,7 +177,6 @@ class _TimelinePostCreationScreenState
               const SizedBox(
                 height: 16,
               ),
-              // input field for the content
               Text(
                 widget.options.translations.uploadImage,
                 style: theme.textTheme.titleMedium,
@@ -186,7 +185,6 @@ class _TimelinePostCreationScreenState
                 widget.options.translations.uploadImageDescription,
                 style: theme.textTheme.bodySmall,
               ),
-              // image picker field
               const SizedBox(
                 height: 8,
               ),
@@ -194,7 +192,6 @@ class _TimelinePostCreationScreenState
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      // open a dialog to choose between camera and gallery
                       var result = await showModalBottomSheet<Uint8List?>(
                         context: context,
                         builder: (context) => Container(

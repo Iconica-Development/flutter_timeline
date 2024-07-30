@@ -33,7 +33,7 @@ class _CategorySelectorState extends State<CategorySelector> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           children: [
             SizedBox(

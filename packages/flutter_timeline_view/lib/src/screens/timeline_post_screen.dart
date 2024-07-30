@@ -364,13 +364,17 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '${post.likes} ${widget.options.translations.likesTitle}',
-                    style: widget
-                            .options.theme.textStyles.postLikeTitleAndAmount ??
-                        theme.textTheme.titleSmall
-                            ?.copyWith(color: Colors.black),
-                  ),
+                  if (widget.isOverviewScreen != null
+                      ? !widget.isOverviewScreen!
+                      : false) ...[
+                    Text(
+                      '${post.likes} ${widget.options.translations.likesTitle}',
+                      style: widget.options.theme.textStyles
+                              .postLikeTitleAndAmount ??
+                          theme.textTheme.titleSmall
+                              ?.copyWith(color: Colors.black),
+                    ),
+                  ],
                   Text.rich(
                     TextSpan(
                       text: widget.options.nameBuilder?.call(post.creator) ??
@@ -385,42 +389,15 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                           text: post.title,
                           style:
                               widget.options.theme.textStyles.postTitleStyle ??
-                                  theme.textTheme.titleSmall!.copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  theme.textTheme.bodySmall,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Html(
-                    data: post.content,
-                    style: {
-                      'body': Style(
-                        padding: HtmlPaddings.zero,
-                        margin: Margins.zero,
-                        fontFamily: theme.textTheme.titleSmall?.fontFamily,
-                      ),
-                      '#': Style(
-                        maxLines: 3,
-                        textOverflow: TextOverflow.ellipsis,
-                        padding: HtmlPaddings.zero,
-                        margin: Margins.zero,
-                      ),
-                      'H1': Style(
-                        padding: HtmlPaddings.zero,
-                        margin: Margins.zero,
-                      ),
-                      'H2': Style(
-                        padding: HtmlPaddings.zero,
-                        margin: Margins.zero,
-                      ),
-                      'H3': Style(
-                        padding: HtmlPaddings.zero,
-                        margin: Margins.zero,
-                      ),
-                    },
+                  Text(
+                    post.content,
+                    style: theme.textTheme.bodySmall,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -428,7 +405,10 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     style: theme.textTheme.labelSmall,
                   ),
                   const SizedBox(height: 16),
-                  if (post.reactionEnabled) ...[
+                  // ignore: avoid_bool_literals_in_conditional_expressions
+                  if (post.reactionEnabled || widget.isOverviewScreen != null
+                      ? !widget.isOverviewScreen!
+                      : false) ...[
                     Text(
                       widget.options.translations.commentsTitleOnPost,
                       style: theme.textTheme.titleSmall!

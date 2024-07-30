@@ -20,6 +20,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     // the timelinePost.category is a key so we need to get the category object
     var timelineCategoryName = options.categoriesOptions.categoriesBuilder
             ?.call(context)
@@ -55,7 +56,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
               buttonText,
               enabled: true,
             ) ??
-            ElevatedButton(
+            FilledButton(
               style: ButtonStyle(
                 backgroundColor:
                     WidgetStatePropertyAll(Theme.of(context).primaryColor),
@@ -64,14 +65,10 @@ class TimelinePostOverviewScreen extends StatelessWidget {
                 onPostSubmit(timelinePost);
               },
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(8),
                 child: Text(
                   buttonText,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: theme.textTheme.displayLarge,
                 ),
               ),
             ),
