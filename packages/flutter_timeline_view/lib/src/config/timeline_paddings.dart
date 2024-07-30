@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 /// This class contains the paddings used in the timeline options
 class TimelinePaddingOptions {
   const TimelinePaddingOptions({
-    this.mainPadding =
-        const EdgeInsets.only(left: 12.0, top: 24.0, right: 12.0, bottom: 12.0),
+    this.mainPadding = const EdgeInsets.only(left: 32, top: 20, right: 32),
     this.postPadding =
         const EdgeInsets.only(left: 12.0, top: 6, right: 12.0, bottom: 8),
     this.postOverviewButtonBottomPadding = 30.0,

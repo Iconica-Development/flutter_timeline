@@ -11,6 +11,7 @@ import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
+import 'package:flutter_timeline_view/src/widgets/post_creation_textfield.dart';
 
 class TimelinePostCreationScreen extends StatefulWidget {
   const TimelinePostCreationScreen({
@@ -119,6 +120,7 @@ class _TimelinePostCreationScreenState
     }
 
     var theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Padding(
@@ -130,48 +132,47 @@ class _TimelinePostCreationScreenState
             children: [
               Text(
                 widget.options.translations.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
+                style: theme.textTheme.titleMedium,
+              ),
+              const SizedBox(
+                height: 4,
               ),
               widget.options.textInputBuilder?.call(
                     titleController,
                     null,
                     '',
                   ) ??
-                  TextField(
-                    maxLength: widget.options.maxTitleLength,
+                  PostCreationTextfield(
                     controller: titleController,
-                    decoration: widget.options.contentInputDecoration ??
-                        InputDecoration(
-                          hintText: widget.options.translations.titleHintText,
-                        ),
+                    hintText: widget.options.translations.titleHintText,
+                    textMaxLength: widget.options.maxTitleLength,
+                    decoration: widget.options.titleInputDecoration,
+                    textCapitalization: null,
+                    expands: null,
+                    minLines: null,
+                    maxLines: 1,
                   ),
               const SizedBox(height: 16),
               Text(
                 widget.options.translations.content,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
+                style: theme.textTheme.titleMedium,
               ),
-              const SizedBox(height: 4),
               Text(
                 widget.options.translations.contentDescription,
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodySmall,
               ),
-              // input field for the content
-              TextField(
+              const SizedBox(
+                height: 4,
+              ),
+              PostCreationTextfield(
                 controller: contentController,
+                hintText: widget.options.translations.contentHintText,
+                textMaxLength: null,
+                decoration: widget.options.contentInputDecoration,
                 textCapitalization: TextCapitalization.sentences,
                 expands: false,
-                maxLines: null,
                 minLines: null,
-                decoration: widget.options.contentInputDecoration ??
-                    InputDecoration(
-                      hintText: widget.options.translations.contentHintText,
-                    ),
+                maxLines: null,
               ),
               const SizedBox(
                 height: 16,
@@ -179,14 +180,11 @@ class _TimelinePostCreationScreenState
               // input field for the content
               Text(
                 widget.options.translations.uploadImage,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
+                style: theme.textTheme.titleMedium,
               ),
               Text(
                 widget.options.translations.uploadImageDescription,
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodySmall,
               ),
               // image picker field
               const SizedBox(
@@ -273,19 +271,22 @@ class _TimelinePostCreationScreenState
 
               Text(
                 widget.options.translations.commentsTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
+                style: theme.textTheme.titleMedium,
               ),
               Text(
                 widget.options.translations.allowCommentsDescription,
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(
+                height: 8,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Checkbox(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity:
+                        const VisualDensity(horizontal: -4, vertical: -4),
                     activeColor: theme.colorScheme.primary,
                     value: allowComments,
                     onChanged: (value) {
@@ -294,8 +295,17 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.yes),
+                  Text(
+                    widget.options.translations.yes,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(
+                    width: 32,
+                  ),
                   Checkbox(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity:
+                        const VisualDensity(horizontal: -4, vertical: -4),
                     activeColor: theme.colorScheme.primary,
                     value: !allowComments,
                     onChanged: (value) {
@@ -304,47 +314,49 @@ class _TimelinePostCreationScreenState
                       });
                     },
                   ),
-                  Text(widget.options.translations.no),
+                  Text(
+                    widget.options.translations.no,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
               ),
               const SizedBox(height: 120),
 
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: (widget.options.buttonBuilder != null)
-                    ? widget.options.buttonBuilder!(
-                        context,
-                        onPostCreated,
-                        widget.options.translations.checkPost,
-                        enabled: editingDone,
-                      )
-                    : ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                            theme.colorScheme.primary,
+              SafeArea(
+                bottom: true,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: (widget.options.buttonBuilder != null)
+                      ? widget.options.buttonBuilder!(
+                          context,
+                          onPostCreated,
+                          widget.options.translations.checkPost,
+                          enabled: editingDone,
+                        )
+                      : FilledButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              theme.colorScheme.primary,
+                            ),
                           ),
-                        ),
-                        onPressed: editingDone
-                            ? () async {
-                                await onPostCreated();
-                                await widget.service.postService
-                                    .fetchPosts(null);
-                              }
-                            : null,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            widget.enablePostOverviewScreen
-                                ? widget.options.translations.checkPost
-                                : widget.options.translations.postCreation,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
+                          onPressed: editingDone
+                              ? () async {
+                                  await onPostCreated();
+                                  await widget.service.postService
+                                      .fetchPosts(null);
+                                }
+                              : null,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              widget.enablePostOverviewScreen
+                                  ? widget.options.translations.checkPost
+                                  : widget.options.translations.postCreation,
+                              style: theme.textTheme.displayLarge,
                             ),
                           ),
                         ),
-                      ),
+                ),
               ),
             ],
           ),
