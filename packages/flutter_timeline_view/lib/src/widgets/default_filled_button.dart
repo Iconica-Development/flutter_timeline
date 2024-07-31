@@ -24,6 +24,7 @@ class DefaultFilledButton extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: Text(
           buttonText,
+          overflow: TextOverflow.ellipsis,
           style: theme.textTheme.displayLarge,
         ),
       ),

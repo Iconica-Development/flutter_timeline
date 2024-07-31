@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/config/timeline_translations.dart';
 
@@ -43,8 +44,10 @@ class _ReactionBottomState extends State<ReactionBottom> {
                   _textEditingController.clear();
                 }
               },
-              icon: Icon(
-                Icons.send,
+              icon: SvgPicture.asset(
+                'assets/send.svg',
+                package: 'flutter_timeline_view',
+                // ignore: deprecated_member_use
                 color: widget.iconColor,
               ),
             ),

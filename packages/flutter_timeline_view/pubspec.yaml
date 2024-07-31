@@ -17,7 +17,6 @@ dependencies:
   intl: any
   cached_network_image: ^3.2.2
   dotted_border: ^2.1.0
-  flutter_html: ^3.0.0-beta.2
 
   flutter_timeline_interface:
     git:
@@ -29,6 +28,7 @@ dependencies:
       url: https://github.com/Iconica-Development/flutter_image_picker
       ref: 1.0.5
   collection: any
+  flutter_svg: ^2.0.10+1
 
 dependency_overrides:
   flutter_timeline_interface:
@@ -42,3 +42,6 @@ dev_dependencies:
       ref: 6.0.0
 
 flutter:
+  assets:
+    - assets/
+

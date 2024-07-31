@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
@@ -355,10 +356,13 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       const SizedBox(width: 8),
                       if (post.reactionEnabled)
                         widget.options.theme.commentIcon ??
-                            Icon(
-                              Icons.chat_bubble_outline_rounded,
+                            SvgPicture.asset(
+                              'assets/Comment.svg',
+                              package: 'flutter_timeline_view',
+                              // ignore: deprecated_member_use
                               color: widget.options.theme.iconColor,
-                              size: widget.options.iconSize,
+                              width: widget.options.iconSize,
+                              height: widget.options.iconSize,
                             ),
                     ],
                   ),
@@ -454,9 +458,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                           }
                         },
                         child: Row(
-                          crossAxisAlignment: reaction.imageUrl != null
-                              ? CrossAxisAlignment.start
-                              : CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (reaction.creator?.imageUrl != null &&
                                 reaction.creator!.imageUrl!.isNotEmpty) ...[

@@ -27,6 +27,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
             ?.title ??
         timelinePost.category;
     var buttonText = '${options.translations.postIn} $timelineCategoryName';
+    var isSubmitted = false;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -55,11 +56,20 @@ class TimelinePostOverviewScreen extends StatelessWidget {
               buttonText,
               enabled: true,
             ) ??
-            DefaultFilledButton(
-              onPressed: () async => onPostSubmit(timelinePost),
-              buttonText: buttonText,
+            SafeArea(
+              bottom: true,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 80),
+                child: DefaultFilledButton(
+                  onPressed: () async {
+                    if (isSubmitted) return;
+                    isSubmitted = true;
+                    onPostSubmit(timelinePost);
+                  },
+                  buttonText: buttonText,
+                ),
+              ),
             ),
-        SizedBox(height: options.paddings.postOverviewButtonBottomPadding),
       ],
     );
   }

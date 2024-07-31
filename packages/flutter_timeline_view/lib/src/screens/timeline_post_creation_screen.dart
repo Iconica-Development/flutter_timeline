@@ -148,7 +148,7 @@ class _TimelinePostCreationScreenState
                     hintText: widget.options.translations.titleHintText,
                     textMaxLength: widget.options.maxTitleLength,
                     decoration: widget.options.titleInputDecoration,
-                    textCapitalization: null,
+                    textCapitalization: TextCapitalization.sentences,
                     expands: null,
                     minLines: null,
                     maxLines: 1,
@@ -354,17 +354,20 @@ class _TimelinePostCreationScreenState
                         widget.options.translations.checkPost,
                         enabled: editingDone,
                       ) ??
-                      DefaultFilledButton(
-                        onPressed: editingDone
-                            ? () async {
-                                await onPostCreated();
-                                await widget.service.postService
-                                    .fetchPosts(null);
-                              }
-                            : null,
-                        buttonText: widget.enablePostOverviewScreen
-                            ? widget.options.translations.checkPost
-                            : widget.options.translations.postCreation,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 48),
+                        child: DefaultFilledButton(
+                          onPressed: editingDone
+                              ? () async {
+                                  await onPostCreated();
+                                  await widget.service.postService
+                                      .fetchPosts(null);
+                                }
+                              : null,
+                          buttonText: widget.enablePostOverviewScreen
+                              ? widget.options.translations.checkPost
+                              : widget.options.translations.postCreation,
+                        ),
                       ),
                 ),
               ),
