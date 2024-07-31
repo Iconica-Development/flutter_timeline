@@ -163,6 +163,9 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
             PostCreationTextfield(
               controller: controller,
               hintText: widget.options.translations.addCategoryHintText,
+              validator: (p0) => p0!.isEmpty
+                  ? widget.options.translations.addCategoryErrorText
+                  : null,
             ),
             const SizedBox(height: 16),
             Row(
@@ -180,7 +183,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
                           ),
                         );
                         setState(() {});
-                        if (mounted) Navigator.pop(context);
+                        if (context.mounted) Navigator.pop(context);
                       },
                       buttonText:
                           widget.options.translations.addCategorySubmitButton,

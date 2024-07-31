@@ -272,4 +272,60 @@ class LocalTimelinePostService
 
     return categories;
   }
+
+  @override
+  Future<TimelinePost> likeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: (r.likedBy ?? [])..add(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+
+    notifyListeners();
+    return updatedPost;
+  }
+
+  @override
+  Future<TimelinePost> unlikeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: r.likedBy?..remove(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+
+    notifyListeners();
+    return updatedPost;
+  }
 }

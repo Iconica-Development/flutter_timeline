@@ -344,13 +344,19 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                             setState(() {});
                           }
                         },
-                        icon: Icon(
-                          isLikedByUser
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_outline_outlined,
-                          color: widget.options.theme.iconColor,
-                          size: widget.options.iconSize,
-                        ),
+                        icon: isLikedByUser
+                            ? widget.options.theme.likedIcon ??
+                                Icon(
+                                  Icons.favorite_rounded,
+                                  color: widget.options.theme.iconColor,
+                                  size: widget.options.iconSize,
+                                )
+                            : widget.options.theme.likeIcon ??
+                                Icon(
+                                  Icons.favorite_outline_outlined,
+                                  color: widget.options.theme.iconColor,
+                                  size: widget.options.iconSize,
+                                ),
                       ),
                       const SizedBox(width: 8),
                       if (post.reactionEnabled)
@@ -410,7 +416,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   ),
                   const SizedBox(height: 16),
                   // ignore: avoid_bool_literals_in_conditional_expressions
-                  if (post.reactionEnabled || widget.isOverviewScreen != null
+                  if (post.reactionEnabled && widget.isOverviewScreen != null
                       ? !widget.isOverviewScreen!
                       : false) ...[
                     Text(
@@ -544,6 +550,55 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                 ),
                               ),
                             ],
+                            Builder(
+                              builder: (context) {
+                                var isLikedByUser =
+                                    reaction.likedBy?.contains(widget.userId) ??
+                                        false;
+                                return IconButton(
+                                  padding: const EdgeInsets.only(left: 12),
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () async {
+                                    if (isLikedByUser) {
+                                      updatePost(
+                                        await widget.service.postService
+                                            .unlikeReaction(
+                                          widget.userId,
+                                          post,
+                                          reaction.id,
+                                        ),
+                                      );
+                                      setState(() {});
+                                    } else {
+                                      updatePost(
+                                        await widget.service.postService
+                                            .likeReaction(
+                                          widget.userId,
+                                          post,
+                                          reaction.id,
+                                        ),
+                                      );
+                                      setState(() {});
+                                    }
+                                  },
+                                  icon: isLikedByUser
+                                      ? widget.options.theme.likedIcon ??
+                                          Icon(
+                                            Icons.favorite_rounded,
+                                            color:
+                                                widget.options.theme.iconColor,
+                                            size: 14,
+                                          )
+                                      : widget.options.theme.likeIcon ??
+                                          Icon(
+                                            Icons.favorite_outline_outlined,
+                                            color:
+                                                widget.options.theme.iconColor,
+                                            size: 14,
+                                          ),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),

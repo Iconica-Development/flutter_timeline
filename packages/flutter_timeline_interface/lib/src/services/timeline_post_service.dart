@@ -32,4 +32,14 @@ abstract class TimelinePostService with ChangeNotifier {
 
   Future<List<TimelineCategory>> fetchCategories();
   Future<bool> addCategory(TimelineCategory category);
+  Future<TimelinePost> likeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  );
+  Future<TimelinePost> unlikeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  );
 }

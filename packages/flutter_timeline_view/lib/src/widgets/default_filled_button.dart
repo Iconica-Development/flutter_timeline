@@ -14,11 +14,13 @@ class DefaultFilledButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return FilledButton(
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(
-          theme.colorScheme.primary,
-        ),
-      ),
+      style: onPressed != null
+          ? ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(
+                theme.colorScheme.primary,
+              ),
+            )
+          : null,
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.all(8),

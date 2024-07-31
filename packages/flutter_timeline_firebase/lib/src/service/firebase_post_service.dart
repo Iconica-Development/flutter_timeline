@@ -405,4 +405,81 @@ class FirebaseTimelinePostService
     notifyListeners();
     return categories;
   }
+
+  @override
+  Future<TimelinePost> likeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    // update the post with the new like
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: (r.likedBy ?? [])..add(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+    var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
+    await postRef.update({
+      'reactions': post.reactions
+          ?.map(
+            (r) =>
+                r.id == reactionId ? r.copyWith(likedBy: r.likedBy ?? []) : r,
+          )
+          .map((e) => e.toJson())
+          .toList(),
+    });
+    notifyListeners();
+    return updatedPost;
+  }
+
+  @override
+  Future<TimelinePost> unlikeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    // update the post with the new like
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: r.likedBy?..remove(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+    var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
+    await postRef.update({
+      'reactions': post.reactions
+          ?.map(
+            (r) => r.id == reactionId
+                ? r.copyWith(likedBy: r.likedBy?..remove(userId))
+                : r,
+          )
+          .map((e) => e.toJson())
+          .toList(),
+    });
+    notifyListeners();
+    return updatedPost;
+  }
 }

@@ -54,6 +54,9 @@ class TimelineTranslations {
     required this.addCategorySubmitButton,
     required this.addCategoryCancelButtton,
     required this.addCategoryHintText,
+    required this.addCategoryErrorText,
+    required this.titleErrorText,
+    required this.contentErrorText,
   });
 
   /// Default translations for the timeline component view
@@ -100,6 +103,9 @@ class TimelineTranslations {
     this.addCategorySubmitButton = 'Add category',
     this.addCategoryCancelButtton = 'Cancel',
     this.addCategoryHintText = 'Category name...',
+    this.addCategoryErrorText = 'Please enter a category name',
+    this.titleErrorText = 'Please enter a title',
+    this.contentErrorText = 'Please enter content',
   });
 
   final String noPosts;
@@ -117,6 +123,8 @@ class TimelineTranslations {
 
   final String titleHintText;
   final String contentHintText;
+  final String titleErrorText;
+  final String contentErrorText;
 
   final String deletePost;
   final String deleteConfirmationTitle;
@@ -147,6 +155,7 @@ class TimelineTranslations {
   final String addCategorySubmitButton;
   final String addCategoryCancelButtton;
   final String addCategoryHintText;
+  final String addCategoryErrorText;
 
   final String yes;
   final String no;
@@ -194,6 +203,9 @@ class TimelineTranslations {
     String? addCategorySubmitButton,
     String? addCategoryCancelButtton,
     String? addCategoryHintText,
+    String? addCategoryErrorText,
+    String? titleErrorText,
+    String? contentErrorText,
   }) =>
       TimelineTranslations(
         noPosts: noPosts ?? this.noPosts,
@@ -244,5 +256,8 @@ class TimelineTranslations {
         addCategoryHintText: addCategoryHintText ?? this.addCategoryHintText,
         createCategoryPopuptitle:
             createCategoryPopuptitle ?? this.createCategoryPopuptitle,
+        addCategoryErrorText: addCategoryErrorText ?? this.addCategoryErrorText,
+        titleErrorText: titleErrorText ?? this.titleErrorText,
+        contentErrorText: contentErrorText ?? this.contentErrorText,
       );
 }

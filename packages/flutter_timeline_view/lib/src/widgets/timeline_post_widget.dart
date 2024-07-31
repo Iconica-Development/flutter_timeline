@@ -315,9 +315,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
           ] else ...[
             Text(
               '${widget.post.likes} '
-              '${widget.post.likes > 1 ? 
-              widget.options.translations.multipleLikesTitle : 
-              widget.options.translations.oneLikeTitle}',
+              '${widget.post.likes > 1 ? widget.options.translations.multipleLikesTitle : widget.options.translations.oneLikeTitle}',
               style:
                   widget.options.theme.textStyles.listPostLikeTitleAndAmount ??
                       theme.textTheme.titleSmall!.copyWith(
