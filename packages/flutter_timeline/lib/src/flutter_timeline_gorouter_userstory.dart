@@ -88,13 +88,9 @@ List<GoRoute> getTimelineStoryRoutes({
       path: TimelineUserStoryRoutes.timelineCategorySelection,
       pageBuilder: (context, state) {
         var timelineSelectionScreen = TimelineSelectionScreen(
+          postService: config.service.postService,
           options: config.optionsBuilder(context),
-          categories: config
-                  .optionsBuilder(context)
-                  .categoriesOptions
-                  .categoriesBuilder
-                  ?.call(context) ??
-              [],
+          categories: config.service.postService.categories,
           onCategorySelected: (category) async {
             await context.push(
               TimelineUserStoryRoutes.timelinepostCreation(category.key ?? ''),
@@ -135,14 +131,9 @@ List<GoRoute> getTimelineStoryRoutes({
       pageBuilder: (context, state) {
         var service = config.serviceBuilder?.call(context) ?? config.service;
         var post = service.postService.getPost(state.pathParameters['post']!);
-        var category = config.optionsBuilder
-            .call(context)
-            .categoriesOptions
-            .categoriesBuilder
-            ?.call(context)
-            .firstWhereOrNull(
-              (element) => element.key == post?.category,
-            );
+        var category = service.postService.categories.firstWhereOrNull(
+          (element) => element.key == post?.category,
+        );
 
         var timelinePostWidget = TimelinePostScreen(
           userId: config.getUserId?.call(context) ?? config.userId,

@@ -74,8 +74,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
         post = loadedPost;
         isLoading = false;
       });
-    } on Exception catch (e) {
-      debugPrint('Error loading post: $e');
+    } on Exception catch (_) {
       setState(() {
         isLoading = false;
       });
@@ -372,7 +371,8 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                       ? !widget.isOverviewScreen!
                       : false) ...[
                     Text(
-                      '${post.likes} ${widget.options.translations.likesTitle}',
+                      // ignore: lines_longer_than_80_chars
+                      '${post.likes} ${post.likes > 1 ? widget.options.translations.multipleLikesTitle : widget.options.translations.oneLikeTitle}',
                       style: widget.options.theme.textStyles
                               .postLikeTitleAndAmount ??
                           theme.textTheme.titleSmall
@@ -526,6 +526,18 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                         text: reaction.reaction ?? '',
                                         style: theme.textTheme.bodySmall,
                                       ),
+                                      const TextSpan(text: '\n'),
+                                      TextSpan(
+                                        text: dateFormat
+                                            .format(reaction.createdAt),
+                                        style: theme.textTheme.labelSmall!
+                                            .copyWith(
+                                          color: theme
+                                              .textTheme.labelSmall!.color!
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+
                                       // text should go to new line
                                     ],
                                   ),

@@ -21,8 +21,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var timelineCategoryName = options.categoriesOptions.categoriesBuilder
-            ?.call(context)
+    var timelineCategoryName = service.postService.categories
             .firstWhereOrNull((element) => element.key == timelinePost.category)
             ?.title ??
         timelinePost.category;

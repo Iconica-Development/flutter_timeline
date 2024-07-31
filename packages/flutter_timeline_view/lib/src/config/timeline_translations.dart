@@ -35,7 +35,8 @@ class TimelineTranslations {
     required this.deleteCancelButton,
     required this.deleteButton,
     required this.viewPost,
-    required this.likesTitle,
+    required this.oneLikeTitle,
+    required this.multipleLikesTitle,
     required this.commentsTitle,
     required this.firstComment,
     required this.writeComment,
@@ -48,6 +49,11 @@ class TimelineTranslations {
     required this.yes,
     required this.no,
     required this.timeLineScreenTitle,
+    required this.createCategoryPopuptitle,
+    required this.addCategoryTitle,
+    required this.addCategorySubmitButton,
+    required this.addCategoryCancelButtton,
+    required this.addCategoryHintText,
   });
 
   /// Default translations for the timeline component view
@@ -75,7 +81,8 @@ class TimelineTranslations {
     this.deleteCancelButton = 'Cancel',
     this.deleteReaction = 'Delete Reaction',
     this.viewPost = 'View post',
-    this.likesTitle = 'likes',
+    this.oneLikeTitle = 'like',
+    this.multipleLikesTitle = 'likes',
     this.commentsTitle = 'Are people allowed to comment?',
     this.firstComment = 'Be the first to comment',
     this.writeComment = 'Write your comment here...',
@@ -88,6 +95,11 @@ class TimelineTranslations {
     this.yes = 'Yes',
     this.no = 'No',
     this.timeLineScreenTitle = 'iconinstagram',
+    this.createCategoryPopuptitle = 'Choose a title for the new category',
+    this.addCategoryTitle = 'Add category',
+    this.addCategorySubmitButton = 'Add category',
+    this.addCategoryCancelButtton = 'Cancel',
+    this.addCategoryHintText = 'Category name...',
   });
 
   final String noPosts;
@@ -114,7 +126,8 @@ class TimelineTranslations {
 
   final String deleteReaction;
   final String viewPost;
-  final String likesTitle;
+  final String oneLikeTitle;
+  final String multipleLikesTitle;
   final String commentsTitle;
   final String commentsTitleOnPost;
   final String writeComment;
@@ -128,6 +141,12 @@ class TimelineTranslations {
   final String postOverview;
   final String postIn;
   final String postCreation;
+
+  final String createCategoryPopuptitle;
+  final String addCategoryTitle;
+  final String addCategorySubmitButton;
+  final String addCategoryCancelButtton;
+  final String addCategoryHintText;
 
   final String yes;
   final String no;
@@ -154,7 +173,8 @@ class TimelineTranslations {
     String? deleteCancelButton,
     String? deleteReaction,
     String? viewPost,
-    String? likesTitle,
+    String? oneLikeTitle,
+    String? multipleLikesTitle,
     String? commentsTitle,
     String? writeComment,
     String? firstComment,
@@ -169,6 +189,11 @@ class TimelineTranslations {
     String? yes,
     String? no,
     String? timeLineScreenTitle,
+    String? createCategoryPopuptitle,
+    String? addCategoryTitle,
+    String? addCategorySubmitButton,
+    String? addCategoryCancelButtton,
+    String? addCategoryHintText,
   }) =>
       TimelineTranslations(
         noPosts: noPosts ?? this.noPosts,
@@ -194,7 +219,8 @@ class TimelineTranslations {
         deleteCancelButton: deleteCancelButton ?? this.deleteCancelButton,
         deleteReaction: deleteReaction ?? this.deleteReaction,
         viewPost: viewPost ?? this.viewPost,
-        likesTitle: likesTitle ?? this.likesTitle,
+        oneLikeTitle: oneLikeTitle ?? this.oneLikeTitle,
+        multipleLikesTitle: multipleLikesTitle ?? this.multipleLikesTitle,
         commentsTitle: commentsTitle ?? this.commentsTitle,
         writeComment: writeComment ?? this.writeComment,
         firstComment: firstComment ?? this.firstComment,
@@ -210,5 +236,13 @@ class TimelineTranslations {
         yes: yes ?? this.yes,
         no: no ?? this.no,
         timeLineScreenTitle: timeLineScreenTitle ?? this.timeLineScreenTitle,
+        addCategoryTitle: addCategoryTitle ?? this.addCategoryTitle,
+        addCategorySubmitButton:
+            addCategorySubmitButton ?? this.addCategorySubmitButton,
+        addCategoryCancelButtton:
+            addCategoryCancelButtton ?? this.addCategoryCancelButtton,
+        addCategoryHintText: addCategoryHintText ?? this.addCategoryHintText,
+        createCategoryPopuptitle:
+            createCategoryPopuptitle ?? this.createCategoryPopuptitle,
       );
 }

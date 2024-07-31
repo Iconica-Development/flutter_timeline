@@ -5,11 +5,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_timeline_interface/src/model/timeline_post.dart';
-import 'package:flutter_timeline_interface/src/model/timeline_reaction.dart';
+import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 
 abstract class TimelinePostService with ChangeNotifier {
   List<TimelinePost> posts = [];
+  List<TimelineCategory> categories = [];
+  TimelineCategory? selectedCategory;
 
   Future<void> deletePost(TimelinePost post);
   Future<TimelinePost> deletePostReaction(TimelinePost post, String reactionId);
@@ -28,4 +29,7 @@ abstract class TimelinePostService with ChangeNotifier {
   });
   Future<TimelinePost> likePost(String userId, TimelinePost post);
   Future<TimelinePost> unlikePost(String userId, TimelinePost post);
+
+  Future<List<TimelineCategory>> fetchCategories();
+  Future<bool> addCategory(TimelineCategory category);
 }

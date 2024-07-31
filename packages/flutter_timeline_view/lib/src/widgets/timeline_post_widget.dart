@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
+import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
 import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
 
 class TimelinePostWidget extends StatefulWidget {
@@ -314,7 +315,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
           ] else ...[
             Text(
               '${widget.post.likes} '
-              '${widget.options.translations.likesTitle}',
+              '${widget.post.likes > 1 ? 
+              widget.options.translations.multipleLikesTitle : 
+              widget.options.translations.oneLikeTitle}',
               style:
                   widget.options.theme.textStyles.listPostLikeTitleAndAmount ??
                       theme.textTheme.titleSmall!.copyWith(
@@ -364,29 +367,52 @@ Future<void> showPostDeletionConfirmationDialog(
   BuildContext context,
   Function() onPostDelete,
 ) async {
+  var theme = Theme.of(context);
   var result = await showDialog(
     context: context,
     builder: (BuildContext context) =>
         options.deletionDialogBuilder?.call(context) ??
         AlertDialog(
-          title: Text(options.translations.deleteConfirmationTitle),
-          content: Text(options.translations.deleteConfirmationMessage),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text(options.translations.deleteCancelButton),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text(
-                options.translations.deleteButton,
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 64, vertical: 24),
+          titlePadding: const EdgeInsets.only(left: 44, right: 44, top: 32),
+          title: Text(
+            options.translations.deleteConfirmationMessage,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: DefaultFilledButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop(true);
+                      },
+                      buttonText: options.translations.deleteButton,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  options.translations.deleteCancelButton,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    decoration: TextDecoration.underline,
+                    color: theme.textTheme.bodyMedium?.color!.withOpacity(0.5),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
   );
 

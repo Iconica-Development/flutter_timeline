@@ -72,14 +72,29 @@ Widget _timelineScreenRoute({
             .theme
             .postCreationFloatingActionButtonColor ??
         theme.colorScheme.primary,
-    onPressed: () async => Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _postCategorySelectionScreen(
-          configuration: config,
-          context: context,
-        ),
-      ),
-    ),
+    onPressed: () async {
+      var selectedCategory = config.service.postService.selectedCategory;
+      if (selectedCategory != null && selectedCategory.key != null) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _postCreationScreenRoute(
+              configuration: config,
+              context: context,
+              category: selectedCategory,
+            ),
+          ),
+        );
+      } else {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _postCategorySelectionScreen(
+              configuration: config,
+              context: context,
+            ),
+          ),
+        );
+      }
+    },
     shape: const CircleBorder(),
     child: const Icon(
       Icons.add,
@@ -138,11 +153,7 @@ Widget _postDetailScreenRoute({
     onUserTap: (user) => config.onUserTap?.call(context, user),
   );
 
-  var category = config
-      .optionsBuilder(context)
-      .categoriesOptions
-      .categoriesBuilder
-      ?.call(context)
+  var category = config.service.postService.categories
       .firstWhere((element) => element.key == post.category);
 
   var backButton = IconButton(
@@ -157,9 +168,7 @@ Widget _postDetailScreenRoute({
         appBar: AppBar(
           leading: backButton,
           title: Text(
-            category?.title.toLowerCase() ??
-                post.category?.toLowerCase() ??
-                'category',
+            category.title.toLowerCase(),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 24,
@@ -339,13 +348,9 @@ Widget _postCategorySelectionScreen({
       );
 
   var timelineSelectionScreen = TimelineSelectionScreen(
+    postService: config.service.postService,
     options: config.optionsBuilder(context),
-    categories: config
-            .optionsBuilder(context)
-            .categoriesOptions
-            .categoriesBuilder
-            ?.call(context) ??
-        [],
+    categories: config.service.postService.categories,
     onCategorySelected: (category) async {
       await Navigator.of(context).push(
         MaterialPageRoute(

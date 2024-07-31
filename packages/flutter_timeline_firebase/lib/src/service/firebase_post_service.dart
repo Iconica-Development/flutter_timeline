@@ -5,6 +5,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,12 @@ class FirebaseTimelinePostService
 
   @override
   List<TimelinePost> posts = [];
+
+  @override
+  List<TimelineCategory> categories = [];
+
+  @override
+  TimelineCategory? selectedCategory;
 
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
@@ -118,7 +125,6 @@ class FirebaseTimelinePostService
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    debugPrint('fetching posts from firebase with category: $category');
     var snapshot = (category != null)
         ? await _db
             .collection(_options.timelineCollectionName)
@@ -357,5 +363,46 @@ class FirebaseTimelinePostService
     _users[userId] = user;
 
     return user;
+  }
+
+  @override
+  Future<bool> addCategory(TimelineCategory category) async {
+    var exists = categories.firstWhereOrNull(
+      (element) => element.title.toLowerCase() == category.title.toLowerCase(),
+    );
+    if (exists != null) return false;
+    try {
+      await _db
+          .collection(_options.timelineCategoryCollectionName)
+          .add(category.toJson());
+      categories.add(category);
+      notifyListeners();
+      return true;
+    } on Exception catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<List<TimelineCategory>> fetchCategories() async {
+    categories.clear();
+    categories.add(
+      const TimelineCategory(
+        key: null,
+        title: 'All',
+      ),
+    );
+    var categoriesSnapshot = await _db
+        .collection(_options.timelineCategoryCollectionName)
+        .withConverter(
+          fromFirestore: (snapshot, _) =>
+              TimelineCategory.fromJson(snapshot.data()!),
+          toFirestore: (model, _) => model.toJson(),
+        )
+        .get();
+    categories.addAll(categoriesSnapshot.docs.map((e) => e.data()));
+
+    notifyListeners();
+    return categories;
   }
 }

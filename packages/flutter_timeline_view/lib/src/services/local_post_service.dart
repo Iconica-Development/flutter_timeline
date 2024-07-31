@@ -14,6 +14,12 @@ class LocalTimelinePostService
   List<TimelinePost> posts = [];
 
   @override
+  List<TimelineCategory> categories = [];
+
+  @override
+  TimelineCategory? selectedCategory;
+
+  @override
   Future<TimelinePost> createPost(TimelinePost post) async {
     posts.add(
       post.copyWith(
@@ -241,4 +247,29 @@ class LocalTimelinePostService
           ),
         ),
       ];
+
+  @override
+  Future<bool> addCategory(TimelineCategory category) async {
+    categories.add(category);
+    notifyListeners();
+    return true;
+  }
+
+  @override
+  Future<List<TimelineCategory>> fetchCategories() async {
+    categories = [
+      const TimelineCategory(key: null, title: 'All'),
+      const TimelineCategory(
+        key: 'Category',
+        title: 'Category',
+      ),
+      const TimelineCategory(
+        key: 'Category with two lines',
+        title: 'Category with two lines',
+      ),
+    ];
+    notifyListeners();
+
+    return categories;
+  }
 }

@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
@@ -148,6 +149,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
           );
         }
 
+        var categories = service.postService.categories;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -215,11 +218,16 @@ class _TimelineScreenState extends State<TimelineScreen> {
               ),
             ],
             CategorySelector(
+              categories: categories,
               isOnTop: _isOnTop,
               filter: category,
               options: widget.options,
               onTapCategory: (categoryKey) {
                 setState(() {
+                  service.postService.selectedCategory =
+                      categories.firstWhereOrNull(
+                    (element) => element.key == categoryKey,
+                  );
                   category = categoryKey;
                 });
               },
@@ -319,6 +327,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null || !context.mounted) return;
     try {
+      await service.postService.fetchCategories();
       await service.postService.fetchPosts(category);
       setState(() {
         isLoading = false;

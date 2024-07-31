@@ -174,32 +174,14 @@ class TimelineOptions {
   final InputDecoration? contentInputDecoration;
 }
 
-List<TimelineCategory> _getDefaultCategories(context) => [
-      const TimelineCategory(
-        key: null,
-        title: 'All',
-      ),
-      const TimelineCategory(
-        key: 'Category',
-        title: 'Category',
-      ),
-      const TimelineCategory(
-        key: 'Category with two lines',
-        title: 'Category with two lines',
-      ),
-    ];
-
 class CategoriesOptions {
   const CategoriesOptions({
-    this.categoriesBuilder = _getDefaultCategories,
     this.categoryButtonBuilder,
     this.categorySelectorHorizontalPadding,
   });
 
   /// List of categories that the user can select.
   /// If this is null no categories will be shown.
-  final List<TimelineCategory> Function(BuildContext context)?
-      categoriesBuilder;
 
   /// Abilty to override the standard category selector
   final Widget Function(
@@ -214,17 +196,11 @@ class CategoriesOptions {
   final double? categorySelectorHorizontalPadding;
 
   TimelineCategory? getCategoryByKey(
+    List<TimelineCategory> categories,
     BuildContext context,
     String? key,
-  ) {
-    if (categoriesBuilder == null) {
-      return null;
-    }
-
-    return categoriesBuilder!
-        .call(context)
-        .firstWhereOrNull((category) => category.key == key);
-  }
+  ) =>
+      categories.firstWhereOrNull((category) => category.key == key);
 }
 
 class FilterOptions {
