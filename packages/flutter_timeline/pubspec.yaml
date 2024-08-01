@@ -13,10 +13,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  go_router: any
-
-  collection: any
-
   flutter_timeline_view:
     git:
       url: https://github.com/Iconica-Development/flutter_timeline
@@ -28,6 +24,7 @@ dependencies:
       url: https://github.com/Iconica-Development/flutter_timeline
       path: packages/flutter_timeline_interface
       ref: 4.1.0
+  collection: any
 dependency_overrides:
   flutter_timeline_view:
     path: ../flutter_timeline_view
