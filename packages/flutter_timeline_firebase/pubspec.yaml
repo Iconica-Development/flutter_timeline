@@ -4,9 +4,8 @@
 
 name: flutter_timeline_firebase
 description: Implementation of the Flutter Timeline interface for Firebase.
-version: 4.1.0
-
-publish_to: none
+version: 5.0.0
+publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub
 
 environment:
   sdk: ">=3.1.3 <4.0.0"
@@ -18,18 +17,10 @@ dependencies:
   firebase_core: ^2.22.0
   firebase_storage: ^11.5.1
   uuid: ^4.2.1
-
-  flutter_timeline_interface:
-    git:
-      url: https://github.com/Iconica-Development/flutter_timeline
-      path: packages/flutter_timeline_interface
-      ref: 4.1.0
   collection: ^1.18.0
-
-dependency_overrides:
   flutter_timeline_interface:
-    path: ../flutter_timeline_interface
-
+    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
+    version: ^5.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
