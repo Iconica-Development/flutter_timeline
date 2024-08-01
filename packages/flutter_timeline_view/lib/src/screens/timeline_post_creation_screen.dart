@@ -67,12 +67,15 @@ class _TimelinePostCreationScreenState
   void _listenForInputs() {
     titleIsValid = titleController.text.isNotEmpty;
     contentIsValid = contentController.text.isNotEmpty;
+    setState(() {});
   }
 
   var formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    var imageRequired = widget.options.requireImageForPost;
+
     Future<void> onPostCreated() async {
       var post = TimelinePost(
         id: 'Post${Random().nextInt(1000)}',
@@ -121,6 +124,7 @@ class _TimelinePostCreationScreenState
                       '',
                     ) ??
                     PostCreationTextfield(
+                      fieldKey: const ValueKey('title'),
                       controller: titleController,
                       hintText: widget.options.translations.titleHintText,
                       textMaxLength: widget.options.maxTitleLength,
@@ -152,6 +156,7 @@ class _TimelinePostCreationScreenState
                   height: 4,
                 ),
                 PostCreationTextfield(
+                  fieldKey: const ValueKey('content'),
                   controller: contentController,
                   hintText: widget.options.translations.contentHintText,
                   textMaxLength: null,
@@ -355,7 +360,9 @@ class _TimelinePostCreationScreenState
                             children: [
                               Expanded(
                                 child: DefaultFilledButton(
-                                  onPressed: titleIsValid && contentIsValid
+                                  onPressed: titleIsValid &&
+                                          contentIsValid &&
+                                          (imageRequired ? image != null : true)
                                       ? () async {
                                           if (formkey.currentState!
                                               .validate()) {

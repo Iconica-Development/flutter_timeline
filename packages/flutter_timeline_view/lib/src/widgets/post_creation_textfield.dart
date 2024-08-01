@@ -12,6 +12,7 @@ class PostCreationTextfield extends StatelessWidget {
     this.expands,
     this.minLines,
     this.maxLines,
+    this.fieldKey,
   });
 
   final TextEditingController controller;
@@ -24,10 +25,12 @@ class PostCreationTextfield extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final String? Function(String?)? validator;
+  final Key? fieldKey;
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return TextFormField(
+      key: fieldKey,
       validator: validator,
       style: theme.textTheme.bodySmall,
       controller: controller,
