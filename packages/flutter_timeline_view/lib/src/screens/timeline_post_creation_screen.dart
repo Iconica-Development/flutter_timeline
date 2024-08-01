@@ -351,19 +351,27 @@ class _TimelinePostCreationScreenState
                         ) ??
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 48),
-                          child: DefaultFilledButton(
-                            onPressed: titleIsValid && contentIsValid
-                                ? () async {
-                                    if (formkey.currentState!.validate()) {
-                                      await onPostCreated();
-                                      await widget.service.postService
-                                          .fetchPosts(null);
-                                    }
-                                  }
-                                : null,
-                            buttonText: widget.enablePostOverviewScreen
-                                ? widget.options.translations.checkPost
-                                : widget.options.translations.postCreation,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: DefaultFilledButton(
+                                  onPressed: titleIsValid && contentIsValid
+                                      ? () async {
+                                          if (formkey.currentState!
+                                              .validate()) {
+                                            await onPostCreated();
+                                            await widget.service.postService
+                                                .fetchPosts(null);
+                                          }
+                                        }
+                                      : null,
+                                  buttonText: widget.enablePostOverviewScreen
+                                      ? widget.options.translations.checkPost
+                                      : widget
+                                          .options.translations.postCreation,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                   ),

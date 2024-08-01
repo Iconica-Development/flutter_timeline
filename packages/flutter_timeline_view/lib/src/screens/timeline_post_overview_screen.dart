@@ -1,6 +1,3 @@
-// ignore_for_file: prefer_expression_function_bodies
-
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
@@ -21,11 +18,6 @@ class TimelinePostOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var timelineCategoryName = service.postService.categories
-            .firstWhereOrNull((element) => element.key == timelinePost.category)
-            ?.title ??
-        timelinePost.category;
-    var buttonText = '${options.translations.postIn} $timelineCategoryName';
     var isSubmitted = false;
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -45,27 +37,33 @@ class TimelinePostOverviewScreen extends StatelessWidget {
               () {
                 onPostSubmit(timelinePost);
               },
-              buttonText,
+              options.translations.postIn,
             ) ??
             options.buttonBuilder?.call(
               context,
               () {
                 onPostSubmit(timelinePost);
               },
-              buttonText,
+              options.translations.postIn,
               enabled: true,
             ) ??
             SafeArea(
               bottom: true,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 80),
-                child: DefaultFilledButton(
-                  onPressed: () async {
-                    if (isSubmitted) return;
-                    isSubmitted = true;
-                    onPostSubmit(timelinePost);
-                  },
-                  buttonText: buttonText,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DefaultFilledButton(
+                        onPressed: () async {
+                          if (isSubmitted) return;
+                          isSubmitted = true;
+                          onPostSubmit(timelinePost);
+                        },
+                        buttonText: options.translations.postIn,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

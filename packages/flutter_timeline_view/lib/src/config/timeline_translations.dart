@@ -75,7 +75,7 @@ class TimelineTranslations {
     this.allowCommentsDescription =
         'Indicate whether people are allowed to respond',
     this.commentsTitleOnPost = 'Comments',
-    this.checkPost = 'Check post overview',
+    this.checkPost = 'Overview',
     this.deletePost = 'Delete post',
     this.deleteConfirmationTitle = 'Delete Post',
     this.deleteConfirmationMessage =
@@ -93,7 +93,7 @@ class TimelineTranslations {
     this.timelineSelectionDescription = 'Choose a category',
     this.searchHint = 'Search...',
     this.postOverview = 'Post Overview',
-    this.postIn = 'Post in',
+    this.postIn = 'Post',
     this.postCreation = 'add post',
     this.yes = 'Yes',
     this.no = 'No',
