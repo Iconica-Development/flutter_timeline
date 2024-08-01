@@ -35,13 +35,18 @@ class TimelinePostOverviewScreen extends StatelessWidget {
         options.postOverviewButtonBuilder?.call(
               context,
               () {
+                if (isSubmitted) return;
+                isSubmitted = true;
                 onPostSubmit(timelinePost);
               },
               options.translations.postIn,
+              timelinePost,
             ) ??
             options.buttonBuilder?.call(
               context,
               () {
+                if (isSubmitted) return;
+                isSubmitted = true;
                 onPostSubmit(timelinePost);
               },
               options.translations.postIn,

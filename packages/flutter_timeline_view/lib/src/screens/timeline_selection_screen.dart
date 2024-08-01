@@ -36,105 +36,108 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
       padding: EdgeInsets.symmetric(
         horizontal: size.width * 0.05,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 12),
-            child: Text(
-              widget.options.translations.timelineSelectionDescription,
-              style: theme.textTheme.titleLarge,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 12),
+              child: Text(
+                widget.options.translations.timelineSelectionDescription,
+                style: theme.textTheme.titleLarge,
+              ),
             ),
-          ),
-          for (var category in widget.categories.where(
-            (element) => element.canCreate && element.key != null,
-          )) ...[
-            widget.options.categorySelectorButtonBuilder?.call(
-                  context,
-                  () {
-                    widget.onCategorySelected.call(category);
-                  },
-                  category.title,
-                ) ??
-                InkWell(
-                  onTap: () => widget.onCategorySelected.call(category),
-                  child: Container(
-                    height: 60,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: widget.options.theme
-                                .categorySelectionButtonBorderColor ??
-                            Theme.of(context).primaryColor,
-                        width: 2,
-                      ),
-                      color: widget
-                          .options.theme.categorySelectionButtonBackgroundColor,
-                    ),
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Text(
-                            category.title,
-                            style: theme.textTheme.titleMedium,
-                          ),
+            for (var category in widget.categories.where(
+              (element) => element.canCreate && element.key != null,
+            )) ...[
+              widget.options.categorySelectorButtonBuilder?.call(
+                    context,
+                    () {
+                      widget.onCategorySelected.call(category);
+                    },
+                    category.title,
+                  ) ??
+                  InkWell(
+                    onTap: () => widget.onCategorySelected.call(category),
+                    child: Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: widget.options.theme
+                                  .categorySelectionButtonBorderColor ??
+                              Theme.of(context).primaryColor,
+                          width: 2,
                         ),
-                      ],
+                        color: widget.options.theme
+                            .categorySelectionButtonBackgroundColor,
+                      ),
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text(
+                              category.title,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+            ],
+            InkWell(
+              onTap: showCategoryPopup,
+              child: Container(
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: widget
+                            .options.theme.categorySelectionButtonBorderColor ??
+                        Theme.of(context).primaryColor,
+                    width: 2,
+                  ),
+                  color: widget
+                      .options.theme.categorySelectionButtonBackgroundColor,
                 ),
-          ],
-          InkWell(
-            onTap: showCategoryPopup,
-            child: Container(
-              height: 60,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color:
-                      widget.options.theme.categorySelectionButtonBorderColor ??
-                          Theme.of(context).primaryColor,
-                  width: 2,
-                ),
-                color:
-                    widget.options.theme.categorySelectionButtonBackgroundColor,
-              ),
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: theme.textTheme.titleMedium?.color!
-                              .withOpacity(0.5),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          widget.options.translations.addCategoryTitle,
-                          style: theme.textTheme.titleMedium!.copyWith(
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
                             color: theme.textTheme.titleMedium?.color!
                                 .withOpacity(0.5),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            widget.options.translations.addCategoryTitle,
+                            style: theme.textTheme.titleMedium!.copyWith(
+                              color: theme.textTheme.titleMedium?.color!
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -61,6 +61,7 @@ class _TimelinePostCreationScreenState
   void initState() {
     titleController.addListener(_listenForInputs);
     contentController.addListener(_listenForInputs);
+
     super.initState();
   }
 
@@ -77,6 +78,7 @@ class _TimelinePostCreationScreenState
     var imageRequired = widget.options.requireImageForPost;
 
     Future<void> onPostCreated() async {
+      var user = await widget.service.userService?.getUser(widget.userId);
       var post = TimelinePost(
         id: 'Post${Random().nextInt(1000)}',
         creatorId: widget.userId,
@@ -89,6 +91,7 @@ class _TimelinePostCreationScreenState
         createdAt: DateTime.now(),
         reactionEnabled: allowComments,
         image: image,
+        creator: user,
       );
 
       if (widget.enablePostOverviewScreen) {
@@ -362,7 +365,7 @@ class _TimelinePostCreationScreenState
                                 child: DefaultFilledButton(
                                   onPressed: titleIsValid &&
                                           contentIsValid &&
-                                          (imageRequired ? image != null : true)
+                                          (!imageRequired || image != null)
                                       ? () async {
                                           if (formkey.currentState!
                                               .validate()) {

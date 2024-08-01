@@ -160,6 +160,7 @@ class TimelineOptions {
     BuildContext context,
     Function() onPressed,
     String text,
+    TimelinePost post,
   )? postOverviewButtonBuilder;
 
   /// Optional builder to override the default alertdialog for post deletion
