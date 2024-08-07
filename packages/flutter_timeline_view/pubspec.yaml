@@ -23,7 +23,7 @@ dependencies:
     version: ^5.0.0
   flutter_image_picker:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^1.0.5
+    version: ^4.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

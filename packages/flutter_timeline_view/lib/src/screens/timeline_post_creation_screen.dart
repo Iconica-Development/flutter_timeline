@@ -199,21 +199,13 @@ class _TimelinePostCreationScreenState
                         var result = await showModalBottomSheet<Uint8List?>(
                           context: context,
                           builder: (context) => Container(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(20),
                             color: theme.colorScheme.surface,
                             child: ImagePicker(
-                              imagePickerConfig:
-                                  widget.options.imagePickerConfig,
-                              imagePickerTheme: widget
-                                      .options.imagePickerTheme ??
+                              config: widget.options.imagePickerConfig,
+                              theme: widget.options.imagePickerTheme ??
                                   ImagePickerTheme(
-                                    titleAlignment: TextAlign.center,
-                                    title: '    Do you want to upload a file'
-                                        ' or take a picture?    ',
-                                    titleTextSize:
-                                        theme.textTheme.titleMedium!.fontSize!,
-                                    font: theme
-                                        .textTheme.titleMedium!.fontFamily!,
+                                    titleStyle: theme.textTheme.titleMedium,
                                     iconSize: 40,
                                     selectImageText: 'UPLOAD FILE',
                                     makePhotoText: 'TAKE PICTURE',
@@ -221,18 +213,19 @@ class _TimelinePostCreationScreenState
                                       size: 40,
                                       Icons.insert_drive_file,
                                     ),
+                                    closeButtonBuilder: (onTap) => TextButton(
+                                      onPressed: () {
+                                        onTap();
+                                      },
+                                      child: Text(
+                                        'Cancel',
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                              customButton: TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Cancel',
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
                             ),
                           ),
                         );
