@@ -16,10 +16,10 @@ class TimelineOptions {
     this.translations = const TimelineTranslations.empty(),
     this.paddings = const TimelinePaddingOptions(),
     this.imagePickerConfig = const ImagePickerConfig(),
-    this.imagePickerTheme = const ImagePickerTheme(),
+    this.imagePickerTheme,
     this.timelinePostHeight,
     this.sortCommentsAscending = true,
-    this.sortPostsAscending,
+    this.sortPostsAscending = false,
     this.doubleTapTolike = false,
     this.iconsWithValues = false,
     this.likeAndDislikeIconsForDoubleTap = const (
@@ -38,7 +38,7 @@ class TimelineOptions {
     this.userAvatarBuilder,
     this.anonymousAvatarBuilder,
     this.nameBuilder,
-    this.iconSize = 26,
+    this.iconSize = 24,
     this.postWidgetHeight,
     this.filterOptions = const FilterOptions(),
     this.categoriesOptions = const CategoriesOptions(),
@@ -93,7 +93,7 @@ class TimelineOptions {
 
   /// ImagePickerTheme can be used to change the UI of the
   /// Image Picker Widget to change the text/icons to your liking.
-  final ImagePickerTheme imagePickerTheme;
+  final ImagePickerTheme? imagePickerTheme;
 
   /// ImagePickerConfig can be used to define the
   /// size and quality for the uploaded image.
@@ -160,6 +160,7 @@ class TimelineOptions {
     BuildContext context,
     Function() onPressed,
     String text,
+    TimelinePost post,
   )? postOverviewButtonBuilder;
 
   /// Optional builder to override the default alertdialog for post deletion
@@ -174,53 +175,14 @@ class TimelineOptions {
   final InputDecoration? contentInputDecoration;
 }
 
-List<TimelineCategory> _getDefaultCategories(context) => [
-      const TimelineCategory(
-        key: null,
-        title: 'All',
-        icon: Padding(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Icon(
-            Icons.apps,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      const TimelineCategory(
-        key: 'Category',
-        title: 'Category',
-        icon: Padding(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Icon(
-            Icons.category,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      const TimelineCategory(
-        key: 'Category with two lines',
-        title: 'Category with two lines',
-        icon: Padding(
-          padding: EdgeInsets.only(right: 8.0),
-          child: Icon(
-            Icons.category,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    ];
-
 class CategoriesOptions {
   const CategoriesOptions({
-    this.categoriesBuilder = _getDefaultCategories,
     this.categoryButtonBuilder,
     this.categorySelectorHorizontalPadding,
   });
 
   /// List of categories that the user can select.
   /// If this is null no categories will be shown.
-  final List<TimelineCategory> Function(BuildContext context)?
-      categoriesBuilder;
 
   /// Abilty to override the standard category selector
   final Widget Function(
@@ -235,17 +197,11 @@ class CategoriesOptions {
   final double? categorySelectorHorizontalPadding;
 
   TimelineCategory? getCategoryByKey(
+    List<TimelineCategory> categories,
     BuildContext context,
     String? key,
-  ) {
-    if (categoriesBuilder == null) {
-      return null;
-    }
-
-    return categoriesBuilder!
-        .call(context)
-        .firstWhereOrNull((category) => category.key == key);
-  }
+  ) =>
+      categories.firstWhereOrNull((category) => category.key == key);
 }
 
 class FilterOptions {

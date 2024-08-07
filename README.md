@@ -35,45 +35,7 @@ And import this package:   import 'package:intl/date_symbol_data_local.dart';
 ```
 
 ## How to use
-To use the module within your Flutter-application with predefined `Go_router` routes you should add the following:
-
-Add go_router as dependency to your project.
-Add the following configuration to your flutter_application:
-
-```
-List<GoRoute> getTimelineStoryRoutes() => 
-  getTimelineStoryRoutes(
-    TimelineUserStoryConfiguration(
-      service: TimelineService(
-        postService: LocalTimelinePostService(),
-      ),
-      optionsBuilder: (context) {
-        return const TimelineOptions();
-      },
-    ),
-  );
-```
-
-Add the `getTimelineStoryRoutes()` to your go_router routes like so:
-
-```
-final GoRouter _router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const MyHomePage(
-          title: "home",
-        );
-      },
-    ),
-    ...getTimelineStoryRoutes(configuration: configuration);
-  ],
-);
-```
-
-The user story can also be used without go router:
-Add the following code somewhere in your widget tree:
+To use the userstory add the following code somewhere in your widget tree:
 
 ````
 timeLineNavigatorUserStory(TimelineUserStoryConfiguration, context),

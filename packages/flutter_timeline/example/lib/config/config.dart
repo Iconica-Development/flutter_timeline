@@ -16,25 +16,6 @@ var options = TimelineOptions(
   paddings: TimelinePaddingOptions(
     mainPadding: const EdgeInsets.all(20).copyWith(top: 28),
   ),
-  categoriesOptions: CategoriesOptions(
-    categoriesBuilder: (context) => [
-      const TimelineCategory(
-        key: null,
-        title: 'All',
-        icon: SizedBox.shrink(),
-      ),
-      const TimelineCategory(
-        key: 'category1',
-        title: 'Category 1',
-        icon: SizedBox.shrink(),
-      ),
-      const TimelineCategory(
-        key: 'category2',
-        title: 'Category 2',
-        icon: SizedBox.shrink(),
-      ),
-    ],
-  ),
 );
 
 void navigateToOverview(

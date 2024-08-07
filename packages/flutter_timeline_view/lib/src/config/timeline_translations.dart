@@ -28,7 +28,6 @@ class TimelineTranslations {
     required this.allowCommentsDescription,
     required this.commentsTitleOnPost,
     required this.checkPost,
-    required this.postAt,
     required this.deletePost,
     required this.deleteReaction,
     required this.deleteConfirmationMessage,
@@ -36,7 +35,8 @@ class TimelineTranslations {
     required this.deleteCancelButton,
     required this.deleteButton,
     required this.viewPost,
-    required this.likesTitle,
+    required this.oneLikeTitle,
+    required this.multipleLikesTitle,
     required this.commentsTitle,
     required this.firstComment,
     required this.writeComment,
@@ -49,6 +49,14 @@ class TimelineTranslations {
     required this.yes,
     required this.no,
     required this.timeLineScreenTitle,
+    required this.createCategoryPopuptitle,
+    required this.addCategoryTitle,
+    required this.addCategorySubmitButton,
+    required this.addCategoryCancelButtton,
+    required this.addCategoryHintText,
+    required this.addCategoryErrorText,
+    required this.titleErrorText,
+    required this.contentErrorText,
   });
 
   /// Default translations for the timeline component view
@@ -67,7 +75,7 @@ class TimelineTranslations {
     this.allowCommentsDescription =
         'Indicate whether people are allowed to respond',
     this.commentsTitleOnPost = 'Comments',
-    this.checkPost = 'Check post overview',
+    this.checkPost = 'Overview',
     this.deletePost = 'Delete post',
     this.deleteConfirmationTitle = 'Delete Post',
     this.deleteConfirmationMessage =
@@ -76,20 +84,28 @@ class TimelineTranslations {
     this.deleteCancelButton = 'Cancel',
     this.deleteReaction = 'Delete Reaction',
     this.viewPost = 'View post',
-    this.likesTitle = 'Likes',
+    this.oneLikeTitle = 'like',
+    this.multipleLikesTitle = 'likes',
     this.commentsTitle = 'Are people allowed to comment?',
     this.firstComment = 'Be the first to comment',
     this.writeComment = 'Write your comment here...',
-    this.postAt = 'at',
     this.postLoadingError = 'Something went wrong while loading the post',
     this.timelineSelectionDescription = 'Choose a category',
     this.searchHint = 'Search...',
     this.postOverview = 'Post Overview',
-    this.postIn = 'Post in',
+    this.postIn = 'Post',
     this.postCreation = 'add post',
     this.yes = 'Yes',
     this.no = 'No',
     this.timeLineScreenTitle = 'iconinstagram',
+    this.createCategoryPopuptitle = 'Choose a title for the new category',
+    this.addCategoryTitle = 'Add category',
+    this.addCategorySubmitButton = 'Add category',
+    this.addCategoryCancelButtton = 'Cancel',
+    this.addCategoryHintText = 'Category name...',
+    this.addCategoryErrorText = 'Please enter a category name',
+    this.titleErrorText = 'Please enter a title',
+    this.contentErrorText = 'Please enter content',
   });
 
   final String noPosts;
@@ -104,10 +120,11 @@ class TimelineTranslations {
   final String allowComments;
   final String allowCommentsDescription;
   final String checkPost;
-  final String postAt;
 
   final String titleHintText;
   final String contentHintText;
+  final String titleErrorText;
+  final String contentErrorText;
 
   final String deletePost;
   final String deleteConfirmationTitle;
@@ -117,7 +134,8 @@ class TimelineTranslations {
 
   final String deleteReaction;
   final String viewPost;
-  final String likesTitle;
+  final String oneLikeTitle;
+  final String multipleLikesTitle;
   final String commentsTitle;
   final String commentsTitleOnPost;
   final String writeComment;
@@ -131,6 +149,13 @@ class TimelineTranslations {
   final String postOverview;
   final String postIn;
   final String postCreation;
+
+  final String createCategoryPopuptitle;
+  final String addCategoryTitle;
+  final String addCategorySubmitButton;
+  final String addCategoryCancelButtton;
+  final String addCategoryHintText;
+  final String addCategoryErrorText;
 
   final String yes;
   final String no;
@@ -150,7 +175,6 @@ class TimelineTranslations {
     String? allowCommentsDescription,
     String? commentsTitleOnPost,
     String? checkPost,
-    String? postAt,
     String? deletePost,
     String? deleteConfirmationTitle,
     String? deleteConfirmationMessage,
@@ -158,7 +182,8 @@ class TimelineTranslations {
     String? deleteCancelButton,
     String? deleteReaction,
     String? viewPost,
-    String? likesTitle,
+    String? oneLikeTitle,
+    String? multipleLikesTitle,
     String? commentsTitle,
     String? writeComment,
     String? firstComment,
@@ -173,6 +198,14 @@ class TimelineTranslations {
     String? yes,
     String? no,
     String? timeLineScreenTitle,
+    String? createCategoryPopuptitle,
+    String? addCategoryTitle,
+    String? addCategorySubmitButton,
+    String? addCategoryCancelButtton,
+    String? addCategoryHintText,
+    String? addCategoryErrorText,
+    String? titleErrorText,
+    String? contentErrorText,
   }) =>
       TimelineTranslations(
         noPosts: noPosts ?? this.noPosts,
@@ -189,7 +222,6 @@ class TimelineTranslations {
             allowCommentsDescription ?? this.allowCommentsDescription,
         commentsTitleOnPost: commentsTitleOnPost ?? this.commentsTitleOnPost,
         checkPost: checkPost ?? this.checkPost,
-        postAt: postAt ?? this.postAt,
         deletePost: deletePost ?? this.deletePost,
         deleteConfirmationTitle:
             deleteConfirmationTitle ?? this.deleteConfirmationTitle,
@@ -199,7 +231,8 @@ class TimelineTranslations {
         deleteCancelButton: deleteCancelButton ?? this.deleteCancelButton,
         deleteReaction: deleteReaction ?? this.deleteReaction,
         viewPost: viewPost ?? this.viewPost,
-        likesTitle: likesTitle ?? this.likesTitle,
+        oneLikeTitle: oneLikeTitle ?? this.oneLikeTitle,
+        multipleLikesTitle: multipleLikesTitle ?? this.multipleLikesTitle,
         commentsTitle: commentsTitle ?? this.commentsTitle,
         writeComment: writeComment ?? this.writeComment,
         firstComment: firstComment ?? this.firstComment,
@@ -215,5 +248,16 @@ class TimelineTranslations {
         yes: yes ?? this.yes,
         no: no ?? this.no,
         timeLineScreenTitle: timeLineScreenTitle ?? this.timeLineScreenTitle,
+        addCategoryTitle: addCategoryTitle ?? this.addCategoryTitle,
+        addCategorySubmitButton:
+            addCategorySubmitButton ?? this.addCategorySubmitButton,
+        addCategoryCancelButtton:
+            addCategoryCancelButtton ?? this.addCategoryCancelButtton,
+        addCategoryHintText: addCategoryHintText ?? this.addCategoryHintText,
+        createCategoryPopuptitle:
+            createCategoryPopuptitle ?? this.createCategoryPopuptitle,
+        addCategoryErrorText: addCategoryErrorText ?? this.addCategoryErrorText,
+        titleErrorText: titleErrorText ?? this.titleErrorText,
+        contentErrorText: contentErrorText ?? this.contentErrorText,
       );
 }
