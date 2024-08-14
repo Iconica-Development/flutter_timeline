@@ -101,7 +101,7 @@ class _TimelineSelectionScreenState extends State<TimelineSelectionScreen> {
                   border: Border.all(
                     color: widget
                             .options.theme.categorySelectionButtonBorderColor ??
-                        Theme.of(context).primaryColor,
+                        const Color(0xFF9E9E9E),
                     width: 2,
                   ),
                   color: widget

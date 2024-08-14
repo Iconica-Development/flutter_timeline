@@ -146,7 +146,7 @@ class _TimelinePostCreationScreenState
                         return null;
                       },
                     ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 Text(
                   widget.options.translations.content,
                   style: theme.textTheme.titleMedium,
@@ -179,7 +179,7 @@ class _TimelinePostCreationScreenState
                   },
                 ),
                 const SizedBox(
-                  height: 16,
+                  height: 24,
                 ),
                 Text(
                   widget.options.translations.uploadImage,
@@ -314,6 +314,9 @@ class _TimelinePostCreationScreenState
                         });
                       },
                     ),
+                    const SizedBox(
+                      width: 4,
+                    ),
                     Text(
                       widget.options.translations.yes,
                       style: theme.textTheme.bodyMedium,
@@ -332,6 +335,9 @@ class _TimelinePostCreationScreenState
                           allowComments = false;
                         });
                       },
+                    ),
+                    const SizedBox(
+                      width: 4,
                     ),
                     Text(
                       widget.options.translations.no,

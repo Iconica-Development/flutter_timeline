@@ -409,12 +409,13 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     post.content,
                     style: theme.textTheme.bodySmall,
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     '${dateFormat.format(post.createdAt)} ',
-                    style: theme.textTheme.labelSmall,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      letterSpacing: 0.5,
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   // ignore: avoid_bool_literals_in_conditional_expressions
                   if (post.reactionEnabled && widget.isOverviewScreen != null
                       ? !widget.isOverviewScreen!
@@ -541,6 +542,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                           color: theme
                                               .textTheme.labelSmall!.color!
                                               .withOpacity(0.5),
+                                          letterSpacing: 0.5,
                                         ),
                                       ),
 
@@ -657,7 +659,12 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                     ),
                     Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 16),
+                        padding: const EdgeInsets.only(
+                          left: 8,
+                          right: 16,
+                          top: 8,
+                          bottom: 8,
+                        ),
                         child: ReactionBottom(
                           messageInputBuilder: textInputBuilder,
                           onReactionSubmit: (reaction) async => updatePost(

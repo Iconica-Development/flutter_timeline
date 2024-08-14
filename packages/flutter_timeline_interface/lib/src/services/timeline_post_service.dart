@@ -18,7 +18,7 @@ abstract class TimelinePostService with ChangeNotifier {
   Future<List<TimelinePost>> fetchPosts(String? category);
   Future<TimelinePost> fetchPost(TimelinePost post);
   Future<List<TimelinePost>> fetchPostsPaginated(String? category, int limit);
-  TimelinePost? getPost(String postId);
+  Future<TimelinePost?> getPost(String postId);
   List<TimelinePost> getPosts(String? category);
   Future<List<TimelinePost>> refreshPosts(String? category);
   Future<TimelinePost> fetchPostDetails(TimelinePost post);

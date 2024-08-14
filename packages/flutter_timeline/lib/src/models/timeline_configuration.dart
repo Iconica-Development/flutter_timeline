@@ -65,6 +65,7 @@ class TimelineUserStoryConfiguration {
     this.afterPostCreationGoHome = false,
     this.enablePostOverviewScreen = true,
     this.categorySelectionOpenPageBuilder,
+    this.onPostCreate,
   });
 
   /// The ID of the user associated with this user story configuration.
@@ -159,4 +160,6 @@ class TimelineUserStoryConfiguration {
     BuildContext context,
     Widget child,
   )? categorySelectionOpenPageBuilder;
+
+  final Function(TimelinePost post)? onPostCreate;
 }

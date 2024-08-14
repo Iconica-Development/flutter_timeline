@@ -10,11 +10,13 @@ import 'package:flutter_timeline/flutter_timeline.dart';
 /// This function creates a navigator for displaying user stories on a timeline.
 /// It takes a [BuildContext] and an optional [TimelineUserStoryConfiguration]
 /// as parameters. If no configuration is provided, default values will be used.
+late TimelineUserStoryConfiguration timelineUserStoryConfiguration;
+
 Widget timeLineNavigatorUserStory({
   required BuildContext context,
   TimelineUserStoryConfiguration? configuration,
 }) {
-  var config = configuration ??
+  timelineUserStoryConfiguration = configuration ??
       TimelineUserStoryConfiguration(
         userId: 'test_user',
         service: TimelineService(
@@ -23,7 +25,10 @@ Widget timeLineNavigatorUserStory({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return _timelineScreenRoute(config: config, context: context);
+  return _timelineScreenRoute(
+    config: timelineUserStoryConfiguration,
+    context: context,
+  );
 }
 
 /// A widget function that creates a timeline screen route.
@@ -262,7 +267,8 @@ Widget _postOverviewScreenRoute({
     service: config.service,
     timelinePost: post,
     onPostSubmit: (post) async {
-      await config.service.postService.createPost(post);
+      var createdPost = await config.service.postService.createPost(post);
+      config.onPostCreate?.call(createdPost);
       if (context.mounted) {
         await Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -353,4 +359,16 @@ Widget _postCategorySelectionScreen({
         ),
         body: timelineSelectionScreen,
       );
+}
+
+Future<void> routeToPostDetail(BuildContext context, TimelinePost post) async {
+  await Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => _postDetailScreenRoute(
+        config: timelineUserStoryConfiguration,
+        context: context,
+        post: post,
+      ),
+    ),
+  );
 }

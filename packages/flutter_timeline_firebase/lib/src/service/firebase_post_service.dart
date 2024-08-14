@@ -245,10 +245,20 @@ class FirebaseTimelinePostService
   }
 
   @override
-  TimelinePost? getPost(String postId) =>
-      (posts.any((element) => element.id == postId))
-          ? posts.firstWhere((element) => element.id == postId)
-          : null;
+  Future<TimelinePost?> getPost(String postId) async {
+    var post = await _db
+        .collection(_options.timelineCollectionName)
+        .doc(postId)
+        .withConverter<TimelinePost>(
+          fromFirestore: (snapshot, _) => TimelinePost.fromJson(
+            snapshot.id,
+            snapshot.data()!,
+          ),
+          toFirestore: (user, _) => user.toJson(),
+        )
+        .get();
+    return post.data();
+  }
 
   @override
   List<TimelinePost> getPosts(String? category) => posts

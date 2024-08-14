@@ -124,10 +124,11 @@ class LocalTimelinePostService
   }
 
   @override
-  TimelinePost? getPost(String postId) =>
-      (posts.any((element) => element.id == postId))
-          ? posts.firstWhere((element) => element.id == postId)
-          : null;
+  Future<TimelinePost?> getPost(String postId) => Future.value(
+        (posts.any((element) => element.id == postId))
+            ? posts.firstWhere((element) => element.id == postId)
+            : null,
+      );
 
   @override
   List<TimelinePost> getPosts(String? category) => posts
