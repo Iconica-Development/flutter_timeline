@@ -55,6 +55,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var isLikedByUser = widget.post.likedBy?.contains(widget.userId) ?? false;
+
     return SizedBox(
       height: widget.post.imageUrl != null || widget.post.image != null
           ? widget.options.postWidgetHeight
@@ -65,7 +66,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
         children: [
           Row(
             children: [
-              if (widget.post.creator != null)
+              if (widget.post.creator != null) ...[
                 InkWell(
                   onTap: widget.onUserTap != null
                       ? () =>
@@ -110,9 +111,10 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                     ],
                   ),
                 ),
+              ],
               const Spacer(),
               if (widget.allowAllDeletion ||
-                  widget.post.creator?.userId == widget.userId)
+                  widget.post.creator?.userId == widget.userId) ...[
                 PopupMenuButton(
                   onSelected: (value) async {
                     if (value == 'delete') {
@@ -151,6 +153,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         color: widget.options.theme.iconColor,
                       ),
                 ),
+              ],
             ],
           ),
           // image of the post
@@ -313,16 +316,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               post: widget.post,
             ),
           ] else ...[
-            Text(
-              '${widget.post.likes} '
-              '${widget.post.likes > 1 
-              ? widget.options.translations.multipleLikesTitle 
-              : widget.options.translations.oneLikeTitle}',
-              style:
-                  widget.options.theme.textStyles.listPostLikeTitleAndAmount ??
-                      theme.textTheme.titleSmall!.copyWith(
-                        color: Colors.black,
-                      ),
+            _PostLikeCountText(
+              post: widget.post,
+              options: widget.options,
             ),
             Text.rich(
               TextSpan(
@@ -358,6 +354,32 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
             widget.options.dividerBuilder!(),
         ],
       ),
+    );
+  }
+}
+
+class _PostLikeCountText extends StatelessWidget {
+  const _PostLikeCountText({
+    required this.post,
+    required this.options,
+  });
+
+  final TimelineOptions options;
+  final TimelinePost post;
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var likeTranslation = post.likes > 1
+        ? options.translations.multipleLikesTitle
+        : options.translations.oneLikeTitle;
+
+    return Text(
+      '${post.likes} '
+      '$likeTranslation',
+      style: options.theme.textStyles.listPostLikeTitleAndAmount ??
+          theme.textTheme.titleSmall!.copyWith(
+            color: Colors.black,
+          ),
     );
   }
 }

@@ -95,7 +95,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
   void _updateIsOnTop() {
     setState(() {
-      _isOnTop = controller.position.pixels < 40;
+      _isOnTop = controller.position.pixels < 0.1;
     });
   }
 

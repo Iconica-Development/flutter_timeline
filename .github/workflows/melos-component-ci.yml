@@ -10,5 +10,3 @@ jobs:
     uses: Iconica-Development/.github/.github/workflows/melos-ci.yml@master
     secrets: inherit
     permissions: write-all
-    with:
-      flutter_version: 3.24
