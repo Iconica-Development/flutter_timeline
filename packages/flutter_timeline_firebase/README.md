@@ -1,1 +1,1 @@
-[../../README.md](https://github.com/Iconica-Development/flutter_timeline/blob/master/README.md)
+../../README.md
