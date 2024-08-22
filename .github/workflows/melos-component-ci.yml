@@ -11,4 +11,4 @@ jobs:
     secrets: inherit
     permissions: write-all
     with:
-      flutter_version: 3.19.6
+      flutter_version: 3.24
