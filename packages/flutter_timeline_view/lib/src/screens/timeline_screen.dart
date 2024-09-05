@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
@@ -94,7 +95,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
   void _updateIsOnTop() {
     setState(() {
-      _isOnTop = controller.position.pixels < 40;
+      _isOnTop = controller.position.pixels < 0.1;
     });
   }
 
@@ -147,6 +148,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 : b.createdAt.compareTo(a.createdAt),
           );
         }
+
+        var categories = service.postService.categories;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,11 +218,16 @@ class _TimelineScreenState extends State<TimelineScreen> {
               ),
             ],
             CategorySelector(
+              categories: categories,
               isOnTop: _isOnTop,
               filter: category,
               options: widget.options,
               onTapCategory: (categoryKey) {
                 setState(() {
+                  service.postService.selectedCategory =
+                      categories.firstWhereOrNull(
+                    (element) => element.key == categoryKey,
+                  );
                   category = categoryKey;
                 });
               },
@@ -302,13 +310,13 @@ class _TimelineScreenState extends State<TimelineScreen> {
                             ),
                           ),
                         ),
+                      SizedBox(
+                        height: widget.options.paddings.mainPadding.bottom,
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: widget.options.paddings.mainPadding.bottom,
             ),
           ],
         );
@@ -319,6 +327,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null || !context.mounted) return;
     try {
+      await service.postService.fetchCategories();
       await service.postService.fetchPosts(category);
       setState(() {
         isLoading = false;

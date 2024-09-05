@@ -141,6 +141,7 @@ class _HeartAnimationState extends State<HeartAnimation> {
     unawaited(
       Future.delayed(const Duration(milliseconds: 100)).then((value) async {
         active = widget.liked;
+        // ignore: use_build_context_synchronously
         var navigator = Navigator.of(context);
         await Future.delayed(widget.duration);
         navigator.pop();

@@ -10,11 +10,13 @@ import 'package:flutter_timeline/flutter_timeline.dart';
 /// This function creates a navigator for displaying user stories on a timeline.
 /// It takes a [BuildContext] and an optional [TimelineUserStoryConfiguration]
 /// as parameters. If no configuration is provided, default values will be used.
+late TimelineUserStoryConfiguration timelineUserStoryConfiguration;
+
 Widget timeLineNavigatorUserStory({
   required BuildContext context,
   TimelineUserStoryConfiguration? configuration,
 }) {
-  var config = configuration ??
+  timelineUserStoryConfiguration = configuration ??
       TimelineUserStoryConfiguration(
         userId: 'test_user',
         service: TimelineService(
@@ -23,7 +25,10 @@ Widget timeLineNavigatorUserStory({
         optionsBuilder: (context) => const TimelineOptions(),
       );
 
-  return _timelineScreenRoute(configuration: config, context: context);
+  return _timelineScreenRoute(
+    config: timelineUserStoryConfiguration,
+    context: context,
+  );
 }
 
 /// A widget function that creates a timeline screen route.
@@ -33,18 +38,11 @@ Widget timeLineNavigatorUserStory({
 /// parameters. If no configuration is provided, default values will be used.
 Widget _timelineScreenRoute({
   required BuildContext context,
-  TimelineUserStoryConfiguration? configuration,
+  required TimelineUserStoryConfiguration config,
+  String? initalCategory,
 }) {
-  var config = configuration ??
-      TimelineUserStoryConfiguration(
-        userId: 'test_user',
-        service: TimelineService(
-          postService: LocalTimelinePostService(),
-        ),
-        optionsBuilder: (context) => const TimelineOptions(),
-      );
-
   var timelineScreen = TimelineScreen(
+    timelineCategory: initalCategory,
     userId: config.getUserId?.call(context) ?? config.userId,
     allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
     onUserTap: (user) => config.onUserTap?.call(context, user),
@@ -55,7 +53,7 @@ Widget _timelineScreenRoute({
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => _postDetailScreenRoute(
-              configuration: config,
+              config: config,
               context: context,
               post: post,
             ),
@@ -65,40 +63,50 @@ Widget _timelineScreenRoute({
     filterEnabled: config.filterEnabled,
     postWidgetBuilder: config.postWidgetBuilder,
   );
-
+  var theme = Theme.of(context);
   var button = FloatingActionButton(
     backgroundColor: config
             .optionsBuilder(context)
             .theme
             .postCreationFloatingActionButtonColor ??
-        Theme.of(context).primaryColor,
-    onPressed: () async => Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _postCategorySelectionScreen(
-          configuration: config,
-          context: context,
-        ),
-      ),
-    ),
+        theme.colorScheme.primary,
+    onPressed: () async {
+      var selectedCategory = config.service.postService.selectedCategory;
+      if (selectedCategory != null && selectedCategory.key != null) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _postCreationScreenRoute(
+              config: config,
+              context: context,
+              category: selectedCategory,
+            ),
+          ),
+        );
+      } else {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => _postCategorySelectionScreen(
+              config: config,
+              context: context,
+            ),
+          ),
+        );
+      }
+    },
     shape: const CircleBorder(),
     child: const Icon(
       Icons.add,
       color: Colors.white,
-      size: 30,
+      size: 24,
     ),
   );
 
   return config.homeOpenPageBuilder?.call(context, timelineScreen, button) ??
       Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.timeLineScreenTitle,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-            ),
+            style: theme.textTheme.headlineLarge,
           ),
         ),
         body: timelineScreen,
@@ -115,17 +123,8 @@ Widget _timelineScreenRoute({
 Widget _postDetailScreenRoute({
   required BuildContext context,
   required TimelinePost post,
-  TimelineUserStoryConfiguration? configuration,
+  required TimelineUserStoryConfiguration config,
 }) {
-  var config = configuration ??
-      TimelineUserStoryConfiguration(
-        userId: 'test_user',
-        service: TimelineService(
-          postService: LocalTimelinePostService(),
-        ),
-        optionsBuilder: (context) => const TimelineOptions(),
-      );
-
   var timelinePostScreen = TimelinePostScreen(
     userId: config.getUserId?.call(context) ?? config.userId,
     allowAllDeletion: config.canDeleteAllPosts?.call(context) ?? false,
@@ -143,11 +142,7 @@ Widget _postDetailScreenRoute({
     onUserTap: (user) => config.onUserTap?.call(context, user),
   );
 
-  var category = config
-      .optionsBuilder(context)
-      .categoriesOptions
-      .categoriesBuilder
-      ?.call(context)
+  var category = config.service.postService.categories
       .firstWhere((element) => element.key == post.category);
 
   var backButton = IconButton(
@@ -160,10 +155,9 @@ Widget _postDetailScreenRoute({
           ?.call(context, timelinePostScreen, backButton, post, category) ??
       Scaffold(
         appBar: AppBar(
-          leading: backButton,
-          backgroundColor: const Color(0xff212121),
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
           title: Text(
-            category?.title ?? post.category ?? 'Category',
+            category.title.toLowerCase(),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 24,
@@ -183,31 +177,24 @@ Widget _postDetailScreenRoute({
 Widget _postCreationScreenRoute({
   required BuildContext context,
   required TimelineCategory category,
-  TimelineUserStoryConfiguration? configuration,
+  required TimelineUserStoryConfiguration config,
 }) {
-  var config = configuration ??
-      TimelineUserStoryConfiguration(
-        userId: 'test_user',
-        service: TimelineService(
-          postService: LocalTimelinePostService(),
-        ),
-        optionsBuilder: (context) => const TimelineOptions(),
-      );
-
   var timelinePostCreationScreen = TimelinePostCreationScreen(
     userId: config.getUserId?.call(context) ?? config.userId,
     options: config.optionsBuilder(context),
     service: config.service,
     onPostCreated: (post) async {
       var newPost = await config.service.postService.createPost(post);
+
       if (!context.mounted) return;
       if (config.afterPostCreationGoHome) {
         await Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => _timelineScreenRoute(
-              configuration: config,
+              config: config,
               context: context,
+              initalCategory: category.title,
             ),
           ),
         );
@@ -216,7 +203,7 @@ Widget _postCreationScreenRoute({
           context,
           MaterialPageRoute(
             builder: (context) => _postOverviewScreenRoute(
-              configuration: config,
+              config: config,
               context: context,
               post: newPost,
             ),
@@ -227,7 +214,7 @@ Widget _postCreationScreenRoute({
     onPostOverview: (post) async => Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => _postOverviewScreenRoute(
-          configuration: config,
+          config: config,
           context: context,
           post: post,
         ),
@@ -249,7 +236,7 @@ Widget _postCreationScreenRoute({
           ?.call(context, timelinePostCreationScreen, backButton) ??
       Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xff212121),
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
           leading: backButton,
           title: Text(
             config.optionsBuilder(context).translations.postCreation,
@@ -273,28 +260,23 @@ Widget _postCreationScreenRoute({
 Widget _postOverviewScreenRoute({
   required BuildContext context,
   required TimelinePost post,
-  TimelineUserStoryConfiguration? configuration,
+  required TimelineUserStoryConfiguration config,
 }) {
-  var config = configuration ??
-      TimelineUserStoryConfiguration(
-        userId: 'test_user',
-        service: TimelineService(
-          postService: LocalTimelinePostService(),
-        ),
-        optionsBuilder: (context) => const TimelineOptions(),
-      );
-
   var timelinePostOverviewWidget = TimelinePostOverviewScreen(
     options: config.optionsBuilder(context),
     service: config.service,
     timelinePost: post,
     onPostSubmit: (post) async {
-      await config.service.postService.createPost(post);
+      var createdPost = await config.service.postService.createPost(post);
+      config.onPostCreate?.call(createdPost);
       if (context.mounted) {
         await Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) =>
-                _timelineScreenRoute(configuration: config, context: context),
+            builder: (context) => _timelineScreenRoute(
+              config: config,
+              context: context,
+              initalCategory: post.category,
+            ),
           ),
           (route) => false,
         );
@@ -316,10 +298,10 @@ Widget _postOverviewScreenRoute({
       ) ??
       Scaffold(
         appBar: AppBar(
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
           leading: backButton,
-          backgroundColor: const Color(0xff212121),
           title: Text(
-            config.optionsBuilder(context).translations.postOverview,
+            config.optionsBuilder(context).translations.postCreation,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 24,
@@ -333,30 +315,17 @@ Widget _postOverviewScreenRoute({
 
 Widget _postCategorySelectionScreen({
   required BuildContext context,
-  TimelineUserStoryConfiguration? configuration,
+  required TimelineUserStoryConfiguration config,
 }) {
-  var config = configuration ??
-      TimelineUserStoryConfiguration(
-        userId: 'test_user',
-        service: TimelineService(
-          postService: LocalTimelinePostService(),
-        ),
-        optionsBuilder: (context) => const TimelineOptions(),
-      );
-
   var timelineSelectionScreen = TimelineSelectionScreen(
+    postService: config.service.postService,
     options: config.optionsBuilder(context),
-    categories: config
-            .optionsBuilder(context)
-            .categoriesOptions
-            .categoriesBuilder
-            ?.call(context) ??
-        [],
+    categories: config.service.postService.categories,
     onCategorySelected: (category) async {
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => _postCreationScreenRoute(
-            configuration: config,
+            config: config,
             context: context,
             category: category,
           ),
@@ -377,8 +346,8 @@ Widget _postCategorySelectionScreen({
           ?.call(context, timelineSelectionScreen) ??
       Scaffold(
         appBar: AppBar(
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
           leading: backButton,
-          backgroundColor: const Color(0xff212121),
           title: Text(
             config.optionsBuilder(context).translations.postCreation,
             style: TextStyle(
@@ -390,4 +359,16 @@ Widget _postCategorySelectionScreen({
         ),
         body: timelineSelectionScreen,
       );
+}
+
+Future<void> routeToPostDetail(BuildContext context, TimelinePost post) async {
+  await Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => _postDetailScreenRoute(
+        config: timelineUserStoryConfiguration,
+        context: context,
+        post: post,
+      ),
+    ),
+  );
 }

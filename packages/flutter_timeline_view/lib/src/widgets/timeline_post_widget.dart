@@ -4,8 +4,10 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
+import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
 import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
 
 class TimelinePostWidget extends StatefulWidget {
@@ -52,292 +54,332 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return InkWell(
-      onTap: widget.onTap,
-      child: SizedBox(
-        height: widget.post.imageUrl != null || widget.post.image != null
-            ? widget.options.postWidgetHeight
-            : null,
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                if (widget.post.creator != null)
-                  InkWell(
-                    onTap: widget.onUserTap != null
-                        ? () =>
-                            widget.onUserTap?.call(widget.post.creator!.userId)
-                        : null,
-                    child: Row(
-                      children: [
-                        if (widget.post.creator!.imageUrl != null) ...[
-                          widget.options.userAvatarBuilder?.call(
-                                widget.post.creator!,
-                                28,
-                              ) ??
-                              CircleAvatar(
-                                radius: 14,
-                                backgroundImage: CachedNetworkImageProvider(
-                                  widget.post.creator!.imageUrl!,
-                                ),
+    var isLikedByUser = widget.post.likedBy?.contains(widget.userId) ?? false;
+
+    return SizedBox(
+      height: widget.post.imageUrl != null || widget.post.image != null
+          ? widget.options.postWidgetHeight
+          : null,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (widget.post.creator != null) ...[
+                InkWell(
+                  onTap: widget.onUserTap != null
+                      ? () =>
+                          widget.onUserTap?.call(widget.post.creator!.userId)
+                      : null,
+                  child: Row(
+                    children: [
+                      if (widget.post.creator!.imageUrl != null) ...[
+                        widget.options.userAvatarBuilder?.call(
+                              widget.post.creator!,
+                              28,
+                            ) ??
+                            CircleAvatar(
+                              radius: 14,
+                              backgroundImage: CachedNetworkImageProvider(
+                                widget.post.creator!.imageUrl!,
                               ),
-                        ] else ...[
-                          widget.options.anonymousAvatarBuilder?.call(
-                                widget.post.creator!,
-                                28,
-                              ) ??
-                              const CircleAvatar(
-                                radius: 14,
-                                child: Icon(
-                                  Icons.person,
-                                ),
-                              ),
-                        ],
-                        const SizedBox(width: 10),
-                        Text(
-                          widget.options.nameBuilder
-                                  ?.call(widget.post.creator) ??
-                              widget.post.creator?.fullName ??
-                              widget.options.translations.anonymousUser,
-                          style: widget.options.theme.textStyles
-                                  .postCreatorTitleStyle ??
-                              theme.textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                const Spacer(),
-                if (widget.allowAllDeletion ||
-                    widget.post.creator?.userId == widget.userId)
-                  PopupMenuButton(
-                    onSelected: (value) async {
-                      if (value == 'delete') {
-                        await showPostDeletionConfirmationDialog(
-                          widget.options,
-                          context,
-                          widget.onPostDelete,
-                        );
-                      }
-                    },
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            Text(
-                              widget.options.translations.deletePost,
-                              style: widget.options.theme.textStyles
-                                      .deletePostStyle ??
-                                  theme.textTheme.bodyMedium,
                             ),
-                            const SizedBox(width: 8),
-                            widget.options.theme.deleteIcon ??
-                                Icon(
-                                  Icons.delete,
-                                  color: widget.options.theme.iconColor,
-                                ),
-                          ],
-                        ),
+                      ] else ...[
+                        widget.options.anonymousAvatarBuilder?.call(
+                              widget.post.creator!,
+                              28,
+                            ) ??
+                            const CircleAvatar(
+                              radius: 14,
+                              child: Icon(
+                                Icons.person,
+                              ),
+                            ),
+                      ],
+                      const SizedBox(width: 10),
+                      Text(
+                        widget.options.nameBuilder?.call(widget.post.creator) ??
+                            widget.post.creator?.fullName ??
+                            widget.options.translations.anonymousUser,
+                        style: widget.options.theme.textStyles
+                                .postCreatorTitleStyle ??
+                            theme.textTheme.titleSmall!.copyWith(
+                              color: Colors.black,
+                            ),
                       ),
                     ],
-                    child: widget.options.theme.moreIcon ??
-                        Icon(
-                          Icons.more_horiz_rounded,
+                  ),
+                ),
+              ],
+              const Spacer(),
+              if (widget.allowAllDeletion ||
+                  widget.post.creator?.userId == widget.userId) ...[
+                PopupMenuButton(
+                  onSelected: (value) async {
+                    if (value == 'delete') {
+                      await showPostDeletionConfirmationDialog(
+                        widget.options,
+                        context,
+                        widget.onPostDelete,
+                      );
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Text(
+                            widget.options.translations.deletePost,
+                            style: widget
+                                    .options.theme.textStyles.deletePostStyle ??
+                                theme.textTheme.bodyMedium,
+                          ),
+                          const SizedBox(width: 8),
+                          widget.options.theme.deleteIcon ??
+                              Icon(
+                                Icons.delete,
+                                color: widget.options.theme.iconColor,
+                              ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  child: widget.options.theme.moreIcon ??
+                      Icon(
+                        Icons.more_horiz_rounded,
+                        color: widget.options.theme.iconColor,
+                      ),
+                ),
+              ],
+            ],
+          ),
+          // image of the post
+          if (widget.post.imageUrl != null || widget.post.image != null) ...[
+            const SizedBox(height: 8),
+            Flexible(
+              flex: widget.options.postWidgetHeight != null ? 1 : 0,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                child: widget.options.doubleTapTolike
+                    ? TappableImage(
+                        likeAndDislikeIcon:
+                            widget.options.likeAndDislikeIconsForDoubleTap,
+                        post: widget.post,
+                        userId: widget.userId,
+                        onLike: ({required bool liked}) async {
+                          var userId = widget.userId;
+
+                          late TimelinePost result;
+
+                          if (!liked) {
+                            result = await widget.service.postService.likePost(
+                              userId,
+                              widget.post,
+                            );
+                          } else {
+                            result =
+                                await widget.service.postService.unlikePost(
+                              userId,
+                              widget.post,
+                            );
+                          }
+
+                          return result.likedBy?.contains(userId) ?? false;
+                        },
+                      )
+                    : widget.post.imageUrl != null
+                        ? CachedNetworkImage(
+                            width: double.infinity,
+                            imageUrl: widget.post.imageUrl!,
+                            fit: BoxFit.fitWidth,
+                          )
+                        : Image.memory(
+                            width: double.infinity,
+                            widget.post.image!,
+                            fit: BoxFit.fitWidth,
+                          ),
+              ),
+            ),
+          ],
+          const SizedBox(
+            height: 8,
+          ),
+          // post information
+          if (widget.options.iconsWithValues) ...[
+            Row(
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () async {
+                    var userId = widget.userId;
+
+                    if (!isLikedByUser) {
+                      await widget.service.postService.likePost(
+                        userId,
+                        widget.post,
+                      );
+                    } else {
+                      await widget.service.postService.unlikePost(
+                        userId,
+                        widget.post,
+                      );
+                    }
+                  },
+                  icon: widget.options.theme.likeIcon ??
+                      Icon(
+                        isLikedByUser
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_outline_outlined,
+                        color: widget.options.theme.iconColor,
+                        size: widget.options.iconSize,
+                      ),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text('${widget.post.likes}'),
+                if (widget.post.reactionEnabled) ...[
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: widget.onTap,
+                    icon: widget.options.theme.commentIcon ??
+                        SvgPicture.asset(
+                          'assets/Comment.svg',
+                          package: 'flutter_timeline_view',
+                          // ignore: deprecated_member_use
                           color: widget.options.theme.iconColor,
+                          width: widget.options.iconSize,
+                          height: widget.options.iconSize,
                         ),
                   ),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  Text('${widget.post.reaction}'),
+                ],
               ],
             ),
-            // image of the post
-            if (widget.post.imageUrl != null || widget.post.image != null) ...[
-              const SizedBox(height: 8),
-              Flexible(
-                flex: widget.options.postWidgetHeight != null ? 1 : 0,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  child: widget.options.doubleTapTolike
-                      ? TappableImage(
-                          likeAndDislikeIcon:
-                              widget.options.likeAndDislikeIconsForDoubleTap,
-                          post: widget.post,
-                          userId: widget.userId,
-                          onLike: ({required bool liked}) async {
-                            var userId = widget.userId;
-
-                            late TimelinePost result;
-
-                            if (!liked) {
-                              result =
-                                  await widget.service.postService.likePost(
-                                userId,
-                                widget.post,
-                              );
-                            } else {
-                              result =
-                                  await widget.service.postService.unlikePost(
-                                userId,
-                                widget.post,
-                              );
-                            }
-
-                            return result.likedBy?.contains(userId) ?? false;
-                          },
-                        )
-                      : widget.post.imageUrl != null
-                          ? CachedNetworkImage(
-                              width: double.infinity,
-                              imageUrl: widget.post.imageUrl!,
-                              fit: BoxFit.fitWidth,
-                            )
-                          : Image.memory(
-                              width: double.infinity,
-                              widget.post.image!,
-                              fit: BoxFit.fitWidth,
-                            ),
+          ] else ...[
+            Row(
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed:
+                      isLikedByUser ? widget.onTapUnlike : widget.onTapLike,
+                  icon: (isLikedByUser
+                          ? widget.options.theme.likedIcon
+                          : widget.options.theme.likeIcon) ??
+                      Icon(
+                        isLikedByUser
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_outline,
+                        color: widget.options.theme.iconColor,
+                        size: widget.options.iconSize,
+                      ),
                 ),
-              ),
-            ],
-            const SizedBox(
-              height: 8,
-            ),
-            // post information
-            if (widget.options.iconsWithValues)
-              Row(
-                children: [
-                  TextButton.icon(
-                    onPressed: () async {
-                      var userId = widget.userId;
-
-                      var liked =
-                          widget.post.likedBy?.contains(userId) ?? false;
-
-                      if (!liked) {
-                        await widget.service.postService.likePost(
-                          userId,
-                          widget.post,
-                        );
-                      } else {
-                        await widget.service.postService.unlikePost(
-                          userId,
-                          widget.post,
-                        );
-                      }
-                    },
-                    icon: widget.options.theme.likeIcon ??
-                        Icon(
-                          widget.post.likedBy?.contains(widget.userId) ?? false
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_outline_outlined,
+                const SizedBox(width: 8),
+                if (widget.post.reactionEnabled) ...[
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: widget.onTap,
+                    icon: widget.options.theme.commentIcon ??
+                        SvgPicture.asset(
+                          'assets/Comment.svg',
+                          package: 'flutter_timeline_view',
+                          // ignore: deprecated_member_use
+                          color: widget.options.theme.iconColor,
+                          width: widget.options.iconSize,
+                          height: widget.options.iconSize,
                         ),
-                    label: Text('${widget.post.likes}'),
                   ),
-                  if (widget.post.reactionEnabled)
-                    TextButton.icon(
-                      onPressed: widget.onTap,
-                      icon: widget.options.theme.commentIcon ??
-                          const Icon(
-                            Icons.chat_bubble_outline_outlined,
-                          ),
-                      label: Text('${widget.post.reaction}'),
-                    ),
                 ],
-              )
-            else
-              Row(
-                children: [
-                  if (widget.post.likedBy?.contains(widget.userId) ??
-                      false) ...[
-                    InkWell(
-                      onTap: widget.onTapUnlike,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: widget.options.theme.likedIcon ??
-                            Icon(
-                              Icons.favorite_rounded,
-                              color: widget.options.theme.iconColor,
-                              size: widget.options.iconSize,
-                            ),
-                      ),
-                    ),
-                  ] else ...[
-                    InkWell(
-                      onTap: widget.onTapLike,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: widget.options.theme.likeIcon ??
-                            Icon(
-                              Icons.favorite_outline,
-                              color: widget.options.theme.iconColor,
-                              size: widget.options.iconSize,
-                            ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(width: 8),
-                  if (widget.post.reactionEnabled) ...[
-                    Container(
-                      color: Colors.transparent,
-                      child: widget.options.theme.commentIcon ??
-                          Icon(
-                            Icons.chat_bubble_outline_rounded,
-                            color: widget.options.theme.iconColor,
-                            size: widget.options.iconSize,
-                          ),
-                    ),
-                  ],
-                ],
-              ),
-
-            const SizedBox(
-              height: 8,
+              ],
             ),
+          ],
 
-            if (widget.options.itemInfoBuilder != null) ...[
-              widget.options.itemInfoBuilder!(
-                post: widget.post,
-              ),
-            ] else ...[
-              Text(
-                '${widget.post.likes} '
-                '${widget.options.translations.likesTitle}',
-                style: widget
-                        .options.theme.textStyles.listPostLikeTitleAndAmount ??
-                    theme.textTheme.titleSmall,
-              ),
-              const SizedBox(height: 4),
-              Text.rich(
-                TextSpan(
-                  text: widget.options.nameBuilder?.call(widget.post.creator) ??
-                      widget.post.creator?.fullName ??
-                      widget.options.translations.anonymousUser,
-                  style: widget.options.theme.textStyles.listCreatorNameStyle ??
-                      theme.textTheme.titleSmall,
-                  children: [
-                    const TextSpan(text: ' '),
-                    TextSpan(
-                      text: widget.post.title,
-                      style:
-                          widget.options.theme.textStyles.listPostTitleStyle ??
-                              theme.textTheme.bodyMedium,
+          const SizedBox(
+            height: 8,
+          ),
+
+          if (widget.options.itemInfoBuilder != null) ...[
+            widget.options.itemInfoBuilder!(
+              post: widget.post,
+            ),
+          ] else ...[
+            _PostLikeCountText(
+              post: widget.post,
+              options: widget.options,
+            ),
+            Text.rich(
+              TextSpan(
+                text: widget.options.nameBuilder?.call(widget.post.creator) ??
+                    widget.post.creator?.fullName ??
+                    widget.options.translations.anonymousUser,
+                style: widget.options.theme.textStyles.listCreatorNameStyle ??
+                    theme.textTheme.titleSmall!.copyWith(
+                      color: Colors.black,
                     ),
-                  ],
-                ),
+                children: [
+                  TextSpan(
+                    text: widget.post.title,
+                    style: widget.options.theme.textStyles.listPostTitleStyle ??
+                        theme.textTheme.bodySmall,
+                  ),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
+            ),
+            const SizedBox(height: 4),
+            InkWell(
+              onTap: widget.onTap,
+              child: Text(
                 widget.options.translations.viewPost,
                 style: widget.options.theme.textStyles.viewPostStyle ??
-                    theme.textTheme.bodySmall,
+                    theme.textTheme.titleSmall!.copyWith(
+                      color: const Color(0xFF8D8D8D),
+                    ),
               ),
-            ],
-            if (widget.options.dividerBuilder != null)
-              widget.options.dividerBuilder!(),
+            ),
           ],
-        ),
+          if (widget.options.dividerBuilder != null)
+            widget.options.dividerBuilder!(),
+        ],
       ),
+    );
+  }
+}
+
+class _PostLikeCountText extends StatelessWidget {
+  const _PostLikeCountText({
+    required this.post,
+    required this.options,
+  });
+
+  final TimelineOptions options;
+  final TimelinePost post;
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var likeTranslation = post.likes > 1
+        ? options.translations.multipleLikesTitle
+        : options.translations.oneLikeTitle;
+
+    return Text(
+      '${post.likes} '
+      '$likeTranslation',
+      style: options.theme.textStyles.listPostLikeTitleAndAmount ??
+          theme.textTheme.titleSmall!.copyWith(
+            color: Colors.black,
+          ),
     );
   }
 }
@@ -347,29 +389,52 @@ Future<void> showPostDeletionConfirmationDialog(
   BuildContext context,
   Function() onPostDelete,
 ) async {
+  var theme = Theme.of(context);
   var result = await showDialog(
     context: context,
     builder: (BuildContext context) =>
         options.deletionDialogBuilder?.call(context) ??
         AlertDialog(
-          title: Text(options.translations.deleteConfirmationTitle),
-          content: Text(options.translations.deleteConfirmationMessage),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text(options.translations.deleteCancelButton),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text(
-                options.translations.deleteButton,
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 64, vertical: 24),
+          titlePadding: const EdgeInsets.only(left: 44, right: 44, top: 32),
+          title: Text(
+            options.translations.deleteConfirmationMessage,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: DefaultFilledButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop(true);
+                      },
+                      buttonText: options.translations.deleteButton,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  options.translations.deleteCancelButton,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    decoration: TextDecoration.underline,
+                    color: theme.textTheme.bodyMedium?.color!.withOpacity(0.5),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
   );
 

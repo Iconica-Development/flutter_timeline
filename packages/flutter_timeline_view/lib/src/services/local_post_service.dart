@@ -14,6 +14,12 @@ class LocalTimelinePostService
   List<TimelinePost> posts = [];
 
   @override
+  List<TimelineCategory> categories = [];
+
+  @override
+  TimelineCategory? selectedCategory;
+
+  @override
   Future<TimelinePost> createPost(TimelinePost post) async {
     posts.add(
       post.copyWith(
@@ -118,10 +124,11 @@ class LocalTimelinePostService
   }
 
   @override
-  TimelinePost? getPost(String postId) =>
-      (posts.any((element) => element.id == postId))
-          ? posts.firstWhere((element) => element.id == postId)
-          : null;
+  Future<TimelinePost?> getPost(String postId) => Future.value(
+        (posts.any((element) => element.id == postId))
+            ? posts.firstWhere((element) => element.id == postId)
+            : null,
+      );
 
   @override
   List<TimelinePost> getPosts(String? category) => posts
@@ -241,4 +248,85 @@ class LocalTimelinePostService
           ),
         ),
       ];
+
+  @override
+  Future<bool> addCategory(TimelineCategory category) async {
+    categories.add(category);
+    notifyListeners();
+    return true;
+  }
+
+  @override
+  Future<List<TimelineCategory>> fetchCategories() async {
+    categories = [
+      const TimelineCategory(key: null, title: 'All'),
+      const TimelineCategory(
+        key: 'Category',
+        title: 'Category',
+      ),
+      const TimelineCategory(
+        key: 'Category with two lines',
+        title: 'Category with two lines',
+      ),
+    ];
+    notifyListeners();
+
+    return categories;
+  }
+
+  @override
+  Future<TimelinePost> likeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: (r.likedBy ?? [])..add(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+
+    notifyListeners();
+    return updatedPost;
+  }
+
+  @override
+  Future<TimelinePost> unlikeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: r.likedBy?..remove(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+
+    notifyListeners();
+    return updatedPost;
+  }
 }

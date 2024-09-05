@@ -1,9 +1,7 @@
-// ignore_for_file: prefer_expression_function_bodies
-
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
+import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
 
 class TimelinePostOverviewScreen extends StatelessWidget {
   const TimelinePostOverviewScreen({
@@ -20,13 +18,7 @@ class TimelinePostOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // the timelinePost.category is a key so we need to get the category object
-    var timelineCategoryName = options.categoriesOptions.categoriesBuilder
-            ?.call(context)
-            .firstWhereOrNull((element) => element.key == timelinePost.category)
-            ?.title ??
-        timelinePost.category;
-    var buttonText = '${options.translations.postIn} $timelineCategoryName';
+    var isSubmitted = false;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -43,39 +35,43 @@ class TimelinePostOverviewScreen extends StatelessWidget {
         options.postOverviewButtonBuilder?.call(
               context,
               () {
+                if (isSubmitted) return;
+                isSubmitted = true;
                 onPostSubmit(timelinePost);
               },
-              buttonText,
+              options.translations.postIn,
+              timelinePost,
             ) ??
             options.buttonBuilder?.call(
               context,
               () {
+                if (isSubmitted) return;
+                isSubmitted = true;
                 onPostSubmit(timelinePost);
               },
-              buttonText,
+              options.translations.postIn,
               enabled: true,
             ) ??
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    WidgetStatePropertyAll(Theme.of(context).primaryColor),
-              ),
-              onPressed: () {
-                onPostSubmit(timelinePost);
-              },
+            SafeArea(
+              bottom: true,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  buttonText,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 80),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DefaultFilledButton(
+                        onPressed: () async {
+                          if (isSubmitted) return;
+                          isSubmitted = true;
+                          onPostSubmit(timelinePost);
+                        },
+                        buttonText: options.translations.postIn,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-        SizedBox(height: options.paddings.postOverviewButtonBottomPadding),
       ],
     );
   }

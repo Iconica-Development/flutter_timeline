@@ -5,6 +5,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,12 @@ class FirebaseTimelinePostService
 
   @override
   List<TimelinePost> posts = [];
+
+  @override
+  List<TimelineCategory> categories = [];
+
+  @override
+  TimelineCategory? selectedCategory;
 
   @override
   Future<TimelinePost> createPost(TimelinePost post) async {
@@ -118,7 +125,6 @@ class FirebaseTimelinePostService
 
   @override
   Future<List<TimelinePost>> fetchPosts(String? category) async {
-    debugPrint('fetching posts from firebase with category: $category');
     var snapshot = (category != null)
         ? await _db
             .collection(_options.timelineCollectionName)
@@ -239,10 +245,20 @@ class FirebaseTimelinePostService
   }
 
   @override
-  TimelinePost? getPost(String postId) =>
-      (posts.any((element) => element.id == postId))
-          ? posts.firstWhere((element) => element.id == postId)
-          : null;
+  Future<TimelinePost?> getPost(String postId) async {
+    var post = await _db
+        .collection(_options.timelineCollectionName)
+        .doc(postId)
+        .withConverter<TimelinePost>(
+          fromFirestore: (snapshot, _) => TimelinePost.fromJson(
+            snapshot.id,
+            snapshot.data()!,
+          ),
+          toFirestore: (user, _) => user.toJson(),
+        )
+        .get();
+    return post.data();
+  }
 
   @override
   List<TimelinePost> getPosts(String? category) => posts
@@ -357,5 +373,123 @@ class FirebaseTimelinePostService
     _users[userId] = user;
 
     return user;
+  }
+
+  @override
+  Future<bool> addCategory(TimelineCategory category) async {
+    var exists = categories.firstWhereOrNull(
+      (element) => element.title.toLowerCase() == category.title.toLowerCase(),
+    );
+    if (exists != null) return false;
+    try {
+      await _db
+          .collection(_options.timelineCategoryCollectionName)
+          .add(category.toJson());
+      categories.add(category);
+      notifyListeners();
+      return true;
+    } on Exception catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<List<TimelineCategory>> fetchCategories() async {
+    categories.clear();
+    categories.add(
+      const TimelineCategory(
+        key: null,
+        title: 'All',
+      ),
+    );
+    var categoriesSnapshot = await _db
+        .collection(_options.timelineCategoryCollectionName)
+        .withConverter(
+          fromFirestore: (snapshot, _) =>
+              TimelineCategory.fromJson(snapshot.data()!),
+          toFirestore: (model, _) => model.toJson(),
+        )
+        .get();
+    categories.addAll(categoriesSnapshot.docs.map((e) => e.data()));
+
+    notifyListeners();
+    return categories;
+  }
+
+  @override
+  Future<TimelinePost> likeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    // update the post with the new like
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: (r.likedBy ?? [])..add(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+    var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
+    await postRef.update({
+      'reactions': post.reactions
+          ?.map(
+            (r) =>
+                r.id == reactionId ? r.copyWith(likedBy: r.likedBy ?? []) : r,
+          )
+          .map((e) => e.toJson())
+          .toList(),
+    });
+    notifyListeners();
+    return updatedPost;
+  }
+
+  @override
+  Future<TimelinePost> unlikeReaction(
+    String userId,
+    TimelinePost post,
+    String reactionId,
+  ) async {
+    // update the post with the new like
+    var updatedPost = post.copyWith(
+      reactions: post.reactions?.map(
+        (r) {
+          if (r.id == reactionId) {
+            return r.copyWith(
+              likedBy: r.likedBy?..remove(userId),
+            );
+          }
+          return r;
+        },
+      ).toList(),
+    );
+    posts = posts
+        .map(
+          (p) => p.id == post.id ? updatedPost : p,
+        )
+        .toList();
+    var postRef = _db.collection(_options.timelineCollectionName).doc(post.id);
+    await postRef.update({
+      'reactions': post.reactions
+          ?.map(
+            (r) => r.id == reactionId
+                ? r.copyWith(likedBy: r.likedBy?..remove(userId))
+                : r,
+          )
+          .map((e) => e.toJson())
+          .toList(),
+    });
+    notifyListeners();
+    return updatedPost;
   }
 }

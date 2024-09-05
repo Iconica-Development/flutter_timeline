@@ -11,6 +11,8 @@ import 'package:flutter_image_picker/flutter_image_picker.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
+import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
+import 'package:flutter_timeline_view/src/widgets/post_creation_textfield.dart';
 
 class TimelinePostCreationScreen extends StatefulWidget {
   const TimelinePostCreationScreen({
@@ -51,52 +53,32 @@ class _TimelinePostCreationScreenState
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   Uint8List? image;
-  bool editingDone = false;
   bool allowComments = false;
+  bool titleIsValid = false;
+  bool contentIsValid = false;
 
   @override
   void initState() {
+    titleController.addListener(_listenForInputs);
+    contentController.addListener(_listenForInputs);
+
     super.initState();
-    titleController.addListener(checkIfEditingDone);
-    contentController.addListener(checkIfEditingDone);
   }
 
-  @override
-  void dispose() {
-    titleController.dispose();
-    contentController.dispose();
-    super.dispose();
+  void _listenForInputs() {
+    titleIsValid = titleController.text.isNotEmpty;
+    contentIsValid = contentController.text.isNotEmpty;
+    setState(() {});
   }
 
-  void checkIfEditingDone() {
-    setState(() {
-      editingDone =
-          titleController.text.isNotEmpty && contentController.text.isNotEmpty;
-      if (widget.options.requireImageForPost) {
-        editingDone = editingDone && image != null;
-      }
-      if (widget.options.minTitleLength != null) {
-        editingDone = editingDone &&
-            titleController.text.length >= widget.options.minTitleLength!;
-      }
-      if (widget.options.maxTitleLength != null) {
-        editingDone = editingDone &&
-            titleController.text.length <= widget.options.maxTitleLength!;
-      }
-      if (widget.options.minContentLength != null) {
-        editingDone = editingDone &&
-            contentController.text.length >= widget.options.minContentLength!;
-      }
-      if (widget.options.maxContentLength != null) {
-        editingDone = editingDone &&
-            contentController.text.length <= widget.options.maxContentLength!;
-      }
-    });
-  }
+  var formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    var imageRequired = widget.options.requireImageForPost;
+
     Future<void> onPostCreated() async {
+      var user = await widget.service.userService?.getUser(widget.userId);
       var post = TimelinePost(
         id: 'Post${Random().nextInt(1000)}',
         creatorId: widget.userId,
@@ -109,6 +91,7 @@ class _TimelinePostCreationScreenState
         createdAt: DateTime.now(),
         reactionEnabled: allowComments,
         image: image,
+        creator: user,
       );
 
       if (widget.enablePostOverviewScreen) {
@@ -119,234 +102,291 @@ class _TimelinePostCreationScreenState
     }
 
     var theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Padding(
-        padding: widget.options.paddings.mainPadding,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.options.translations.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: widget.options.paddings.mainPadding,
+          child: Form(
+            key: formkey,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.options.translations.title,
+                  style: theme.textTheme.titleMedium,
                 ),
-              ),
-              widget.options.textInputBuilder?.call(
-                    titleController,
-                    null,
-                    '',
-                  ) ??
-                  TextField(
-                    maxLength: widget.options.maxTitleLength,
-                    controller: titleController,
-                    decoration: widget.options.contentInputDecoration ??
-                        InputDecoration(
-                          hintText: widget.options.translations.titleHintText,
-                        ),
-                  ),
-              const SizedBox(height: 16),
-              Text(
-                widget.options.translations.content,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
+                const SizedBox(
+                  height: 4,
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                widget.options.translations.contentDescription,
-                style: theme.textTheme.bodyMedium,
-              ),
-              // input field for the content
-              TextField(
-                controller: contentController,
-                textCapitalization: TextCapitalization.sentences,
-                expands: false,
-                maxLines: null,
-                minLines: null,
-                decoration: widget.options.contentInputDecoration ??
-                    InputDecoration(
-                      hintText: widget.options.translations.contentHintText,
+                widget.options.textInputBuilder?.call(
+                      titleController,
+                      null,
+                      '',
+                    ) ??
+                    PostCreationTextfield(
+                      fieldKey: const ValueKey('title'),
+                      controller: titleController,
+                      hintText: widget.options.translations.titleHintText,
+                      textMaxLength: widget.options.maxTitleLength,
+                      decoration: widget.options.titleInputDecoration,
+                      textCapitalization: TextCapitalization.sentences,
+                      expands: null,
+                      minLines: null,
+                      maxLines: 1,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return widget.options.translations.titleErrorText;
+                        }
+                        if (value.trim().isEmpty) {
+                          return widget.options.translations.titleErrorText;
+                        }
+                        return null;
+                      },
                     ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              // input field for the content
-              Text(
-                widget.options.translations.uploadImage,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
+                const SizedBox(height: 24),
+                Text(
+                  widget.options.translations.content,
+                  style: theme.textTheme.titleMedium,
                 ),
-              ),
-              Text(
-                widget.options.translations.uploadImageDescription,
-                style: theme.textTheme.bodyMedium,
-              ),
-              // image picker field
-              const SizedBox(
-                height: 8,
-              ),
-              Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      // open a dialog to choose between camera and gallery
-                      var result = await showModalBottomSheet<Uint8List?>(
-                        context: context,
-                        builder: (context) => Container(
-                          padding: const EdgeInsets.all(8.0),
-                          color: theme.colorScheme.surface,
-                          child: ImagePicker(
-                            imagePickerConfig: widget.options.imagePickerConfig,
-                            imagePickerTheme: widget.options.imagePickerTheme,
+                Text(
+                  widget.options.translations.contentDescription,
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                PostCreationTextfield(
+                  fieldKey: const ValueKey('content'),
+                  controller: contentController,
+                  hintText: widget.options.translations.contentHintText,
+                  textMaxLength: null,
+                  decoration: widget.options.contentInputDecoration,
+                  textCapitalization: TextCapitalization.sentences,
+                  expands: false,
+                  minLines: null,
+                  maxLines: null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return widget.options.translations.contentErrorText;
+                    }
+                    if (value.trim().isEmpty) {
+                      return widget.options.translations.contentErrorText;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                Text(
+                  widget.options.translations.uploadImage,
+                  style: theme.textTheme.titleMedium,
+                ),
+                Text(
+                  widget.options.translations.uploadImageDescription,
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        var result = await showModalBottomSheet<Uint8List?>(
+                          context: context,
+                          builder: (context) => Container(
+                            padding: const EdgeInsets.all(20),
+                            color: theme.colorScheme.surface,
+                            child: ImagePicker(
+                              config: widget.options.imagePickerConfig,
+                              theme: widget.options.imagePickerTheme ??
+                                  ImagePickerTheme(
+                                    titleStyle: theme.textTheme.titleMedium,
+                                    iconSize: 40,
+                                    selectImageText: 'UPLOAD FILE',
+                                    makePhotoText: 'TAKE PICTURE',
+                                    selectImageIcon: const Icon(
+                                      size: 40,
+                                      Icons.insert_drive_file,
+                                    ),
+                                    closeButtonBuilder: (onTap) => TextButton(
+                                      onPressed: () {
+                                        onTap();
+                                      },
+                                      child: Text(
+                                        'Cancel',
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                            ),
                           ),
-                        ),
-                      );
-                      if (result != null) {
-                        setState(() {
-                          image = result;
-                        });
-                      }
-                      checkIfEditingDone();
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: image != null
-                          ? Image.memory(
-                              image!,
-                              width: double.infinity,
-                              height: 150.0,
-                              fit: BoxFit.cover,
-                              // give it a rounded border
-                            )
-                          : DottedBorder(
-                              dashPattern: const [4, 4],
-                              radius: const Radius.circular(8.0),
-                              color: theme.textTheme.displayMedium?.color ??
-                                  Colors.white,
-                              child: const SizedBox(
+                        );
+                        if (result != null) {
+                          setState(() {
+                            image = result;
+                          });
+                        }
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: image != null
+                            ? Image.memory(
+                                image!,
                                 width: double.infinity,
                                 height: 150.0,
-                                child: Icon(
-                                  Icons.image,
-                                  size: 50,
+                                fit: BoxFit.cover,
+                                // give it a rounded border
+                              )
+                            : DottedBorder(
+                                dashPattern: const [4, 4],
+                                radius: const Radius.circular(8.0),
+                                color: theme.textTheme.displayMedium?.color ??
+                                    Colors.white,
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  height: 150.0,
+                                  child: Icon(
+                                    Icons.image,
+                                    size: 50,
+                                  ),
                                 ),
                               ),
-                            ),
+                      ),
                     ),
-                  ),
-                  // if an image is selected, show a delete button
-                  if (image != null) ...[
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            image = null;
-                          });
-                          checkIfEditingDone();
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
+                    // if an image is selected, show a delete button
+                    if (image != null) ...[
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              image = null;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  widget.options.translations.commentsTitle,
+                  style: theme.textTheme.titleMedium,
+                ),
+                Text(
+                  widget.options.translations.allowCommentsDescription,
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Checkbox(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
+                      activeColor: theme.colorScheme.primary,
+                      value: allowComments,
+                      onChanged: (value) {
+                        setState(() {
+                          allowComments = true;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      widget.options.translations.yes,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    const SizedBox(
+                      width: 32,
+                    ),
+                    Checkbox(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
+                      activeColor: theme.colorScheme.primary,
+                      value: !allowComments,
+                      onChanged: (value) {
+                        setState(() {
+                          allowComments = false;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      widget.options.translations.no,
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ],
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              Text(
-                widget.options.translations.commentsTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
                 ),
-              ),
-              Text(
-                widget.options.translations.allowCommentsDescription,
-                style: theme.textTheme.bodyMedium,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Checkbox(
-                    activeColor: theme.colorScheme.primary,
-                    value: allowComments,
-                    onChanged: (value) {
-                      setState(() {
-                        allowComments = true;
-                      });
-                    },
-                  ),
-                  Text(widget.options.translations.yes),
-                  Checkbox(
-                    activeColor: theme.colorScheme.primary,
-                    value: !allowComments,
-                    onChanged: (value) {
-                      setState(() {
-                        allowComments = false;
-                      });
-                    },
-                  ),
-                  Text(widget.options.translations.no),
-                ],
-              ),
-              const SizedBox(height: 120),
-
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: (widget.options.buttonBuilder != null)
-                    ? widget.options.buttonBuilder!(
-                        context,
-                        onPostCreated,
-                        widget.options.translations.checkPost,
-                        enabled: editingDone,
-                      )
-                    : ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                            theme.colorScheme.primary,
+                const SizedBox(height: 120),
+                SafeArea(
+                  bottom: true,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: widget.options.buttonBuilder?.call(
+                          context,
+                          onPostCreated,
+                          widget.options.translations.checkPost,
+                          enabled: formkey.currentState!.validate(),
+                        ) ??
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 48),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: DefaultFilledButton(
+                                  onPressed: titleIsValid &&
+                                          contentIsValid &&
+                                          (!imageRequired || image != null)
+                                      ? () async {
+                                          if (formkey.currentState!
+                                              .validate()) {
+                                            await onPostCreated();
+                                            await widget.service.postService
+                                                .fetchPosts(null);
+                                          }
+                                        }
+                                      : null,
+                                  buttonText: widget.enablePostOverviewScreen
+                                      ? widget.options.translations.checkPost
+                                      : widget
+                                          .options.translations.postCreation,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        onPressed: editingDone
-                            ? () async {
-                                await onPostCreated();
-                                await widget.service.postService
-                                    .fetchPosts(null);
-                              }
-                            : null,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            widget.enablePostOverviewScreen
-                                ? widget.options.translations.checkPost
-                                : widget.options.translations.postCreation,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
-              ),
-            ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

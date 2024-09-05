@@ -16,6 +16,7 @@ class TimelinePostReaction {
     this.imageUrl,
     this.creator,
     this.createdAtString,
+    this.likedBy,
   });
 
   factory TimelinePostReaction.fromJson(
@@ -31,6 +32,7 @@ class TimelinePostReaction {
         imageUrl: json['image_url'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
         createdAtString: json['created_at'] as String,
+        likedBy: (json['liked_by'] as List<dynamic>?)?.cast<String>() ?? [],
       );
 
   /// The unique identifier of the reaction.
@@ -57,6 +59,8 @@ class TimelinePostReaction {
   /// Reaction creation date as String with microseconds.
   final String? createdAtString;
 
+  final List<String>? likedBy;
+
   TimelinePostReaction copyWith({
     String? id,
     String? postId,
@@ -65,6 +69,7 @@ class TimelinePostReaction {
     String? reaction,
     String? imageUrl,
     DateTime? createdAt,
+    List<String>? likedBy,
   }) =>
       TimelinePostReaction(
         id: id ?? this.id,
@@ -74,6 +79,7 @@ class TimelinePostReaction {
         reaction: reaction ?? this.reaction,
         imageUrl: imageUrl ?? this.imageUrl,
         createdAt: createdAt ?? this.createdAt,
+        likedBy: likedBy ?? this.likedBy,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -82,6 +88,7 @@ class TimelinePostReaction {
           'reaction': reaction,
           'image_url': imageUrl,
           'created_at': createdAt.toIso8601String(),
+          'liked_by': likedBy,
         },
       };
 
@@ -91,6 +98,7 @@ class TimelinePostReaction {
           'reaction': reaction,
           'image_url': imageUrl,
           'created_at': createdAtString,
+          'liked_by': likedBy,
         },
       };
 }
