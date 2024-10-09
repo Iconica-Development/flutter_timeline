@@ -1,4 +1,4 @@
-name: flutter_timeline
+name: firebase_timeline_repository
 description: "A new Flutter package project."
 version: 6.0.0
 publish_to: none
@@ -10,27 +10,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  flutter_image_picker:
-    hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^4.0.0
   timeline_repository_interface:
     git:
       url: https://github.com/Iconica-Development/flutter_timeline
       path: packages/timeline_repository_interface
       ref: 6.0.0
 
-  cached_network_image: ^3.4.1
-  intl: 0.19.0
-  flutter_svg: ^2.0.10+1
-  dotted_border: ^2.1.0
+  rxdart: any
+  cloud_firestore: ^5.4.4
+  firebase_auth: ^5.3.1
+  firebase_storage: ^12.3.2
 
 dev_dependencies:
   flutter_iconica_analysis:
     git:
       url: https://github.com/Iconica-Development/flutter_iconica_analysis
       ref: 7.0.0
-
-flutter:
-  assets:
-    - assets/

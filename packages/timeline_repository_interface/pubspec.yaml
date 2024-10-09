@@ -1,0 +1,19 @@
+name: timeline_repository_interface
+description: "A new Flutter package project."
+version: 6.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.5.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  rxdart: any
+
+dev_dependencies:
+  flutter_iconica_analysis:
+    git:
+      url: https://github.com/Iconica-Development/flutter_iconica_analysis
+      ref: 7.0.0
