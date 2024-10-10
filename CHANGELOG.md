@@ -1,3 +1,6 @@
+## 6.0.0
+* Refactor the timeline package to use the new structure
+
 ## 5.1.0
 
 * Added `routeToPostDetail` to the `TimelineUserStory` to allow for navigation to the post detail screen.

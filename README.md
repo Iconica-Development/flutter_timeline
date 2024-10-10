@@ -24,9 +24,6 @@ If you are going to use Firebase as the back-end of the Timeline, you should als
 ```
 
 In firebase add firestore and storage to your project.
-In firestore add a collection named `timeline` and a collection named `users`.
-In the `timeline` collection all posts will be stored. In the `users` collection all users will be stored.
-In the `users` collection you should add your users data.
 
 Add the following code in your `main` function, before the runApp().
 And import this package:   import 'package:intl/date_symbol_data_local.dart';

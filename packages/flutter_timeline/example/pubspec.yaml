@@ -12,9 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_timeline:
-    path: ../../flutter_timeline
-  timeline_repository_interface:
-    path: ../../timeline_repository_interface
+    git:
+      url: https://github.com/Iconica-Development/flutter_timeline
+      ref: 6.0.0
+      path: packages/flutter_timeline
   intl: 0.19.0
 dev_dependencies:
   flutter_lints: ^4.0.0
