@@ -20,6 +20,7 @@ dependencies:
   cloud_firestore: ^5.4.4
   firebase_auth: ^5.3.1
   firebase_storage: ^12.3.2
+  collection: ^1.18.0
 
 dev_dependencies:
   flutter_iconica_analysis:

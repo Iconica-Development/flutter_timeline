@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_timeline/flutter_timeline.dart";
-import "package:timeline_repository_interface/timeline_repository_interface.dart";
 
 class FlutterTimelineNavigatorUserstory extends StatefulWidget {
   const FlutterTimelineNavigatorUserstory({
@@ -38,20 +37,27 @@ class _FlutterTimelineNavigatorUserstoryState
         options: widget.options,
         onTapComments: (post) async {
           var currentUser = await timelineService.getCurrentUser();
-          await _push(_timelinePostDetailScreenWidget(post, currentUser));
+
+          await widget.options.onTapComments?.call(post, currentUser) ??
+              await _push(_timelinePostDetailScreenWidget(post, currentUser));
         },
         onTapCreatePost: () async {
           var selectedCategory = timelineService.getSelectedCategory();
-          if (selectedCategory?.key != null) {
-            await _push(_timelineAddpostInformationScreenWidget());
+          if (widget.options.onTapCreatePost != null) {
+            await widget.options.onTapCreatePost!(selectedCategory);
           } else {
-            await _push(_timelineChooseCategoryScreenWidget());
+            if (selectedCategory?.key != null) {
+              await _push(_timelineAddpostInformationScreenWidget());
+            } else {
+              await _push(_timelineChooseCategoryScreenWidget());
+            }
           }
         },
         onTapPost: (post) async {
           var currentUser = await timelineService.getCurrentUser();
           if (context.mounted)
-            await _push(_timelinePostDetailScreenWidget(post, currentUser));
+            await widget.options.onTapPost?.call(post, currentUser) ??
+                await _push(_timelinePostDetailScreenWidget(post, currentUser));
         },
       );
 
@@ -71,7 +77,8 @@ class _FlutterTimelineNavigatorUserstoryState
         timelineService: timelineService,
         options: widget.options,
         ontapCategory: (category) async {
-          await _push(_timelineAddpostInformationScreenWidget());
+          await widget.options.onTapCategory?.call(category) ??
+              await _push(_timelineAddpostInformationScreenWidget());
         },
       );
 
@@ -80,7 +87,8 @@ class _FlutterTimelineNavigatorUserstoryState
         timelineService: timelineService,
         options: widget.options,
         onTapOverview: () async {
-          await _push(_timelinePostOverviewWidget());
+          await widget.options.onTapOverview?.call() ??
+              await _push(_timelinePostOverviewWidget());
         },
       );
 
@@ -88,17 +96,20 @@ class _FlutterTimelineNavigatorUserstoryState
         timelineService: timelineService,
         options: widget.options,
         onTapCreatePost: (post) async {
-          await Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => _timelineScreenWidget(),
-            ),
-            (route) => route.isFirst,
-          );
+          await widget.options.onTapCreatePostInOverview?.call(post) ??
+              await _pushAndRemoveUntil(_timelineScreenWidget());
         },
       );
 
   Future<void> _push(Widget screen) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => screen));
+  }
+
+  Future<void> _pushAndRemoveUntil(Widget screen) async {
+    await Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => screen),
+      (route) => route.isFirst,
+    );
   }
 }

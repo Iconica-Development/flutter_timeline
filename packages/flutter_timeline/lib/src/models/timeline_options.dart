@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import "package:flutter_image_picker/flutter_image_picker.dart";
 import "package:flutter_timeline/flutter_timeline.dart";
 import "package:intl/intl.dart";
-import "package:timeline_repository_interface/timeline_repository_interface.dart";
 
 class TimelineOptions {
   const TimelineOptions({
@@ -30,6 +29,12 @@ class TimelineOptions {
     this.timelineScreenDrawer,
     this.timelineScreenAppBarBuilder,
     this.onCreatePost,
+    this.onTapComments,
+    this.onTapCreatePost,
+    this.onTapPost,
+    this.onTapCategory,
+    this.onTapOverview,
+    this.onTapCreatePostInOverview,
   });
 
   // Builders
@@ -42,6 +47,12 @@ class TimelineOptions {
 
   //general
   final TimelineTranslations translations;
+  final Function(TimelinePost post, TimelineUser user)? onTapComments;
+  final Function(TimelineCategory? category)? onTapCreatePost;
+  final Function(TimelinePost post, TimelineUser user)? onTapPost;
+  final Function(TimelineCategory? category)? onTapCategory;
+  final Function()? onTapOverview;
+  final Function(TimelinePost post)? onTapCreatePostInOverview;
 
   // TimelinePostWidget
   final bool everyoneCanDelete;

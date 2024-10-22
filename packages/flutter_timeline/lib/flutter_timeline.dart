@@ -1,10 +1,8 @@
-/// flutter_timeline library
-
 // ignore_for_file: directives_ordering
 
-library flutter_timeline;
-
 /// userstory
+library;
+
 export "src/flutter_timeline_navigator_userstory.dart";
 export "package:timeline_repository_interface/timeline_repository_interface.dart";
 

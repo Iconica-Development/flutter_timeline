@@ -13,7 +13,7 @@ class LocalPostRepository implements PostRepositoryInterface {
   final StreamController<List<TimelinePost>> _postsController =
       BehaviorSubject<List<TimelinePost>>();
 
-  TimelinePost? _currentPost;
+  late TimelinePost? _currentPost;
 
   final jane = const TimelineUser(
     userId: "1",

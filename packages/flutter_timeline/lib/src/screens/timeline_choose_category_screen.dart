@@ -1,7 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_timeline/flutter_timeline.dart";
-import "package:flutter_timeline/src/widgets/post_info_textfield.dart";
-import "package:timeline_repository_interface/timeline_repository_interface.dart";
 
 class TimelineChooseCategoryScreen extends StatelessWidget {
   const TimelineChooseCategoryScreen({
@@ -99,7 +97,8 @@ class TimelineChooseCategoryScreen extends StatelessWidget {
                                               title: newCategoryController.text,
                                             ),
                                           );
-                                          Navigator.of(context).pop();
+                                          if (context.mounted)
+                                            Navigator.of(context).pop();
                                         },
                                       ),
                                     ),

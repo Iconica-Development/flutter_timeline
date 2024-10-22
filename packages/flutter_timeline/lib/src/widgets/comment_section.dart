@@ -1,7 +1,6 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_timeline/flutter_timeline.dart";
-import "package:timeline_repository_interface/timeline_repository_interface.dart";
 
 class CommentSection extends StatefulWidget {
   const CommentSection({

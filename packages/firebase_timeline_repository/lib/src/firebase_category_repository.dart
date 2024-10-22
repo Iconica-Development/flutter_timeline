@@ -42,7 +42,6 @@ class FirebaseCategoryRepository implements CategoryRepositoryInterface {
         );
         _categories.addAll(categories);
       } else {
-        // Replace or update categories in the list while keeping the "All" category intact
         _categories
           ..clear()
           ..add(const TimelineCategory(key: null, title: "All"))

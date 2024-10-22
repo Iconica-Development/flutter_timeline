@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   rxdart: any
+  collection: ^1.18.0
 
 dev_dependencies:
   flutter_iconica_analysis:

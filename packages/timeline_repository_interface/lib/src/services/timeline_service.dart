@@ -1,5 +1,4 @@
 import "dart:typed_data";
-import "package:timeline_repository_interface/src/local/local_timeline_user_repository.dart";
 import "package:timeline_repository_interface/timeline_repository_interface.dart";
 
 class TimelineService {

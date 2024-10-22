@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:timeline_repository_interface/src/interfaces/timeline_user_repository_interface.dart";
 import "package:timeline_repository_interface/src/models/timeline_user.dart";
 
@@ -31,7 +32,7 @@ class LocalTimelineUserRepository implements TimelineUserRepositoryInterface {
 
   @override
   Future<TimelineUser?> getUser(String userId) {
-    // TODO: implement getUser
-    throw UnimplementedError();
+    var user = _users.firstWhereOrNull((element) => element.userId == userId);
+    return Future.value(user);
   }
 }

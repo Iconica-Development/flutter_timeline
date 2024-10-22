@@ -1,9 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:flutter_timeline/flutter_timeline.dart";
-import "package:flutter_timeline/src/widgets/reaction_textfield.dart";
-import "package:flutter_timeline/src/widgets/timeline_post.dart";
-import "package:timeline_repository_interface/timeline_repository_interface.dart";
 
 class TimelinePostDetailScreen extends StatefulWidget {
   const TimelinePostDetailScreen({

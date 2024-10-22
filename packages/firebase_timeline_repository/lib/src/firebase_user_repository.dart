@@ -1,6 +1,6 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:timeline_repository_interface/timeline_repository_interface.dart";
-import "package:cloud_firestore/cloud_firestore.dart";
 
 class FirebaseUserRepository implements TimelineUserRepositoryInterface {
   final CollectionReference usersCollection =
@@ -42,7 +42,7 @@ class FirebaseUserRepository implements TimelineUserRepositoryInterface {
           toFirestore: (user, _) => user.toJson(),
         )
         .get();
-        // print(userDoc.data()?.firstName);
+    // print(userDoc.data()?.firstName);
     return userDoc.data();
   }
 }

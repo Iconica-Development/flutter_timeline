@@ -10,7 +10,7 @@ class LocalCategoryRepository implements CategoryRepositoryInterface {
   TimelineCategory? _selectedCategory;
 
   @override
-  Future<void> createCategory(TimelineCategory category) async{
+  Future<void> createCategory(TimelineCategory category) async {
     _categories.add(category);
   }
 
