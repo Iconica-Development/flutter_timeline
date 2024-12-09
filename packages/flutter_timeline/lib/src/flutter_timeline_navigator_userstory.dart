@@ -97,19 +97,21 @@ class _FlutterTimelineNavigatorUserstoryState
         options: widget.options,
         onTapCreatePost: (post) async {
           await widget.options.onTapCreatePostInOverview?.call(post) ??
-              await _pushAndRemoveUntil(_timelineScreenWidget());
+              _pushAndRemoveUntil(_timelineScreenWidget());
         },
       );
 
   Future<void> _push(Widget screen) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => screen));
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => screen,
+        settings: const RouteSettings(arguments: "popForOverview"),
+      ),
+    );
   }
 
-  Future<void> _pushAndRemoveUntil(Widget screen) async {
-    await Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => screen),
-      (route) => route.isFirst,
-    );
+  void _pushAndRemoveUntil(Widget screen) {
+    Navigator.of(context)
+        .popUntil((route) => route.settings.arguments != "popForOverview");
   }
 }
