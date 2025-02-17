@@ -78,13 +78,12 @@ Widget _defaultFloatingActionButton(
   BuildContext context,
 ) {
   var theme = Theme.of(context);
-  return FloatingActionButton.large(
+  return FloatingActionButton(
     backgroundColor: theme.primaryColor,
     onPressed: onPressed,
-    child: Icon(
+    elevation: 0,
+    child: const Icon(
       Icons.add,
-      size: 44,
-      color: theme.colorScheme.onPrimary,
     ),
   );
 }
