@@ -10,7 +10,7 @@ class TimelinePostWidget extends StatefulWidget {
     required this.currentUserId,
     required this.onTapPost,
     required this.onTapComments,
-    this.isInDetialView = false,
+    this.isInDetailView = false,
     this.isInPostOverview = false,
     super.key,
   });
@@ -20,7 +20,7 @@ class TimelinePostWidget extends StatefulWidget {
   final TimelineOptions options;
   final String currentUserId;
   final Function(TimelinePost post) onTapPost;
-  final bool isInDetialView;
+  final bool isInDetailView;
   final Function(TimelinePost post) onTapComments;
   final bool isInPostOverview;
 
@@ -47,7 +47,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
         left: 20,
         right: 20,
         top: 20,
-        bottom: widget.isInDetialView ? 100 : 0,
+        bottom: widget.isInDetailView ? 100 : 0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,8 +64,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                 ],
               ),
               if (post.creatorId == widget.currentUserId &&
-                  !widget.isInPostOverview &&
-                  !widget.isInDetialView)
+                  !widget.isInPostOverview)
                 MoreOptionsButton(
                   timelineService: widget.timelineService,
                   options: options,
@@ -209,7 +208,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
             ],
           ),
-          if (widget.isInDetialView) ...[
+          if (widget.isInDetailView) ...[
             const SizedBox(
               height: 20,
             ),
@@ -234,7 +233,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                   timelineService: widget.timelineService,
                 ),
           ],
-          if (!widget.isInDetialView)
+          if (!widget.isInDetailView)
             InkWell(
               onTap: () => widget.onTapPost(widget.post),
               child: Text(

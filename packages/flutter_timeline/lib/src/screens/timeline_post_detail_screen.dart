@@ -57,7 +57,7 @@ class _TimelinePostDetailScreenState extends State<TimelinePostDetailScreen> {
               post: widget.post,
               timelineService: widget.timelineService,
               options: widget.options,
-              isInDetialView: true,
+              isInDetailView: true,
               currentUserId: widget.currentUserId,
               onTapPost: (post) {},
               onTapComments: (post) {},

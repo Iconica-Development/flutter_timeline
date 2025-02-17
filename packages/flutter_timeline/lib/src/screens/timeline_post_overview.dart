@@ -42,7 +42,7 @@ class _TimelinePostOverviewState extends State<TimelinePostOverview> {
                     currentUserId: currentPost.creatorId,
                     onTapPost: (post) {},
                     onTapComments: (post) {},
-                    isInDetialView: true,
+                    isInDetailView: true,
                     isInPostOverview: true,
                   ),
                 ],
