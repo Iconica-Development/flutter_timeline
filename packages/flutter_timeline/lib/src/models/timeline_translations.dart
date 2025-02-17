@@ -22,7 +22,7 @@ class TimelineTranslations {
     this.contentTitleHint = "Content...",
     this.titleErrorText = "Please enter a title",
     this.contentErrorText = "Please enter content",
-    this.addPost = "Add post",
+    this.addPost = "add post",
     this.overviewButton = "Overview",
     this.chooseCategory = "Choose a category",
     this.addCategory = "Add category",
