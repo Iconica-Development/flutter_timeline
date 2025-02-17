@@ -51,3 +51,6 @@ pubspec_overrides.yaml
 **/example/windows
 **/example/web
 **/example/README.md
+
+# FVM Version Cache
+.fvm/
