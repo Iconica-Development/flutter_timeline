@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_timeline/flutter_timeline.dart";
 
-class FlutterTimelineNavigatorUserstory extends StatefulWidget {
-  const FlutterTimelineNavigatorUserstory({
+class FlutterTimelineUserstory extends StatefulWidget {
+  const FlutterTimelineUserstory({
     required this.currentUserId,
     this.options = const TimelineOptions(),
     this.timelineService,
@@ -14,12 +14,11 @@ class FlutterTimelineNavigatorUserstory extends StatefulWidget {
   final String currentUserId;
 
   @override
-  State<FlutterTimelineNavigatorUserstory> createState() =>
-      _FlutterTimelineNavigatorUserstoryState();
+  State<FlutterTimelineUserstory> createState() =>
+      _FlutterTimelineUserstoryState();
 }
 
-class _FlutterTimelineNavigatorUserstoryState
-    extends State<FlutterTimelineNavigatorUserstory> {
+class _FlutterTimelineUserstoryState extends State<FlutterTimelineUserstory> {
   late TimelineService timelineService;
 
   @override

@@ -35,7 +35,7 @@ And import this package:   import 'package:intl/date_symbol_data_local.dart';
 To use the userstory add the following code somewhere in your widget tree:
 
 ````
-timeLineNavigatorUserStory(TimelineUserStoryConfiguration, context),
+timeLineUserStory(TimelineUserStoryConfiguration, context),
 ````
 
 

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: const FlutterTimelineNavigatorUserstory(
+      home: const FlutterTimelineUserstory(
         currentUserId: "1",
       ),
     );
