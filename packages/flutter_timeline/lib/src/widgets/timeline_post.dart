@@ -200,7 +200,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                 options.translations.anonymousUser,
                 context,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               Text(
                 widget.post.title,
                 style: theme.textTheme.bodySmall?.copyWith(
