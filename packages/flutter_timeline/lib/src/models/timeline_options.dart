@@ -134,17 +134,19 @@ Widget _defaultButtonBuilder({
   required BuildContext context,
 }) {
   var theme = Theme.of(context);
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 20),
-    child: FilledButton(
-      style: ElevatedButton.styleFrom(
-        maximumSize: const Size(254, 50),
-        minimumSize: const Size(254, 50),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        title,
-        style: theme.textTheme.displayLarge,
+  return SafeArea(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 28),
+      child: FilledButton(
+        style: ElevatedButton.styleFrom(
+          maximumSize: const Size(254, 50),
+          minimumSize: const Size(254, 50),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          title,
+          style: theme.textTheme.displayLarge,
+        ),
       ),
     ),
   );
