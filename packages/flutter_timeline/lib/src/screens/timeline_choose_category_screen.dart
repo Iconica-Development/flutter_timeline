@@ -176,13 +176,15 @@ class CategoryOption extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                         vertical: 16,
                         horizontal: addCategory ? 8 : 16,
-                      ),
-                      child: Text(
-                        category,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: addCategory
-                              ? Colors.black.withOpacity(0.3)
-                              : Colors.black,
+                      ).copyWith(top: addCategory ? 19 : 18),
+                      child: Center(
+                        child: Text(
+                          category,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: addCategory
+                                ? Colors.black.withOpacity(0.3)
+                                : Colors.black,
+                          ),
                         ),
                       ),
                     ),
