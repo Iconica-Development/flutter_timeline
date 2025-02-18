@@ -19,7 +19,7 @@ class LocalPostRepository implements PostRepositoryInterface {
     userId: "1",
     firstName: "Jane",
     lastName: "Doe",
-    imageUrl: "https://via.placeholder.com/150",
+    imageUrl: "https://placehold.co/150.png?text=Jane",
   );
 
   final List<TimelinePost> _posts = List.generate(
@@ -47,7 +47,7 @@ class LocalPostRepository implements PostRepositoryInterface {
             userId: "2",
             firstName: "John",
             lastName: "Doe",
-            imageUrl: "https://via.placeholder.com/150",
+            imageUrl: "https://placehold.co/150.png?text=John",
           ),
         ),
       ],
@@ -56,9 +56,9 @@ class LocalPostRepository implements PostRepositoryInterface {
         userId: "1",
         firstName: "Jane",
         lastName: "Doe",
-        imageUrl: "https://via.placeholder.com/150",
+        imageUrl: "https://placehold.co/150.png?text=Jane",
       ),
-      imageUrl: "https://via.placeholder.com/1000",
+      imageUrl: "https://placehold.co/1000.png?text=$index",
     ),
   );
 

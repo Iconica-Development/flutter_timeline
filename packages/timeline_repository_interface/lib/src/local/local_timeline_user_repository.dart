@@ -8,13 +8,13 @@ class LocalTimelineUserRepository implements TimelineUserRepositoryInterface {
       userId: "1",
       firstName: "john",
       lastName: "doe",
-      imageUrl: "https://via.placeholder.com/150",
+      imageUrl: "https://placehold.co/150.png?text=John",
     ),
     const TimelineUser(
       userId: "2",
       firstName: "jane",
       lastName: "doe",
-      imageUrl: "https://via.placeholder.com/150",
+      imageUrl: "https://placehold.co/150.png?text=Jane",
     ),
   ];
 

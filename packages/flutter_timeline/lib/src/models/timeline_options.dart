@@ -35,6 +35,7 @@ class TimelineOptions {
     this.onTapCategory,
     this.onTapOverview,
     this.onTapCreatePostInOverview,
+    this.placeholderImageAssetUrl,
   });
 
   // Builders
@@ -71,6 +72,7 @@ class TimelineOptions {
   final ImagePickerTheme? imagePickerTheme;
   final Widget? timelineScreenDrawer;
   final AppBarBuilder? timelineScreenAppBarBuilder;
+  final String? placeholderImageAssetUrl;
 }
 
 Widget _defaultFloatingActionButton(

@@ -29,6 +29,8 @@ class TimelinePostWidget extends StatefulWidget {
 }
 
 class _TimelinePostWidgetState extends State<TimelinePostWidget> {
+  bool imageError = false;
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -110,10 +112,29 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                   height: 250,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(widget.post.imageUrl!),
-                      fit: BoxFit.cover,
-                    ),
+                    image: imageError
+                        ? DecorationImage(
+                            image: options.placeholderImageAssetUrl != null
+                                ? AssetImage(
+                                    options.placeholderImageAssetUrl!,
+                                  )
+                                : const AssetImage(
+                                    "assets/error_image.png",
+                                    package: "flutter_timeline",
+                                  ),
+                            fit: BoxFit.cover,
+                          )
+                        : DecorationImage(
+                            onError: (exception, stackTrace) {
+                              setState(() {
+                                imageError = true;
+                              });
+                            },
+                            image: CachedNetworkImageProvider(
+                              widget.post.imageUrl!,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               if (post.image != null)
