@@ -9,8 +9,6 @@ void main(List<String> args) {
   runApp(const MyApp());
 }
 
-var timelineService = TimelineService();
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

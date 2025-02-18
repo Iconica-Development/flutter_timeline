@@ -30,7 +30,7 @@ class _TimelinePostDetailScreenState extends State<TimelinePostDetailScreen> {
   @override
   void initState() {
     selectedCategory = widget.timelineService.categoryRepository
-        .selectCategory(widget.post.category);
+        .getCategory(widget.post.category);
     super.initState();
   }
 
