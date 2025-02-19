@@ -10,6 +10,7 @@ class TappableImage extends StatefulWidget {
     required this.onLike,
     required this.userId,
     required this.likeAndDislikeIcon,
+    this.onTap,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class TappableImage extends StatefulWidget {
   final String userId;
   final Future<bool> Function() onLike;
   final (Icon?, Icon?) likeAndDislikeIcon;
+  final VoidCallback? onTap;
 
   @override
   State<TappableImage> createState() => _TappableImageState();
@@ -66,6 +68,7 @@ class _TappableImageState extends State<TappableImage>
 
   @override
   Widget build(BuildContext context) => InkWell(
+        onTap: widget.onTap != null ? () => widget.onTap!() : null,
         onDoubleTap: () async {
           if (loading) {
             return;

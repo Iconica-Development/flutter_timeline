@@ -36,6 +36,7 @@ class TimelineOptions {
     this.onTapOverview,
     this.onTapCreatePostInOverview,
     this.placeholderImageAssetUrl,
+    this.tapImageToOpenPost = true,
   });
 
   // Builders
@@ -73,6 +74,7 @@ class TimelineOptions {
   final Widget? timelineScreenDrawer;
   final AppBarBuilder? timelineScreenAppBarBuilder;
   final String? placeholderImageAssetUrl;
+  final bool tapImageToOpenPost;
 }
 
 Widget _defaultFloatingActionButton(

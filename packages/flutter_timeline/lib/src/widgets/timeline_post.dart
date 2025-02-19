@@ -81,6 +81,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
             if (options.doubleTapToLike) ...[
               TappableImage(
                 post: post,
+                onTap: widget.options.tapImageToOpenPost
+                    ? () => widget.onTapPost(widget.post)
+                    : null,
                 onLike: () async {
                   if (isLikedByCurrentUser) {
                     widget.options.onTapUnlike ??
@@ -108,33 +111,38 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
             ] else ...[
               if (post.imageUrl != null)
-                Container(
-                  height: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    image: imageError
-                        ? DecorationImage(
-                            image: options.placeholderImageAssetUrl != null
-                                ? AssetImage(
-                                    options.placeholderImageAssetUrl!,
-                                  )
-                                : const AssetImage(
-                                    "assets/error_image.png",
-                                    package: "flutter_timeline",
-                                  ),
-                            fit: BoxFit.cover,
-                          )
-                        : DecorationImage(
-                            onError: (exception, stackTrace) {
-                              setState(() {
-                                imageError = true;
-                              });
-                            },
-                            image: CachedNetworkImageProvider(
-                              widget.post.imageUrl!,
+                GestureDetector(
+                  onTap: widget.options.tapImageToOpenPost
+                      ? () => widget.onTapPost(widget.post)
+                      : null,
+                  child: Container(
+                    height: 250,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: imageError
+                          ? DecorationImage(
+                              image: options.placeholderImageAssetUrl != null
+                                  ? AssetImage(
+                                      options.placeholderImageAssetUrl!,
+                                    )
+                                  : const AssetImage(
+                                      "assets/error_image.png",
+                                      package: "flutter_timeline",
+                                    ),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              onError: (exception, stackTrace) {
+                                setState(() {
+                                  imageError = true;
+                                });
+                              },
+                              image: CachedNetworkImageProvider(
+                                widget.post.imageUrl!,
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
-                          ),
+                    ),
                   ),
                 ),
               if (post.image != null)
