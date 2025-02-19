@@ -1,6 +1,6 @@
 name: flutter_timeline
 description: "A new Flutter package project."
-version: 6.0.0
+version: 7.0.0
 publish_to: none
 
 environment:
@@ -18,7 +18,7 @@ dependencies:
     git:
       url: https://github.com/Iconica-Development/flutter_timeline
       path: packages/timeline_repository_interface
-      ref: 6.0.0
+      ref: 7.0.0
 
   cached_network_image: ^3.4.1
   intl: 0.19.0

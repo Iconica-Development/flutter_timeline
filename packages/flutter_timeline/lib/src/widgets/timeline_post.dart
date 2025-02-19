@@ -250,7 +250,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
             Text(
               widget.options.dateFormat(context).format(widget.post.createdAt),
               style: theme.textTheme.bodySmall?.copyWith(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
               ),
             ),
             if (widget.post.reactionEnabled)
@@ -268,7 +268,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               child: Text(
                 translations.viewPostTitle,
                 style: theme.textTheme.titleSmall
-                    ?.copyWith(color: Colors.black.withOpacity(0.5)),
+                    ?.copyWith(color: Colors.black.withValues(alpha: 0.5)),
               ),
             ),
         ],

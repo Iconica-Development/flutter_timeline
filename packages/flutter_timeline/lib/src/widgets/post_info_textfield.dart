@@ -52,7 +52,7 @@ class PostInfoTextfield extends StatelessWidget {
             ),
             hintText: hintText,
             hintStyle: theme.textTheme.bodySmall!.copyWith(
-              color: theme.textTheme.bodySmall!.color!.withOpacity(0.5),
+              color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.5),
             ),
             fillColor: Colors.white,
             filled: true,

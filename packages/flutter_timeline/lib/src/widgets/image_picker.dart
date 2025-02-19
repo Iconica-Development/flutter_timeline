@@ -51,7 +51,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 },
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: const Icon(

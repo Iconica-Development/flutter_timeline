@@ -1,6 +1,6 @@
 name: firebase_timeline_repository
 description: "A new Flutter package project."
-version: 6.0.0
+version: 7.0.0
 publish_to: none
 
 environment:
@@ -14,7 +14,7 @@ dependencies:
     git:
       url: https://github.com/Iconica-Development/flutter_timeline
       path: packages/timeline_repository_interface
-      ref: 6.0.0
+      ref: 7.0.0
 
   rxdart: any
   cloud_firestore: ^5.4.4

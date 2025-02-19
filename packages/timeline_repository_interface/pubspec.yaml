@@ -1,6 +1,6 @@
 name: timeline_repository_interface
 description: "A new Flutter package project."
-version: 6.0.0
+version: 7.0.0
 publish_to: none
 
 environment:

@@ -157,7 +157,7 @@ class CategoryOption extends StatelessWidget {
                   border: Border.all(
                     width: 2,
                     color: addCategory
-                        ? Colors.black.withOpacity(0.3)
+                        ? Colors.black.withValues(alpha: 0.3)
                         : theme.primaryColor,
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -169,7 +169,7 @@ class CategoryOption extends StatelessWidget {
                       Icon(
                         Icons.add,
                         color: addCategory
-                            ? Colors.black.withOpacity(0.3)
+                            ? Colors.black.withValues(alpha: 0.3)
                             : theme.primaryColor,
                       ),
                     ],
@@ -183,7 +183,7 @@ class CategoryOption extends StatelessWidget {
                           category,
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: addCategory
-                                ? Colors.black.withOpacity(0.3)
+                                ? Colors.black.withValues(alpha: 0.3)
                                 : Colors.black,
                           ),
                         ),

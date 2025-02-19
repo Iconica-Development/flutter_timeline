@@ -60,7 +60,8 @@ class ReactionTextfield extends StatelessWidget {
                   ),
                   hintText: options.translations.commentFieldHint,
                   hintStyle: theme.textTheme.bodyMedium!.copyWith(
-                    color: theme.textTheme.bodyMedium!.color!.withOpacity(0.5),
+                    color: theme.textTheme.bodyMedium!.color!
+                        .withValues(alpha: 0.5),
                   ),
                   fillColor: Colors.white,
                   filled: true,
