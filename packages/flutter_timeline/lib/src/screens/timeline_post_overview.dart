@@ -19,6 +19,7 @@ class TimelinePostOverview extends StatefulWidget {
 
 class _TimelinePostOverviewState extends State<TimelinePostOverview> {
   bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     var currentPost = widget.timelineService.getCurrentPost();
@@ -59,12 +60,16 @@ class _TimelinePostOverviewState extends State<TimelinePostOverview> {
                   title: widget.options.translations.postButtonTitle,
                   onPressed: () async {
                     if (isLoading) return;
-                    isLoading = true;
+                    setState(() {
+                      isLoading = true;
+                    });
+
                     await widget.timelineService.createPost(currentPost);
                     widget.options.onCreatePost?.call(currentPost);
                     widget.onTapCreatePost(currentPost);
                   },
                   context: context,
+                  loading: isLoading,
                 ),
               ],
             ),

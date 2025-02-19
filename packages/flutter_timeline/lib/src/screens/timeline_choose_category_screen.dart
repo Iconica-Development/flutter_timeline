@@ -100,6 +100,7 @@ class TimelineChooseCategoryScreen extends StatelessWidget {
                                           if (context.mounted)
                                             Navigator.of(context).pop();
                                         },
+                                        loading: false,
                                       ),
                                     ),
                                     TextButton(

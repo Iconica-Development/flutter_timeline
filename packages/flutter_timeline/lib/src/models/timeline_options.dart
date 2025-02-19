@@ -134,6 +134,7 @@ Widget _defaultButtonBuilder({
   required String title,
   required Function() onPressed,
   required BuildContext context,
+  required bool loading,
 }) {
   var theme = Theme.of(context);
   return SafeArea(
@@ -145,10 +146,17 @@ Widget _defaultButtonBuilder({
           minimumSize: const Size(254, 50),
         ),
         onPressed: onPressed,
-        child: Text(
-          title,
-          style: theme.textTheme.displayLarge,
-        ),
+        child: loading
+            ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: CircularProgressIndicator(
+                  color: theme.textTheme.displayLarge?.color,
+                ),
+              )
+            : Text(
+                title,
+                style: theme.textTheme.displayLarge,
+              ),
       ),
     ),
   );
@@ -179,6 +187,7 @@ typedef ButtonBuilder = Widget Function({
   required String title,
   required Function() onPressed,
   required BuildContext context,
+  required bool loading,
 });
 
 typedef PostBuilder = Widget Function({

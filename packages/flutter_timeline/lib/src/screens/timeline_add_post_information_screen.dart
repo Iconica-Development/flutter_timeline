@@ -195,6 +195,7 @@ class _TimelineAddPostInformationScreenState
                     widget.onTapOverview();
                   },
                   context: context,
+                  loading: false,
                 ),
               ],
             ),
