@@ -13,9 +13,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore: ^4.13.1
-  firebase_core: ^2.22.0
-  firebase_storage: ^11.5.1
+  cloud_firestore: ">=4.13.1 <6.0.0"
+  firebase_core: ">=2.22.0 <4.0.0"
+  firebase_storage: ">=11.5.1 <13.0.0"
   uuid: ^4.2.1
   collection: ^1.18.0
   flutter_timeline_interface:
