@@ -4,7 +4,8 @@
 
 name: flutter_timeline_interface
 description: Interface for the service of the Flutter Timeline component
-version: 5.1.0
+version: 5.1.1
+homepage: https://github.com/Iconica-Development/flutter_timeline
 publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub
 
 environment:
