@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import 'package:flutter/material.dart';
-
-@immutable
 class FirebaseTimelineOptions {
   const FirebaseTimelineOptions({
     this.usersCollectionName = 'users',
