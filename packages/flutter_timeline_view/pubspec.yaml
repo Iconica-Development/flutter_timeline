@@ -4,12 +4,13 @@
 
 name: flutter_timeline_view
 description: Visual elements of the Flutter Timeline Component
-version: 5.1.0
+version: 5.1.1
+homepage: https://github.com/Iconica-Development/flutter_timeline
 publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
-  flutter: ^3.22.2
+  flutter: '>=3.22.2'
 
 dependencies:
   flutter:
@@ -21,7 +22,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   flutter_timeline_interface:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^5.1.0
+    version: ^5.1.1
   flutter_image_picker:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
     version: ^4.0.0

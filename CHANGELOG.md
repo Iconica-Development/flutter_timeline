@@ -1,3 +1,8 @@
+## 5.1.1
+
+- Be honest about which Dart and Flutter versions we support
+- Relax our Firebase version constraint, we also support the current newest versions
+
 ## 5.1.0
 
 * Added `routeToPostDetail` to the `TimelineUserStory` to allow for navigation to the post detail screen.

@@ -3,23 +3,24 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 name: flutter_timeline
 description: Visual elements and interface combined into one package
-version: 5.1.0
+version: 5.1.1
+homepage: https://github.com/Iconica-Development/flutter_timeline
 publish_to: https://forgejo.internal.iconica.nl/api/packages/internal/pub
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
-  flutter: ^3.22.2
+  flutter: '>=3.22.2'
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_timeline_view:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^5.1.0
+    version: ^5.1.1
 
   flutter_timeline_interface:
     hosted: https://forgejo.internal.iconica.nl/api/packages/internal/pub
-    version: ^5.1.0
+    version: ^5.1.1
   collection: ^1.18.0
 
 dev_dependencies:
