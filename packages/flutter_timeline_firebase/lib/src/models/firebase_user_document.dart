@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import 'package:flutter/material.dart';
-
-@immutable
 class FirebaseUserDocument {
   const FirebaseUserDocument({
     this.firstName,
