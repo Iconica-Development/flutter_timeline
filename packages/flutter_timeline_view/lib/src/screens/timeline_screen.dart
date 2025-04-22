@@ -110,6 +110,15 @@ class _TimelineScreenState extends State<TimelineScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant TimelineScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(loadPosts());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (isLoading && widget.posts == null) {
       return const Center(child: CircularProgressIndicator.adaptive());
