@@ -1,3 +1,7 @@
+## 4.1.2
+
+- Get posts from the updated service when a new TimelineService has been passed
+
 ## 4.1.1
 - Update Firebase dependencies to their latest versions
 
