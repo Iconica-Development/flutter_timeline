@@ -9,9 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
+import 'package:flutter_timeline_view/src/widgets/post_components/header.dart';
+import 'package:flutter_timeline_view/src/widgets/post_components/image.dart';
+import 'package:flutter_timeline_view/src/widgets/post_components/info.dart';
 import 'package:flutter_timeline_view/src/widgets/reaction_bottom.dart';
-import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
-import 'package:flutter_timeline_view/src/widgets/timeline_post_widget.dart';
 import 'package:intl/intl.dart';
 
 class TimelinePostScreen extends StatefulWidget {
@@ -172,204 +173,54 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      if (post.creator != null)
-                        InkWell(
-                          onTap: widget.onUserTap != null
-                              ? () =>
-                                  widget.onUserTap?.call(post.creator!.userId)
-                              : null,
-                          child: Row(
-                            children: [
-                              if (post.creator!.imageUrl != null) ...[
-                                widget.options.userAvatarBuilder?.call(
-                                      post.creator!,
-                                      28,
-                                    ) ??
-                                    CircleAvatar(
-                                      radius: 14,
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(
-                                        post.creator!.imageUrl!,
-                                      ),
-                                    ),
-                              ] else ...[
-                                widget.options.anonymousAvatarBuilder?.call(
-                                      post.creator!,
-                                      28,
-                                    ) ??
-                                    const CircleAvatar(
-                                      radius: 14,
-                                      child: Icon(
-                                        Icons.person,
-                                      ),
-                                    ),
-                              ],
-                              const SizedBox(width: 10),
-                              Text(
-                                widget.options.nameBuilder
-                                        ?.call(post.creator) ??
-                                    post.creator?.fullName ??
-                                    widget.options.translations.anonymousUser,
-                                style: widget.options.theme.textStyles
-                                        .listPostCreatorTitleStyle ??
-                                    theme.textTheme.titleSmall!.copyWith(
-                                      color: Colors.black,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      const Spacer(),
-                      if (!(widget.isOverviewScreen ?? false) &&
-                          (widget.allowAllDeletion ||
-                              post.creator?.userId == widget.userId)) ...[
-                        PopupMenuButton(
-                          onSelected: (value) async {
-                            if (value == 'delete') {
-                              await showPostDeletionConfirmationDialog(
-                                widget.options,
-                                context,
-                                widget.onPostDelete,
-                              );
-                            }
-                          },
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Text(
-                                    widget.options.translations.deletePost,
-                                    style: widget.options.theme.textStyles
-                                            .deletePostStyle ??
-                                        theme.textTheme.bodyMedium,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  widget.options.theme.deleteIcon ??
-                                      Icon(
-                                        Icons.delete,
-                                        color: widget.options.theme.iconColor,
-                                      ),
-                                ],
-                              ),
-                            ),
-                          ],
-                          child: widget.options.theme.moreIcon ??
-                              Icon(
-                                Icons.more_horiz_rounded,
-                                color: widget.options.theme.iconColor,
-                              ),
-                        ),
-                      ],
-                    ],
+                  PostHeader(
+                    service: widget.service,
+                    options: widget.options,
+                    userId: widget.userId,
+                    post: widget.post,
+                    allowDeletion: !(widget.isOverviewScreen ?? false) &&
+                        (widget.allowAllDeletion ||
+                            post.creator?.userId == widget.userId),
+                    onUserTap: widget.onUserTap,
+                    onPostDelete: widget.onPostDelete,
                   ),
-                  // image of the posts
                   if (post.imageUrl != null || post.image != null) ...[
-                    const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      child: widget.options.doubleTapTolike
-                          ? TappableImage(
-                              likeAndDislikeIcon: widget
-                                  .options.likeAndDislikeIconsForDoubleTap,
-                              post: post,
-                              userId: widget.userId,
-                              onLike: ({required bool liked}) async {
-                                var userId = widget.userId;
-
-                                late TimelinePost result;
-
-                                if (!liked) {
-                                  result =
-                                      await widget.service.postService.likePost(
-                                    userId,
-                                    post,
-                                  );
-                                } else {
-                                  result = await widget.service.postService
-                                      .unlikePost(
-                                    userId,
-                                    post,
-                                  );
-                                }
-
-                                await loadPostDetails();
-
-                                return result.likedBy?.contains(userId) ??
-                                    false;
-                              },
-                            )
-                          : post.image != null
-                              ? Image.memory(
-                                  width: double.infinity,
-                                  post.image!,
-                                  fit: BoxFit.fitHeight,
-                                )
-                              : CachedNetworkImage(
-                                  width: double.infinity,
-                                  imageUrl: post.imageUrl!,
-                                  fit: BoxFit.fitHeight,
-                                ),
+                    const SizedBox(height: 8.0),
+                    PostImage(
+                      options: widget.options,
+                      service: widget.service,
+                      userId: widget.userId,
+                      post: widget.post,
+                      flexible: false,
+                      onUpdatePost: loadPostDetails,
                     ),
                   ],
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8.0),
                   // post information
-                  Row(
-                    children: [
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () async {
-                          if (widget.isOverviewScreen ?? false) return;
-                          if (isLikedByUser) {
-                            updatePost(
-                              await widget.service.postService.unlikePost(
-                                widget.userId,
-                                post,
-                              ),
-                            );
-                            setState(() {});
-                          } else {
-                            updatePost(
-                              await widget.service.postService.likePost(
-                                widget.userId,
-                                post,
-                              ),
-                            );
-                            setState(() {});
-                          }
-                        },
-                        icon: isLikedByUser
-                            ? widget.options.theme.likedIcon ??
-                                Icon(
-                                  Icons.favorite_rounded,
-                                  color: widget.options.theme.iconColor,
-                                  size: widget.options.iconSize,
-                                )
-                            : widget.options.theme.likeIcon ??
-                                Icon(
-                                  Icons.favorite_outline_outlined,
-                                  color: widget.options.theme.iconColor,
-                                  size: widget.options.iconSize,
-                                ),
-                      ),
-                      const SizedBox(width: 8),
-                      if (post.reactionEnabled)
-                        widget.options.theme.commentIcon ??
-                            SvgPicture.asset(
-                              'assets/Comment.svg',
-                              package: 'flutter_timeline_view',
-                              // ignore: deprecated_member_use
-                              color: widget.options.theme.iconColor,
-                              width: widget.options.iconSize,
-                              height: widget.options.iconSize,
-                            ),
-                    ],
+                  _PostLikeAndReactionsInformation(
+                    options: widget.options,
+                    post: widget.post,
+                    isLikedByUser: isLikedByUser,
+                    onLikePressed: () async {
+                      if (widget.isOverviewScreen ?? false) return;
+                      if (isLikedByUser) {
+                        updatePost(
+                          await widget.service.postService.unlikePost(
+                            widget.userId,
+                            post,
+                          ),
+                        );
+                        setState(() {});
+                      } else {
+                        updatePost(
+                          await widget.service.postService.likePost(
+                            widget.userId,
+                            post,
+                          ),
+                        );
+                        setState(() {});
+                      }
+                    },
                   ),
                   const SizedBox(height: 8),
                   // ignore: avoid_bool_literals_in_conditional_expressions
@@ -385,24 +236,10 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                               ?.copyWith(color: Colors.black),
                     ),
                   ],
-                  Text.rich(
-                    TextSpan(
-                      text: widget.options.nameBuilder?.call(post.creator) ??
-                          post.creator?.fullName ??
-                          widget.options.translations.anonymousUser,
-                      style: widget
-                              .options.theme.textStyles.postCreatorNameStyle ??
-                          theme.textTheme.titleSmall!
-                              .copyWith(color: Colors.black),
-                      children: [
-                        TextSpan(
-                          text: post.title,
-                          style:
-                              widget.options.theme.textStyles.postTitleStyle ??
-                                  theme.textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
+                  PostTitle(
+                    options: widget.options,
+                    post: post,
+                    isForList: false,
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -420,198 +257,71 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                   if (post.reactionEnabled && widget.isOverviewScreen != null
                       ? !widget.isOverviewScreen!
                       : false) ...[
-                    Text(
-                      widget.options.translations.commentsTitleOnPost,
-                      style: theme.textTheme.titleSmall!
-                          .copyWith(color: Colors.black),
-                    ),
-                    for (var reaction
-                        in post.reactions ?? <TimelinePostReaction>[]) ...[
-                      const SizedBox(height: 4),
-                      GestureDetector(
-                        onLongPressStart: (details) async {
-                          if (reaction.creatorId == widget.userId ||
-                              widget.allowAllDeletion) {
-                            var overlay = Overlay.of(context)
-                                .context
-                                .findRenderObject()! as RenderBox;
-                            var position = RelativeRect.fromRect(
-                              Rect.fromPoints(
-                                details.globalPosition,
-                                details.globalPosition,
-                              ),
-                              Offset.zero & overlay.size,
-                            );
-                            // Show popup menu for deletion
-                            var value = await showMenu<String>(
-                              context: context,
-                              position: position,
-                              items: [
-                                PopupMenuItem<String>(
-                                  value: 'delete',
-                                  child: Text(
-                                    widget.options.translations.deleteReaction,
-                                  ),
-                                ),
-                              ],
-                            );
-                            if (value == 'delete') {
-                              // Call service to delete reaction
-                              updatePost(
-                                await widget.service.postService
-                                    .deletePostReaction(post, reaction.id),
-                              );
-                            }
-                          }
-                        },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (reaction.creator?.imageUrl != null &&
-                                reaction.creator!.imageUrl!.isNotEmpty) ...[
-                              widget.options.userAvatarBuilder?.call(
-                                    reaction.creator!,
-                                    14,
-                                  ) ??
-                                  CircleAvatar(
-                                    radius: 14,
-                                    backgroundImage: CachedNetworkImageProvider(
-                                      reaction.creator!.imageUrl!,
-                                    ),
-                                  ),
-                            ] else ...[
-                              widget.options.anonymousAvatarBuilder?.call(
-                                    reaction.creator!,
-                                    14,
-                                  ) ??
-                                  const CircleAvatar(
-                                    radius: 14,
-                                    child: Icon(
-                                      Icons.person,
-                                    ),
-                                  ),
-                            ],
-                            const SizedBox(width: 10),
-                            if (reaction.imageUrl != null) ...[
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.options.nameBuilder
-                                              ?.call(reaction.creator) ??
-                                          reaction.creator?.fullName ??
-                                          widget.options.translations
-                                              .anonymousUser,
-                                      style: theme.textTheme.titleSmall!
-                                          .copyWith(color: Colors.black),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CachedNetworkImage(
-                                        imageUrl: reaction.imageUrl!,
-                                        fit: BoxFit.fitWidth,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ] else ...[
-                              Expanded(
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: widget.options.nameBuilder
-                                            ?.call(reaction.creator) ??
-                                        reaction.creator?.fullName ??
-                                        widget
-                                            .options.translations.anonymousUser,
-                                    style: theme.textTheme.titleSmall!
-                                        .copyWith(color: Colors.black),
-                                    children: [
-                                      const TextSpan(text: ' '),
-                                      TextSpan(
-                                        text: reaction.reaction ?? '',
-                                        style: theme.textTheme.bodySmall,
-                                      ),
-                                      const TextSpan(text: '\n'),
-                                      TextSpan(
-                                        text: dateFormat
-                                            .format(reaction.createdAt),
-                                        style: theme.textTheme.labelSmall!
-                                            .copyWith(
-                                          color: theme
-                                              .textTheme.labelSmall!.color!
-                                              .withOpacity(0.5),
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-
-                                      // text should go to new line
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                            Builder(
-                              builder: (context) {
-                                var isLikedByUser =
-                                    reaction.likedBy?.contains(widget.userId) ??
-                                        false;
-                                return IconButton(
-                                  padding: const EdgeInsets.only(left: 12),
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () async {
-                                    if (isLikedByUser) {
-                                      updatePost(
-                                        await widget.service.postService
-                                            .unlikeReaction(
-                                          widget.userId,
-                                          post,
-                                          reaction.id,
-                                        ),
-                                      );
-                                      setState(() {});
-                                    } else {
-                                      updatePost(
-                                        await widget.service.postService
-                                            .likeReaction(
-                                          widget.userId,
-                                          post,
-                                          reaction.id,
-                                        ),
-                                      );
-                                      setState(() {});
-                                    }
-                                  },
-                                  icon: isLikedByUser
-                                      ? widget.options.theme.likedIcon ??
-                                          Icon(
-                                            Icons.favorite_rounded,
-                                            color:
-                                                widget.options.theme.iconColor,
-                                            size: 14,
-                                          )
-                                      : widget.options.theme.likeIcon ??
-                                          Icon(
-                                            Icons.favorite_outline_outlined,
-                                            color:
-                                                widget.options.theme.iconColor,
-                                            size: 14,
-                                          ),
-                                );
-                              },
+                    _CommentSection(
+                      options: widget.options,
+                      userId: widget.userId,
+                      post: widget.post,
+                      dateFormat: dateFormat,
+                      onReactionLostPress: (
+                        LongPressStartDetails details, {
+                        required TimelinePostReaction reaction,
+                      }) async {
+                        if (reaction.creatorId == widget.userId ||
+                            widget.allowAllDeletion) {
+                          var overlay = Overlay.of(context)
+                              .context
+                              .findRenderObject()! as RenderBox;
+                          var position = RelativeRect.fromRect(
+                            Rect.fromPoints(
+                              details.globalPosition,
+                              details.globalPosition,
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                    if (post.reactions?.isEmpty ?? true) ...[
-                      Text(
-                        widget.options.translations.firstComment,
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
+                            Offset.zero & overlay.size,
+                          );
+                          // Show popup menu for deletion
+                          var value = await showMenu<String>(
+                            context: context,
+                            position: position,
+                            items: [
+                              PopupMenuItem<String>(
+                                value: 'delete',
+                                child: Text(
+                                  widget.options.translations.deleteReaction,
+                                ),
+                              ),
+                            ],
+                          );
+                          if (value == 'delete') {
+                            // Call service to delete reaction
+                            updatePost(
+                              await widget.service.postService
+                                  .deletePostReaction(post, reaction.id),
+                            );
+                          }
+                        }
+                      },
+                      onLikeReaction: (TimelinePostReaction reaction) async {
+                        if (isLikedByUser) {
+                          updatePost(
+                            await widget.service.postService.unlikeReaction(
+                              widget.userId,
+                              post,
+                              reaction.id,
+                            ),
+                          );
+                          setState(() {});
+                        } else {
+                          updatePost(
+                            await widget.service.postService.likeReaction(
+                              widget.userId,
+                              post,
+                              reaction.id,
+                            ),
+                          );
+                          setState(() {});
+                        }
+                      },
+                    ),
                     const SizedBox(height: 120),
                   ],
                 ],
@@ -689,6 +399,213 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
               ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _PostLikeAndReactionsInformation extends StatelessWidget {
+  const _PostLikeAndReactionsInformation({
+    required this.options,
+    required this.post,
+    required this.isLikedByUser,
+    required this.onLikePressed,
+  });
+
+  final TimelineOptions options;
+  final TimelinePost post;
+  final bool isLikedByUser;
+  final VoidCallback onLikePressed;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: onLikePressed,
+            icon: isLikedByUser
+                ? options.theme.likedIcon ??
+                    Icon(
+                      Icons.favorite_rounded,
+                      color: options.theme.iconColor,
+                      size: options.iconSize,
+                    )
+                : options.theme.likeIcon ??
+                    Icon(
+                      Icons.favorite_outline_outlined,
+                      color: options.theme.iconColor,
+                      size: options.iconSize,
+                    ),
+          ),
+          const SizedBox(width: 8.0),
+          if (post.reactionEnabled)
+            options.theme.commentIcon ??
+                SvgPicture.asset(
+                  'assets/Comment.svg',
+                  package: 'flutter_timeline_view',
+                  // ignore: deprecated_member_use
+                  color: options.theme.iconColor,
+                  width: options.iconSize,
+                  height: options.iconSize,
+                ),
+        ],
+      );
+}
+
+class _CommentSection extends StatelessWidget {
+  const _CommentSection({
+    required this.options,
+    required this.userId,
+    required this.post,
+    required this.dateFormat,
+    required this.onReactionLostPress,
+    required this.onLikeReaction,
+  });
+
+  final TimelineOptions options;
+  final String userId;
+  final TimelinePost post;
+  final DateFormat dateFormat;
+
+  final void Function(
+    LongPressStartDetails details, {
+    required TimelinePostReaction reaction,
+  }) onReactionLostPress;
+  final void Function(TimelinePostReaction reaction) onLikeReaction;
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+
+    return Column(
+      children: [
+        Text(
+          options.translations.commentsTitleOnPost,
+          style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+        ),
+        for (var reaction in post.reactions ?? <TimelinePostReaction>[]) ...[
+          const SizedBox(height: 4),
+          GestureDetector(
+            onLongPressStart: (details) async {
+              onReactionLostPress(details, reaction: reaction);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (reaction.creator?.imageUrl != null &&
+                    reaction.creator!.imageUrl!.isNotEmpty) ...[
+                  options.userAvatarBuilder?.call(
+                        reaction.creator!,
+                        14,
+                      ) ??
+                      CircleAvatar(
+                        radius: 14,
+                        backgroundImage: CachedNetworkImageProvider(
+                          reaction.creator!.imageUrl!,
+                        ),
+                      ),
+                ] else ...[
+                  options.anonymousAvatarBuilder?.call(
+                        reaction.creator!,
+                        14,
+                      ) ??
+                      const CircleAvatar(
+                        radius: 14,
+                        child: Icon(
+                          Icons.person,
+                        ),
+                      ),
+                ],
+                const SizedBox(width: 10),
+                if (reaction.imageUrl != null) ...[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          options.nameBuilder?.call(reaction.creator) ??
+                              reaction.creator?.fullName ??
+                              options.translations.anonymousUser,
+                          style: theme.textTheme.titleSmall!
+                              .copyWith(color: Colors.black),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CachedNetworkImage(
+                            imageUrl: reaction.imageUrl!,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        text: options.nameBuilder?.call(reaction.creator) ??
+                            reaction.creator?.fullName ??
+                            options.translations.anonymousUser,
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
+                        children: [
+                          const TextSpan(text: ' '),
+                          TextSpan(
+                            text: reaction.reaction ?? '',
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          const TextSpan(text: '\n'),
+                          TextSpan(
+                            text: dateFormat.format(reaction.createdAt),
+                            style: theme.textTheme.labelSmall!.copyWith(
+                              color: theme.textTheme.labelSmall!.color!
+                                  .withOpacity(0.5),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+
+                          // text should go to new line
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                Builder(
+                  builder: (context) {
+                    var isLikedByUser =
+                        reaction.likedBy?.contains(userId) ?? false;
+                    return IconButton(
+                      padding: const EdgeInsets.only(left: 12),
+                      constraints: const BoxConstraints(),
+                      onPressed: () => onLikeReaction(reaction),
+                      icon: isLikedByUser
+                          ? options.theme.likedIcon ??
+                              Icon(
+                                Icons.favorite_rounded,
+                                color: options.theme.iconColor,
+                                size: 14,
+                              )
+                          : options.theme.likeIcon ??
+                              Icon(
+                                Icons.favorite_outline_outlined,
+                                color: options.theme.iconColor,
+                                size: 14,
+                              ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+        ],
+        if (post.reactions?.isEmpty ?? true) ...[
+          Text(
+            options.translations.firstComment,
+            style: theme.textTheme.bodySmall,
+          ),
+        ],
       ],
     );
   }

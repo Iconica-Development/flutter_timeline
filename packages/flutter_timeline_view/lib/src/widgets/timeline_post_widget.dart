@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/src/config/timeline_options.dart';
 import 'package:flutter_timeline_view/src/widgets/default_filled_button.dart';
-import 'package:flutter_timeline_view/src/widgets/tappable_image.dart';
+import 'package:flutter_timeline_view/src/widgets/post_components/header.dart';
+import 'package:flutter_timeline_view/src/widgets/post_components/image.dart';
+import 'package:flutter_timeline_view/src/widgets/post_components/info.dart';
 
 class TimelinePostWidget extends StatefulWidget {
   const TimelinePostWidget({
@@ -63,7 +64,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PostHeader(
+          PostHeader(
             service: widget.service,
             options: widget.options,
             userId: widget.userId,
@@ -75,7 +76,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
           ),
           if (widget.post.imageUrl != null || widget.post.image != null) ...[
             const SizedBox(height: 8.0),
-            _PostImage(
+            PostImage(
               service: widget.service,
               options: widget.options,
               userId: widget.userId,
@@ -106,117 +107,6 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
           ],
         ],
       ),
-    );
-  }
-}
-
-class _PostHeader extends StatelessWidget {
-  const _PostHeader({
-    required this.service,
-    required this.options,
-    required this.userId,
-    required this.post,
-    required this.allowDeletion,
-    required this.onUserTap,
-    required this.onPostDelete,
-  });
-
-  final TimelineService service;
-  final TimelineOptions options;
-  final String userId;
-  final TimelinePost post;
-  final bool allowDeletion;
-  final void Function(String userId)? onUserTap;
-  final VoidCallback onPostDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-
-    return Row(
-      children: [
-        if (post.creator != null) ...[
-          InkWell(
-            onTap: onUserTap != null
-                ? () => onUserTap?.call(post.creator!.userId)
-                : null,
-            child: Row(
-              children: [
-                if (post.creator!.imageUrl != null) ...[
-                  options.userAvatarBuilder?.call(
-                        post.creator!,
-                        28,
-                      ) ??
-                      CircleAvatar(
-                        radius: 14,
-                        backgroundImage: CachedNetworkImageProvider(
-                          post.creator!.imageUrl!,
-                        ),
-                      ),
-                ] else ...[
-                  options.anonymousAvatarBuilder?.call(
-                        post.creator!,
-                        28,
-                      ) ??
-                      const CircleAvatar(
-                        radius: 14,
-                        child: Icon(
-                          Icons.person,
-                        ),
-                      ),
-                ],
-                const SizedBox(width: 10.0),
-                Text(
-                  options.nameBuilder?.call(post.creator) ??
-                      post.creator?.fullName ??
-                      options.translations.anonymousUser,
-                  style: options.theme.textStyles.listPostCreatorTitleStyle ??
-                      theme.textTheme.titleSmall!.copyWith(color: Colors.black),
-                ),
-              ],
-            ),
-          ),
-        ],
-        const Spacer(),
-        if (allowDeletion) ...[
-          PopupMenuButton(
-            onSelected: (value) async {
-              if (value == 'delete') {
-                await showPostDeletionConfirmationDialog(
-                  options,
-                  context,
-                  onPostDelete,
-                );
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Text(
-                      options.translations.deletePost,
-                      style: options.theme.textStyles.deletePostStyle ??
-                          theme.textTheme.bodyMedium,
-                    ),
-                    const SizedBox(width: 8.0),
-                    options.theme.deleteIcon ??
-                        Icon(
-                          Icons.delete,
-                          color: options.theme.iconColor,
-                        ),
-                  ],
-                ),
-              ),
-            ],
-            child: options.theme.moreIcon ??
-                Icon(
-                  Icons.more_horiz_rounded,
-                  color: options.theme.iconColor,
-                ),
-          ),
-        ],
-      ],
     );
   }
 }
@@ -295,62 +185,6 @@ class _PostLikeAndReactionsInformation extends StatelessWidget {
       );
 }
 
-class _PostImage extends StatelessWidget {
-  const _PostImage({
-    required this.options,
-    required this.service,
-    required this.userId,
-    required this.post,
-  });
-
-  final TimelineOptions options;
-  final TimelineService service;
-  final String userId;
-  final TimelinePost post;
-
-  @override
-  Widget build(BuildContext context) => Flexible(
-        flex: options.postWidgetHeight != null ? 1 : 0,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
-          child: options.doubleTapTolike
-              ? TappableImage(
-                  likeAndDislikeIcon: options.likeAndDislikeIconsForDoubleTap,
-                  post: post,
-                  userId: userId,
-                  onLike: ({required bool liked}) async {
-                    TimelinePost result;
-
-                    if (!liked) {
-                      result = await service.postService.likePost(
-                        userId,
-                        post,
-                      );
-                    } else {
-                      result = await service.postService.unlikePost(
-                        userId,
-                        post,
-                      );
-                    }
-
-                    return result.likedBy?.contains(userId) ?? false;
-                  },
-                )
-              : post.imageUrl != null
-                  ? CachedNetworkImage(
-                      width: double.infinity,
-                      imageUrl: post.imageUrl!,
-                      fit: BoxFit.fitWidth,
-                    )
-                  : Image.memory(
-                      width: double.infinity,
-                      post.image!,
-                      fit: BoxFit.fitWidth,
-                    ),
-        ),
-      );
-}
-
 class _PostInfo extends StatelessWidget {
   const _PostInfo({
     required this.options,
@@ -367,30 +201,17 @@ class _PostInfo extends StatelessWidget {
     var theme = Theme.of(context);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _PostLikeCountText(
           post: post,
           options: options,
         ),
         const SizedBox(height: 4.0),
-        Row(
-          children: [
-            Text(
-              options.nameBuilder?.call(post.creator) ??
-                  post.creator?.fullName ??
-                  options.translations.anonymousUser,
-              style: options.theme.textStyles.listCreatorNameStyle ??
-                  theme.textTheme.titleSmall!.copyWith(
-                    color: Colors.black,
-                  ),
-            ),
-            const SizedBox(width: 4.0),
-            Text(
-              post.title,
-              style: options.theme.textStyles.listPostTitleStyle ??
-                  theme.textTheme.bodySmall,
-            ),
-          ],
+        PostTitle(
+          options: options,
+          post: post,
+          isForList: true,
         ),
         const SizedBox(height: 4.0),
         InkWell(
