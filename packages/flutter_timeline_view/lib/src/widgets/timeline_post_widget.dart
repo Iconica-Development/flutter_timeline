@@ -97,7 +97,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                               ),
                             ),
                       ],
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 10.0),
                       Text(
                         widget.options.nameBuilder?.call(widget.post.creator) ??
                             widget.post.creator?.fullName ??
@@ -137,7 +137,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                                     .options.theme.textStyles.deletePostStyle ??
                                 theme.textTheme.bodyMedium,
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 8.0),
                           widget.options.theme.deleteIcon ??
                               Icon(
                                 Icons.delete,
@@ -158,7 +158,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
           ),
           // image of the post
           if (widget.post.imageUrl != null || widget.post.image != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: 8.0),
             Flexible(
               flex: widget.options.postWidgetHeight != null ? 1 : 0,
               child: ClipRRect(
@@ -204,9 +204,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
             ),
           ],
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8.0),
           // post information
           if (widget.options.iconsWithValues) ...[
             Row(
@@ -238,14 +236,10 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         size: widget.options.iconSize,
                       ),
                 ),
-                const SizedBox(
-                  width: 4,
-                ),
+                const SizedBox(width: 4.0),
                 Text('${widget.post.likes}'),
                 if (widget.post.reactionEnabled) ...[
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8.0),
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
@@ -260,9 +254,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                           height: widget.options.iconSize,
                         ),
                   ),
-                  const SizedBox(
-                    width: 4,
-                  ),
+                  const SizedBox(width: 4.0),
                   Text('${widget.post.reaction}'),
                 ],
               ],
@@ -286,7 +278,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
                         size: widget.options.iconSize,
                       ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 8.0),
                 if (widget.post.reactionEnabled) ...[
                   IconButton(
                     padding: EdgeInsets.zero,
@@ -307,9 +299,7 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
             ),
           ],
 
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
 
           if (widget.options.itemInfoBuilder != null) ...[
             widget.options.itemInfoBuilder!(
@@ -320,25 +310,27 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               post: widget.post,
               options: widget.options,
             ),
-            Text.rich(
-              TextSpan(
-                text: widget.options.nameBuilder?.call(widget.post.creator) ??
-                    widget.post.creator?.fullName ??
-                    widget.options.translations.anonymousUser,
-                style: widget.options.theme.textStyles.listCreatorNameStyle ??
-                    theme.textTheme.titleSmall!.copyWith(
-                      color: Colors.black,
-                    ),
-                children: [
-                  TextSpan(
-                    text: widget.post.title,
-                    style: widget.options.theme.textStyles.listPostTitleStyle ??
-                        theme.textTheme.bodySmall,
-                  ),
-                ],
-              ),
+            const SizedBox(height: 4.0),
+            Row(
+              children: [
+                Text(
+                  widget.options.nameBuilder?.call(widget.post.creator) ??
+                      widget.post.creator?.fullName ??
+                      widget.options.translations.anonymousUser,
+                  style: widget.options.theme.textStyles.listCreatorNameStyle ??
+                      theme.textTheme.titleSmall!.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+                const SizedBox(width: 4.0),
+                Text(
+                  widget.post.title,
+                  style: widget.options.theme.textStyles.listPostTitleStyle ??
+                      theme.textTheme.bodySmall,
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 4.0),
             InkWell(
               onTap: widget.onTap,
               child: Text(
@@ -350,8 +342,9 @@ class _TimelinePostWidgetState extends State<TimelinePostWidget> {
               ),
             ),
           ],
-          if (widget.options.dividerBuilder != null)
+          if (widget.options.dividerBuilder != null) ...[
             widget.options.dividerBuilder!(),
+          ],
         ],
       ),
     );

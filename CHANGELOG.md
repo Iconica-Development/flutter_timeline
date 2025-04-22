@@ -1,3 +1,7 @@
+## Next
+
+- Add minimal spacing between a post author and title in the post widget
+
 ## 5.1.1
 
 - Be honest about which Dart and Flutter versions we support
