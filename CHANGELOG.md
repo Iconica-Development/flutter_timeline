@@ -1,3 +1,7 @@
+## 4.1.1
+
+- Get posts from the updated service when a new TimelineService has been passed
+
 ## 4.1.0
 - Migrate to flutter 3.22 which deprecates the background and onBackground properties in the ThemeData and also removes MaterialStatePropertyAll
 - Add categorySelectionButtonSelectedTextColor and categorySelectionButtonUnselectedTextColor to the timeline theme to allow for the customization of the text color of the category selection buttons
