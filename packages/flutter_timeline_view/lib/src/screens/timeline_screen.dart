@@ -4,15 +4,14 @@
 
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
 
 class TimelineScreen extends StatefulWidget {
-  const TimelineScreen({
+  TimelineScreen({
     this.userId = 'test_user',
-    this.service,
+    TimelineService? service,
     this.options = const TimelineOptions(),
     this.onPostTap,
     this.scrollController,
@@ -24,7 +23,10 @@ class TimelineScreen extends StatefulWidget {
     this.filterEnabled = false,
     this.allowAllDeletion = false,
     super.key,
-  });
+  }) : service = service ??
+            TimelineService(
+              postService: LocalTimelinePostService(),
+            );
 
   /// The user id of the current user
   final String userId;
@@ -34,7 +36,7 @@ class TimelineScreen extends StatefulWidget {
   final bool allowAllDeletion;
 
   /// The service to use for fetching and manipulating posts
-  final TimelineService? service;
+  final TimelineService service;
 
   /// All the configuration options for the timelinescreens and widgets
   final TimelineOptions options;
@@ -73,10 +75,6 @@ class _TimelineScreenState extends State<TimelineScreen> {
   late var textFieldController = TextEditingController(
     text: widget.options.filterOptions.initialFilterWord,
   );
-  late var service = widget.service ??
-      TimelineService(
-        postService: LocalTimelinePostService(),
-      );
 
   bool isLoading = true;
 
@@ -119,14 +117,15 @@ class _TimelineScreenState extends State<TimelineScreen> {
 
     // Build the list of posts
     return ListenableBuilder(
-      listenable: service.postService,
+      listenable: widget.service.postService,
       builder: (context, _) {
         if (!context.mounted) return const SizedBox();
-        var posts = widget.posts ?? service.postService.getPosts(category);
+        var posts =
+            widget.posts ?? widget.service.postService.getPosts(category);
 
         if (widget.filterEnabled && filterWord != null) {
-          if (service.postService is TimelineFilterService) {
-            posts = (service.postService as TimelineFilterService)
+          if (widget.service.postService is TimelineFilterService) {
+            posts = (widget.service.postService as TimelineFilterService)
                 .filterPosts(filterWord!, {});
           } else {
             debugPrint('Timeline service needs to mixin'
@@ -149,7 +148,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
           );
         }
 
-        var categories = service.postService.categories;
+        var categories = widget.service.postService.categories;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +254,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                           padding: widget.options.paddings.postPadding,
                           child: widget.postWidgetBuilder?.call(post) ??
                               TimelinePostWidget(
-                                service: service,
+                                service: widget.service,
                                 userId: widget.userId,
                                 options: widget.options,
                                 allowAllDeletion: widget.allowAllDeletion,
@@ -273,11 +272,11 @@ class _TimelineScreenState extends State<TimelineScreen> {
                                       builder: (context) => Scaffold(
                                         body: TimelinePostScreen(
                                           userId: 'test_user',
-                                          service: service,
+                                          service: widget.service,
                                           options: widget.options,
                                           post: post,
                                           onPostDelete: () {
-                                            service.postService
+                                            widget.service.postService
                                                 .deletePost(post);
                                             Navigator.of(context).pop();
                                           },
@@ -286,12 +285,14 @@ class _TimelineScreenState extends State<TimelineScreen> {
                                     ),
                                   );
                                 },
-                                onTapLike: () async => service.postService
+                                onTapLike: () async => widget
+                                    .service.postService
                                     .likePost(widget.userId, post),
-                                onTapUnlike: () async => service.postService
+                                onTapUnlike: () async => widget
+                                    .service.postService
                                     .unlikePost(widget.userId, post),
                                 onPostDelete: () async =>
-                                    service.postService.deletePost(post),
+                                    widget.service.postService.deletePost(post),
                                 onUserTap: widget.onUserTap,
                               ),
                         ),
@@ -327,8 +328,8 @@ class _TimelineScreenState extends State<TimelineScreen> {
   Future<void> loadPosts() async {
     if (widget.posts != null || !context.mounted) return;
     try {
-      await service.postService.fetchCategories();
-      await service.postService.fetchPosts(category);
+      await widget.service.postService.fetchCategories();
+      await widget.service.postService.fetchPosts(category);
       setState(() {
         isLoading = false;
       });
