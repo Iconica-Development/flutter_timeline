@@ -51,3 +51,5 @@ pubspec_overrides.yaml
 **/example/windows
 **/example/web
 **/example/README.md
+
+.fvm
