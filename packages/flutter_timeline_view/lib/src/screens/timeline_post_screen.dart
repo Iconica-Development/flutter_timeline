@@ -213,7 +213,7 @@ class _TimelinePostScreenState extends State<TimelinePostScreen> {
                                     post.creator?.fullName ??
                                     widget.options.translations.anonymousUser,
                                 style: widget.options.theme.textStyles
-                                        .postCreatorTitleStyle ??
+                                        .listPostCreatorTitleStyle ??
                                     theme.textTheme.titleSmall!.copyWith(
                                       color: Colors.black,
                                     ),
