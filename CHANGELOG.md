@@ -1,3 +1,9 @@
+## Next
+
+- Add minimal spacing between a post author and title in the post widget
+- Use listPostCreatorTitleStyle for post creator localizations when showing posts in a list
+- Share more code between the various widgets within flutter_timeline_view
+
 ## 5.1.1
 
 - Be honest about which Dart and Flutter versions we support
