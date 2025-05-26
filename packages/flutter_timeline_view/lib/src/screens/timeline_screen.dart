@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_interface/flutter_timeline_interface.dart';
 import 'package:flutter_timeline_view/flutter_timeline_view.dart';
@@ -232,7 +233,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
               options: widget.options,
               onTapCategory: (categoryKey) {
                 setState(() {
-                  service.postService.selectedCategory =
+                  widget.service.postService.selectedCategory =
                       categories.firstWhereOrNull(
                     (element) => element.key == categoryKey,
                   );

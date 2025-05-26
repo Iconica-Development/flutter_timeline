@@ -72,9 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: const SafeArea(
-        child: TimelineScreen(),
-      ),
+      body: SafeArea(child: TimelineScreen()),
     );
   }
 }
